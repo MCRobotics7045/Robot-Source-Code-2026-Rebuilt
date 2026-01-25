@@ -1,3 +1,3 @@
-2026 Season. Using Advanatge kit TalonFX(S) Swerve Template. 
+2026 Season. Using Advanatge kit TalonFX(S) Swerve Template.
 
-FRC 7045 
+FRC 7045
