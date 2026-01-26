@@ -3,6 +3,14 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.Uptake;
+import org.littletonrobotics.junction.AutoLog;
+
+
 
 /** Add your docs here. */
-public class UptakeIO {}
+public interface UptakeIO {
+    
+    default void stopUptake() {}
+
+    default void runUptake() {}
+}
