@@ -6,10 +6,13 @@ package frc.robot.subsystems.Uptake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class Uptake extends SubsystemBase {
   /** Creates a new Uptake. */
   private final UptakeIO io;
+
+  private final UptakeIOInputsAutoLogged inputs = new UptakeIOInputsAutoLogged();
 
   public Uptake(UptakeIO io) {
     this.io = io;
@@ -17,18 +20,15 @@ public class Uptake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    Logger.processInputs("Uptake Inputs", inputs);
   }
 
-  public double UptakeSetSpeed () {
-    return 0;
-  }
-  
   public Command runUptake() {
-    return this.startEnd(null, null);
+    return this.startEnd(() -> io.runUptake(0.4), () -> io.stopUptake());
   }
 
   public Command stopUptake() {
-    return this.startEnd(null, null);
+    return this.run(() -> io.stopUptake());
   }
 }

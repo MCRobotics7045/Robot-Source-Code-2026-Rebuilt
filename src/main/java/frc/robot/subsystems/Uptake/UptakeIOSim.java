@@ -5,4 +5,4 @@
 package frc.robot.subsystems.Uptake;
 
 /** Add your docs here. */
-public class UptakeIOSim {}
+public class UptakeIOSim implements UptakeIO {}
