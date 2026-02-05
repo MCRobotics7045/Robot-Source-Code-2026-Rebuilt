@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerIO;
+import frc.robot.subsystems.Indexer.IndexerIOSparkMax;
 import frc.robot.subsystems.Uptake.Uptake;
 import frc.robot.subsystems.Uptake.UptakeIO;
 import frc.robot.subsystems.Uptake.UptakeIOSparkMax;
@@ -39,6 +42,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Uptake uptake;
+  private final Indexer indexer;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -60,6 +64,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
         uptake = new Uptake(new UptakeIOSparkMax(33));
+        indexer = new Indexer(new IndexerIOSparkMax(33));
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -89,6 +94,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
         uptake = new Uptake(new UptakeIO() {});
+        indexer = new Indexer(new IndexerIO() {});
         break;
 
       default:
@@ -101,6 +107,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         uptake = new Uptake(new UptakeIO() {});
+        indexer = new Indexer(new IndexerIO() {});
         break;
     }
 
@@ -166,7 +173,10 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.y().onTrue(uptake.runUptake());
+    /////// TESTING.......
+    // controller.y().onTrue(uptake.runUptake());
+    controller.y().onTrue(indexer.RunIndexerF(1));
+    // do i need a stop button still?
   }
 
   /**
