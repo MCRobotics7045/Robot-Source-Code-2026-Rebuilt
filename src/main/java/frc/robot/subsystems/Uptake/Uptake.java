@@ -25,7 +25,7 @@ public class Uptake extends SubsystemBase {
   }
 
   public Command runUptake() {
-    return this.startEnd(() -> io.runUptake(0.4), () -> io.stopUptake());
+    return this.startEnd(() -> io.runUptake(-0.6), () -> io.stopUptake());
   }
 
   public Command stopUptake() {
