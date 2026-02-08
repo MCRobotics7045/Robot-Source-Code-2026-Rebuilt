@@ -23,10 +23,8 @@ import frc.robot.subsystems.Indexer.IndexerIO;
 import frc.robot.subsystems.Indexer.IndexerIOSparkMax;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.Intake.IntakeIOSparkMax;
-import frc.robot.subsystems.Uptake.Uptake;
-import frc.robot.subsystems.Uptake.UptakeIO;
-import frc.robot.subsystems.Uptake.UptakeIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -66,7 +64,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        intake = new Intake(new IntakeIOSparkMax(34,33));
+        intake = new Intake(new IntakeIOSparkMax(34, 33));
         indexer = new Indexer(new IndexerIOSparkMax(33));
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -96,7 +94,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        intake = new Intake(new IntakeIO() {});
+        intake = new Intake(new IntakeIOSim());
         indexer = new Indexer(new IndexerIO() {});
         break;
 
@@ -178,7 +176,8 @@ public class RobotContainer {
 
     /////// TESTING.......
     // controller.y().onTrue(uptake.runUptake());
-    controller.y().whileTrue(intake.RunIntakeShaft(1));
+    controller.y().onTrue(intake.SetIntakeAngle(0));
+    controller.back().onTrue(intake.SetIntakeAngle(-290));
     // do i need a stop button still?
   }
 
