@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 public class Uptake extends SubsystemBase {
-  /** Creates a new Uptake. */
+
   private final UptakeIO io;
 
   private final UptakeIOInputsAutoLogged inputs = new UptakeIOInputsAutoLogged();

@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
-  /** Creates a new Intake. */
+
   private final IntakeIO io;
 
   private final IntakeIoinputsAutoLogged inputs = new IntakeIoinputsAutoLogged();

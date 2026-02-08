@@ -6,7 +6,6 @@ package frc.robot.subsystems.Intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
-/** Add your docs here. */
 public interface IntakeIO {
   @AutoLog
   public static class IntakeIoinputs {

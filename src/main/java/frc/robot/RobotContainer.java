@@ -25,6 +25,9 @@ import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.Intake.IntakeIOSparkMax;
+import frc.robot.subsystems.Vision.Vision;
+import frc.robot.subsystems.Vision.VisionIO;
+import frc.robot.subsystems.Vision.VisionIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -45,6 +48,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Intake intake;
   private final Indexer indexer;
+  private final Vision vision;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
   public FuelSim fuelSim;
@@ -68,6 +72,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackRight));
         intake = new Intake(new IntakeIOSparkMax(34, 33));
         indexer = new Indexer(new IndexerIOSparkMax(33));
+        vision = new Vision(new VisionIO() {}, drive::getPose);
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -98,6 +103,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
         intake = new Intake(new IntakeIOSim());
         indexer = new Indexer(new IndexerIO() {});
+        vision = new Vision(new VisionIOSim(drive::getPose), drive::getPose);
         configureFuelSim();
         fuelSim.enableAirResistance();
         fuelSim.start();
@@ -114,6 +120,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
+        vision = new Vision(new VisionIO() {}, drive::getPose);
         break;
     }
 

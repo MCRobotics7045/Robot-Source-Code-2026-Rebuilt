@@ -15,7 +15,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.util.Units;
 
-/** Add your docs here. */
 public class IntakeIOSparkMax implements IntakeIO {
   private final SparkMax Drive;
   private final SparkMax Pos;

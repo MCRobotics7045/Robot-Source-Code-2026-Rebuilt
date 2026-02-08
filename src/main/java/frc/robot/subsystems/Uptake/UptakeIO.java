@@ -6,7 +6,6 @@ package frc.robot.subsystems.Uptake;
 
 import org.littletonrobotics.junction.AutoLog;
 
-/** Add your docs here. */
 public interface UptakeIO {
 
   @AutoLog

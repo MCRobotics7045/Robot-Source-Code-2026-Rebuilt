@@ -12,7 +12,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-/** Add your docs here. */
 public class UptakeIOSparkMax implements UptakeIO {
   private final SparkMax spark;
   private final SparkMaxConfig config;
