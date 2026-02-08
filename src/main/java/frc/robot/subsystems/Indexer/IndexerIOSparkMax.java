@@ -5,6 +5,8 @@
 package frc.robot.subsystems.Indexer;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -15,14 +17,14 @@ public class IndexerIOSparkMax implements IndexerIO {
   private final SparkMax spark;
   private final SparkMaxConfig config;
   private final RelativeEncoder sparkEncoder;
-  private final double baseRPM;
 
+  @SuppressWarnings("removal")
   public IndexerIOSparkMax(int MotorID) {
     spark = new SparkMax(MotorID, MotorType.kBrushless);
     config = new SparkMaxConfig();
     config.smartCurrentLimit(60).idleMode(IdleMode.kBrake).openLoopRampRate(0.1);
+    spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     sparkEncoder = spark.getEncoder();
-    baseRPM = 0.3;
   }
 
   public void updateInputs(IndexerIOInputs inputs) {

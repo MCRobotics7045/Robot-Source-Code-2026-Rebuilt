@@ -17,7 +17,6 @@ public class UptakeIOSparkMax implements UptakeIO {
   private final SparkMax spark;
   private final SparkMaxConfig config;
   private final RelativeEncoder sparkEncoder;
-  private final double motorRPM;
 
   @SuppressWarnings("removal")
   public UptakeIOSparkMax(int MotorID) {
@@ -27,7 +26,6 @@ public class UptakeIOSparkMax implements UptakeIO {
     spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     sparkEncoder = spark.getEncoder();
-    motorRPM = sparkEncoder.getVelocity();
   }
 
   public void updateInputs(UptakeIOInputs inputs) {

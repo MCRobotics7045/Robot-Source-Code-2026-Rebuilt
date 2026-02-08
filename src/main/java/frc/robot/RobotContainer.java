@@ -21,6 +21,9 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerIO;
 import frc.robot.subsystems.Indexer.IndexerIOSparkMax;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOSparkMax;
 import frc.robot.subsystems.Uptake.Uptake;
 import frc.robot.subsystems.Uptake.UptakeIO;
 import frc.robot.subsystems.Uptake.UptakeIOSparkMax;
@@ -41,7 +44,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Uptake uptake;
+  private final Intake intake;
   private final Indexer indexer;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -63,7 +66,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        uptake = new Uptake(new UptakeIOSparkMax(33));
+        intake = new Intake(new IntakeIOSparkMax(34,33));
         indexer = new Indexer(new IndexerIOSparkMax(33));
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -93,7 +96,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        uptake = new Uptake(new UptakeIO() {});
+        intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
         break;
 
@@ -106,7 +109,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        uptake = new Uptake(new UptakeIO() {});
+        intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
         break;
     }
@@ -175,7 +178,7 @@ public class RobotContainer {
 
     /////// TESTING.......
     // controller.y().onTrue(uptake.runUptake());
-    controller.y().onTrue(indexer.RunIndexerF(1));
+    controller.y().whileTrue(intake.RunIntakeShaft(1));
     // do i need a stop button still?
   }
 
