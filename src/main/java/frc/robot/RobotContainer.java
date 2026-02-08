@@ -31,6 +31,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.util.FuelSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -46,12 +47,13 @@ public class RobotContainer {
   private final Indexer indexer;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
-
+  public FuelSim fuelSim;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    fuelSim = new FuelSim();
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -96,6 +98,9 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
         intake = new Intake(new IntakeIOSim());
         indexer = new Indexer(new IndexerIO() {});
+        configureFuelSim();
+        fuelSim.enableAirResistance();
+        fuelSim.start();
         break;
 
       default:
@@ -188,5 +193,16 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  private void configureFuelSim() {
+    fuelSim.spawnStartingFuel();
+    fuelSim.registerRobot(
+        0.889, // L to R
+        0.8128, // F to B
+        0.1524, // bumper height
+        drive::getPose,
+        drive::getFieldRelativeSpeeds);
+    fuelSim.setSubticks(20);
   }
 }
