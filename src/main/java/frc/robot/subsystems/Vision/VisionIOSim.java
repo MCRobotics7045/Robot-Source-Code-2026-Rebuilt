@@ -18,6 +18,7 @@ import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionIOSim implements VisionIO {
 
@@ -45,6 +46,15 @@ public class VisionIOSim implements VisionIO {
 
   Transform3d RrobotToCamera = new Transform3d(RcameraPos, RcameraRot);
 
+  Translation3d LcameraPos =
+      new Translation3d(
+          Units.inchesToMeters(-3.010), Units.inchesToMeters(13.027), Units.inchesToMeters(19.431));
+
+  Rotation3d LcameraRot =
+      new Rotation3d(0.0, Units.degreesToRadians(-25), Units.degreesToRadians(-10));
+
+  Transform3d LrobotToCamera = new Transform3d(LcameraPos, LcameraRot);
+
   private Supplier<Pose2d> poseSupplier;
 
   public VisionIOSim(Supplier<Pose2d> poseSupplier) {
@@ -63,11 +73,38 @@ public class VisionIOSim implements VisionIO {
     rCameraSim = new PhotonCameraSim(rCamera, cameraProp);
     visionSim.addAprilTags(getTagLayout());
     visionSim.addCamera(rCameraSim, RrobotToCamera);
+    visionSim.addCamera(lCameraSim, LrobotToCamera);
   }
 
   public void updateInputs(VisionIOinputs inputs) {
     visionSim.update(poseSupplier.get());
+
     inputs.RrobotToCamera = RrobotToCamera;
+    inputs.LrobotToCamera = LrobotToCamera;
+    for (var result : lCamera.getAllUnreadResults()) {
+      // Lcamera Sees
+      if (result.hasTargets()) {
+        PhotonTrackedTarget target = result.getBestTarget();
+        inputs.lBestTag = target.getFiducialId();
+        inputs.lTargetArea = target.getArea();
+        inputs.lTargetPitch = target.getPitch();
+        inputs.lTargetYaw = target.getYaw();
+        inputs.lhasTargets = true;
+        inputs.lposeAmbiguity = target.getPoseAmbiguity();
+        inputs.ltargetDistance = target.getBestCameraToTarget();
+      } else {
+
+      }
+    }
+
+    for (var result : rCamera.getAllUnreadResults()) {
+      // Rcamera Sees
+      if (result.hasTargets()) {
+
+      } else {
+
+      }
+    }
   }
 
   private static AprilTagFieldLayout getTagLayout() {

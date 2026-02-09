@@ -7,9 +7,7 @@ package frc.robot.subsystems.Vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -29,7 +27,9 @@ public class Vision extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Vision", inputs);
     Pose2d currentRobotPose = robotPose.get();
-    Pose3d cameraPose = new Pose3d(currentRobotPose).transformBy(inputs.RrobotToCamera);
-    Logger.recordOutput("Vision/CameraPose", cameraPose);
+    Pose3d RightCamera = new Pose3d(currentRobotPose).transformBy(inputs.RrobotToCamera);
+    Pose3d LeftCamera = new Pose3d(currentRobotPose).transformBy(inputs.LrobotToCamera);
+    Logger.recordOutput("Vision/RightCameraPose", RightCamera);
+    Logger.recordOutput("Vision/LeftCameraPose", LeftCamera);
   }
 }
