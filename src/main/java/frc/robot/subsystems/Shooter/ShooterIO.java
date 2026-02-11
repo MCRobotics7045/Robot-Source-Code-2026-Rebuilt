@@ -4,5 +4,20 @@
 
 package frc.robot.subsystems.Shooter;
 
+import org.littletonrobotics.junction.AutoLog;
+
 /** Add your docs here. */
-public interface ShooterIO {}
+public interface ShooterIO {
+  @AutoLog
+  public static class ShooterIOinputs {
+    public double LienarActuatorPos = 0.0;
+    public double HoodAngle = 0.0;
+    public double ReqActuatorPos = 0.0;
+  }
+
+  default void updateInputs(ShooterIOinputs inputs) {}
+
+  default void ExtendAct() {}
+
+  default void RetractAct() {}
+}

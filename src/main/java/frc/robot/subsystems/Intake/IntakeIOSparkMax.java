@@ -22,6 +22,7 @@ public class IntakeIOSparkMax implements IntakeIO {
   private final SparkClosedLoopController controller;
   private final RelativeEncoder DEncoder;
   private final RelativeEncoder PEncoder;
+  private double DesiredAngle;
 
   @SuppressWarnings("removal")
   public IntakeIOSparkMax(int PosMotorID, int DriveMotorID) {
@@ -31,7 +32,7 @@ public class IntakeIOSparkMax implements IntakeIO {
     PEncoder = Pos.getEncoder();
     config = new SparkMaxConfig();
     config
-        .smartCurrentLimit(60)
+        .smartCurrentLimit(10)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(
             0.1); // Unsure if I need to make a new Config or can i change it then apply again?
@@ -50,16 +51,24 @@ public class IntakeIOSparkMax implements IntakeIO {
 
   public void updateInputs(IntakeIoinputs inputs) {
     inputs.CurrentAmps = Pos.getOutputCurrent();
-    inputs.MotorPos = Units.rotationsToRadians(PEncoder.getPosition());
+    inputs.MotorPos = Units.rotationsToDegrees(PEncoder.getPosition() / 20.0);
     inputs.appliedVolts = Pos.getAppliedOutput() * Pos.getBusVoltage();
     inputs.DAmprege = Drive.getOutputCurrent();
     inputs.DMotorRPM = DEncoder.getVelocity();
     inputs.DappliedVolts = Drive.getAppliedOutput() * Drive.getBusVoltage();
+    inputs.DesiredAngle = DesiredAngle;
   }
 
   @Override
   public void setIntakePostion(double ang) {
-    controller.setSetpoint(ang, SparkBase.ControlType.kMAXMotionPositionControl);
+    double motorRotations = Units.degreesToRotations(ang) * 20.0;
+    controller.setSetpoint(motorRotations, SparkBase.ControlType.kMAXMotionPositionControl);
+    DesiredAngle = ang;
+  }
+
+  public void ZeroIntake() {
+    PEncoder.setPosition(0);
+    DesiredAngle = 0;
   }
 
   @Override

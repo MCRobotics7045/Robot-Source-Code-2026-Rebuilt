@@ -36,7 +36,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake Inputs", inputs);
-    offset = inputs.MotorPos + Units.degreesToRadians(35);
+    offset = Units.degreesToRadians(inputs.MotorPos) + Units.degreesToRadians(35);
     hingeRotation = new Rotation3d(0, offset, 0);
     armPose = new Pose3d(hingeLocation, hingeRotation);
     mechPub.set(armPose);
@@ -52,5 +52,9 @@ public class Intake extends SubsystemBase {
 
   public Command StopIntakeShaft() {
     return this.startEnd(() -> io.stopIntakeD(), () -> io.stopIntakeD());
+  }
+
+  public Command ZeroIntake() {
+    return this.runOnce(() -> io.ZeroIntake());
   }
 }

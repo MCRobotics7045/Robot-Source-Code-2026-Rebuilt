@@ -15,6 +15,7 @@ public interface IntakeIO {
     public double DMotorRPM = 0.0;
     public double DappliedVolts = 0.0;
     public double DAmprege = 0.0;
+    public double DesiredAngle = 0.0;
   }
 
   default void updateInputs(IntakeIoinputs inputs) {}
@@ -26,4 +27,6 @@ public interface IntakeIO {
   default void stopIntakePos() {}
 
   default void stopIntakeD() {}
+
+  default void ZeroIntake() {}
 }

@@ -15,7 +15,7 @@ public class IntakeIOSim implements IntakeIO {
   private final DCMotorSim PosMotor;
   private final DCMotorSim DriveMotor;
 
-  private double appliedVolts = 12.0; // real
+  private double appliedVolts = 12000000.0; // real
   private double GEARBOXPOS = 20.0;
   private double GEARBOXDRVE = 5.0;
   private double INERTIA = 0.001;
