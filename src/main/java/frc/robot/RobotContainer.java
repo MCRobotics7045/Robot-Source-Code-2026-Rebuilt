@@ -196,7 +196,8 @@ public class RobotContainer {
     // controller.y().onTrue(intake.SetIntakeAngle(0));
     // controller.back().onTrue(intake.SetIntakeAngle(120));
     // controller.start().whileTrue(intake.RunIntakeShaft(1));
-    controller.b().onTrue(shooter.Actuator(() -> SmartDashboard.getNumber("Tuning/Hood Angle", 0)));
+    controller.b().onTrue(shooter.Actaute());
+    
 
     // do i need a stop button still?
   }
