@@ -5,6 +5,7 @@
 package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -17,6 +18,7 @@ public class Shooter extends SubsystemBase {
 
   private final ShooterIO io;
   private final ShooterIO io2;
+  private double Extension;
 
   public Shooter(ShooterIO io, ShooterIO io2) {
     this.io = io;
@@ -27,6 +29,8 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter Inputs", inputs);
+    Extension = SmartDashboard.getNumber("Tuning/Hood Angle", 0);
+    System.out.println(Extension);
   }
 
   public Command Actuator(DoubleSupplier Angle) {
@@ -45,6 +49,10 @@ public class Shooter extends SubsystemBase {
         MathUtil.clamp(ShooterConstants.kDistanceToAngleMap.get(Distance), 0, 100);
     targetLength = ((targetLength / 2) * 50);
     return targetLength;
+  }
+
+  public Command Actaute() {
+    return this.run(() -> io2.SetActuatorHeight(Extension));
   }
 
   public void FireVoid(double Distance) {

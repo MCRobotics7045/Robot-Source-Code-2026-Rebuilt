@@ -18,6 +18,7 @@ import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionIOSim implements VisionIO {
@@ -81,29 +82,45 @@ public class VisionIOSim implements VisionIO {
 
     inputs.RrobotToCamera = RrobotToCamera;
     inputs.LrobotToCamera = LrobotToCamera;
-    for (var result : lCamera.getAllUnreadResults()) {
-      // Lcamera Sees
-      if (result.hasTargets()) {
-        PhotonTrackedTarget target = result.getBestTarget();
-        inputs.lBestTag = target.getFiducialId();
-        inputs.lTargetArea = target.getArea();
-        inputs.lTargetPitch = target.getPitch();
-        inputs.lTargetYaw = target.getYaw();
-        inputs.lhasTargets = true;
-        inputs.lposeAmbiguity = target.getPoseAmbiguity();
-        inputs.ltargetDistance = target.getBestCameraToTarget();
-      } else {
 
-      }
+    var lresult = lCamera.getAllUnreadResults();
+    var rresult = rCamera.getAllUnreadResults();
+    PhotonPipelineResult lLatest = null;
+    PhotonPipelineResult rLatest = null;
+    if (!lresult.isEmpty()) {
+      lLatest = lresult.get(lresult.size() - 1);
+    }
+    if (!rresult.isEmpty()) {
+      rLatest = rresult.get(rresult.size() - 1);
     }
 
-    for (var result : rCamera.getAllUnreadResults()) {
-      // Rcamera Sees
-      if (result.hasTargets()) {
+    PhotonTrackedTarget bestTarget = null;
+    boolean lHasTarget = (lLatest != null && lLatest.hasTargets());
+    boolean rHasTarget = (rLatest != null && rLatest.hasTargets());
 
+    if (lHasTarget && rHasTarget) {
+      if (lLatest.getBestTarget().getPoseAmbiguity() < rLatest.getBestTarget().getPoseAmbiguity()) {
+        bestTarget = rLatest.getBestTarget();
       } else {
-
+        bestTarget = lLatest.getBestTarget();
       }
+    } else if (lHasTarget) {
+      bestTarget = lLatest.getBestTarget();
+    } else if (rHasTarget) {
+      bestTarget = rLatest.getBestTarget();
+    }
+
+    if (bestTarget != null) {
+      inputs.BestTag = bestTarget.getFiducialId();
+      inputs.hasTargets = true;
+      inputs.TargetYaw = bestTarget.getYaw();
+      inputs.TargetPitch = bestTarget.getPitch();
+      inputs.TargetArea = bestTarget.getArea();
+      inputs.poseAmbiguity = bestTarget.getPoseAmbiguity();
+      Transform3d camToTarget = bestTarget.getBestCameraToTarget();
+
+    } else {
+
     }
   }
 
