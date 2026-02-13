@@ -13,6 +13,12 @@ public interface ShooterIO {
     public double LienarActuatorPos = 0.0;
     public double HoodAngle = 0.0;
     public double ReqActuatorPos = 0.0;
+    public double lMotorRPM = 0.0;
+    public double rMotorRPM = 0.0;
+    public double lMotorVolts = 0.0;
+    public double rMotorVolts = 0.0;
+    public double lMotorAmp = 0.0;
+    public double rMotorAmp = 0.0;
   }
 
   default void updateInputs(ShooterIOinputs inputs) {}
@@ -20,4 +26,12 @@ public interface ShooterIO {
   default void ExtendAct() {}
 
   default void RetractAct() {}
+
+  default void SetActuatorHeight(double Height) {}
+
+  default void RunVoltage(double Voltage) {}
+
+  default void VelocityPID() {}
+
+  default void StopMotor() {}
 }

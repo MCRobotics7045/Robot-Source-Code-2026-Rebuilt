@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -19,13 +20,22 @@ public final class Constants {
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
   public static enum Mode {
-    /** Running on a real robot. */
     REAL,
-
-    /** Running a physics simulator. */
     SIM,
-
-    /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static final class ShooterConstants {
+    public static final InterpolatingDoubleTreeMap kDistanceToVoltageMap =
+        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap kDistanceToAngleMap =
+        new InterpolatingDoubleTreeMap();
+
+    static {
+      kDistanceToVoltageMap.put(2.0, 4.0);
+      kDistanceToAngleMap.put(2.0, 40.0);
+      kDistanceToVoltageMap.put(1.0, 6.0);
+      kDistanceToAngleMap.put(1.0, 50.0);
+    }
   }
 }
