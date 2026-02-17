@@ -4,34 +4,38 @@
 
 package frc.robot.subsystems.Vision;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+
+import java.util.List;
+
 import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
+//Where Robot Most Likely is based 
+  record PoseObv(
+    double time,
+    Pose3d pose,
+    double Ambiguity,
+    int tagCount,
+    double avgTagDistance ,
+    List<Short> tagID) {}
+
+  record TargetObv(
+    Rotation2d y,
+    Rotation2d x
+  ) {}
+  
   @AutoLog
   public static class VisionIOinputs {
-    // Left Camera
-    public int lBestTag = 0;
-    public boolean lhasTargets = false;
-    public double lposeAmbiguity = 0.0;
-    public double lTargetYaw = 0.0;
-    public double lTargetPitch = 0.0;
-    public double lTargetArea = 0.0;
-    public Transform3d ltargetDistance = null;
-    public double ltimestamp = 0.0;
+    public boolean CameraConnection = false;
 
-    // Right Camera
-    public int rBestTag = 0;
-    public boolean rhasTargets = false;
-    public double rposeAmbiguity = 0.0;
-    public double rTargetYaw = 0.0;
-    public double rTargetPitch = 0.0;
-    public double rTargetArea = 0.0;
-    public Transform3d rtargetDistance = null;
-    public double rtimestamp = 0.0;
+    public TargetObv latesTargetObv = new TargetObv(new Rotation2d(), new Rotation2d());
 
-    public Transform3d RrobotToCamera = null;
-    public Transform3d LrobotToCamera = null;
+    public PoseObv[] poseObvs = new PoseObv[0];
+
+    public int[] tagID = new int[0];
   }
 
   default void updateInputs(VisionIOinputs inputs) {}

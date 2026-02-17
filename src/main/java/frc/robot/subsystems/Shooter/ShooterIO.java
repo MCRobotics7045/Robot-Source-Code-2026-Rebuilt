@@ -10,9 +10,9 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ShooterIO {
   @AutoLog
   public static class ShooterIOinputs {
-    public double LienarActuatorPos = 0.0;
+    public double LinearPOSMM = 0.0;
     public double HoodAngle = 0.0;
-    public double ReqActuatorPos = 0.0;
+    public double RequestedPostionPercent = 0.0;
     public double lMotorRPM = 0.0;
     public double rMotorRPM = 0.0;
     public double lMotorVolts = 0.0;
@@ -27,7 +27,9 @@ public interface ShooterIO {
 
   default void RetractAct() {}
 
-  default void SetActuatorHeight(double Height) {}
+  default void SetActuatorPercent(double percent) {}
+
+  default void SetActuatorHeightMM(double MM) {}
 
   default void RunVoltage(double Voltage) {}
 

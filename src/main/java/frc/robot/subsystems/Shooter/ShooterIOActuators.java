@@ -22,8 +22,8 @@ public class ShooterIOActuators implements ShooterIO {
   public void updateInputs(ShooterIOinputs inputs) {
     lSideServo.updateCurPos();
     RSideServo.updateCurPos();
-    inputs.LienarActuatorPos = lSideServo.getPosition();
-    inputs.ReqActuatorPos = corrected;
+    inputs.LinearPOSMM = lSideServo.getPosition();
+    inputs.RequestedPostionPercent = corrected;
   }
 
   public void ExtendAct() {
@@ -36,10 +36,17 @@ public class ShooterIOActuators implements ShooterIO {
     RSideServo.setPosition(0);
   }
 
-  public void SetActuatorHeight(double Height) { // 0-100
-    double Clamped = MathUtil.clamp(Height, 0, 100);
-    corrected = Clamped / 2;
-    lSideServo.setPosition(corrected);
-    RSideServo.setPosition(corrected);
+  public void SetActuatorHeightMM(double MM) {
+    corrected = MM;
+    lSideServo.setPosition(MM);
+    RSideServo.setPosition(MM);
+  }
+
+  public void SetActuatorPercent(double percent) { // 0-100
+    double Clamped = MathUtil.clamp(percent, 0, 100);
+    corrected = Clamped;
+    Clamped = Clamped / 2;
+    lSideServo.setPosition(Clamped);
+    RSideServo.setPosition(Clamped);
   }
 }
