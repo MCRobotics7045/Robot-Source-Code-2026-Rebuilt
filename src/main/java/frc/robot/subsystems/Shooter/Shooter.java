@@ -49,6 +49,10 @@ public class Shooter extends SubsystemBase {
     return targetLength;
   }
 
+  public Command Actaute() {
+    return this.run(() -> io2.SetActuatorHeight(Extension));
+  }
+
   public void FireVoid(double Distance) {
     double LinActPos = ProccesDistanceActuatorMM(Distance);
     double MotorVoltage = ProccesDistanceMotor(Distance);
