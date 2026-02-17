@@ -27,9 +27,9 @@ public class Vision extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Vision", inputs);
     Pose2d currentRobotPose = robotPose.get();
-    Pose3d RightCamera = new Pose3d(currentRobotPose).transformBy(inputs.RrobotToCamera);
-    Pose3d LeftCamera = new Pose3d(currentRobotPose).transformBy(inputs.LrobotToCamera);
-    Logger.recordOutput("Vision/RightCameraPose", RightCamera);
-    Logger.recordOutput("Vision/LeftCameraPose", LeftCamera);
+    // Pose3d RightCamera = new Pose3d(currentRobotPose).transformBy(inputs.RrobotToCamera);
+    // Pose3d LeftCamera = new Pose3d(currentRobotPose).transformBy(inputs.LrobotToCamera);
+    // Logger.recordOutput("Vision/RightCameraPose", RightCamera);
+    // Logger.recordOutput("Vision/LeftCameraPose", LeftCamera);
   }
 }
