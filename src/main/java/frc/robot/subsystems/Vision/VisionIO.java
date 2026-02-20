@@ -6,27 +6,21 @@ package frc.robot.subsystems.Vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
-
 import java.util.List;
-
 import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
-//Where Robot Most Likely is based 
+  // Where Robot Most Likely is based
   record PoseObv(
-    double time,
-    Pose3d pose,
-    double Ambiguity,
-    int tagCount,
-    double avgTagDistance ,
-    List<Short> tagID) {}
+      double time,
+      Pose3d pose,
+      double Ambiguity,
+      int tagCount,
+      double avgTagDistance,
+      List<Short> tagID) {}
 
-  record TargetObv(
-    Rotation2d y,
-    Rotation2d x
-  ) {}
-  
+  record TargetObv(Rotation2d y, Rotation2d x) {}
+
   @AutoLog
   public static class VisionIOinputs {
     public boolean CameraConnection = false;

@@ -1,116 +1,92 @@
-// // Copyright (c) FIRST and other WPILib contributors.
-// // Open Source Software; you can modify and/or share it under the terms of
-// // the WPILib BSD license file in the root directory of this project.
+package frc.robot.subsystems.Vision;
 
-// package frc.robot.subsystems.Vision;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.Constants.CameraConstants;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+import org.photonvision.PhotonCamera;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
-// import edu.wpi.first.apriltag.AprilTagFieldLayout;
-// import edu.wpi.first.apriltag.AprilTagFields;
-// import edu.wpi.first.math.geometry.Pose2d;
-// import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.geometry.Rotation3d;
-// import edu.wpi.first.math.geometry.Transform3d;
-// import edu.wpi.first.math.geometry.Translation3d;
-// import edu.wpi.first.math.util.Units;
-// import java.util.function.Supplier;
-// import org.photonvision.PhotonCamera;
-// import org.photonvision.estimation.TargetModel;
-// import org.photonvision.simulation.PhotonCameraSim;
-// import org.photonvision.simulation.SimCameraProperties;
-// import org.photonvision.simulation.VisionSystemSim;
-// import org.photonvision.targeting.PhotonTrackedTarget;
+public class VisionIOSim implements VisionIO {
 
-// public class VisionIOSim implements VisionIO {
+  private final PhotonCamera camera;
+  private final PhotonCameraSim cameraSim;
+  private final VisionSystemSim visionSim;
+  private final Transform3d robotToCamera;
+  private final Supplier<Pose2d> poseSupplier;
 
-//   private VisionSystemSim visionSim;
-//   private TargetModel targetModel;
-//   private AprilTagFieldLayout tagLayout;
-//   private static AprilTagFieldLayout kTagLayout = null;
-//   private SimCameraProperties cameraProp;
+  public VisionIOSim(Supplier<Pose2d> poseSupplier, Transform3d robotToCamera) {
+    this.poseSupplier = poseSupplier;
+    this.robotToCamera = robotToCamera;
 
-//   // FAKE CAM
-//   private PhotonCamera lCamera;
-//   private PhotonCamera rCamera;
+    camera = new PhotonCamera("SimCamera");
+    visionSim = new VisionSystemSim("main");
+    visionSim.addAprilTags(CameraConstants.aprilFeild);
 
-//   PhotonCameraSim lCameraSim;
-//   PhotonCameraSim rCameraSim;
+    SimCameraProperties cameraProp = new SimCameraProperties();
+    cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(75));
+    cameraProp.setCalibError(0.20, 0.05);
+    cameraProp.setFPS(50);
+    cameraProp.setAvgLatencyMs(25);
+    cameraProp.setLatencyStdDevMs(5);
 
-//   Translation3d RcameraPos =
-//       new Translation3d(
-//           Units.inchesToMeters(-3.010),
-//           Units.inchesToMeters(-13.027),
-//           Units.inchesToMeters(19.431));
+    cameraSim = new PhotonCameraSim(camera, cameraProp);
+    visionSim.addCamera(cameraSim, robotToCamera);
+  }
 
-//   Rotation3d RcameraRot =
-//       new Rotation3d(0.0, Units.degreesToRadians(-25), Units.degreesToRadians(10));
+  @Override
+  public void updateInputs(VisionIOinputs inputs) {
+    visionSim.update(poseSupplier.get());
 
-//   Transform3d RrobotToCamera = new Transform3d(RcameraPos, RcameraRot);
+    inputs.CameraConnection = true;
 
-//   Translation3d LcameraPos =
-//       new Translation3d(
-//           Units.inchesToMeters(-3.010), Units.inchesToMeters(13.027), Units.inchesToMeters(19.431));
+    List<Integer> tagIds = new ArrayList<>();
+    List<PoseObv> poseObservations = new ArrayList<>();
 
-//   Rotation3d LcameraRot =
-//       new Rotation3d(0.0, Units.degreesToRadians(-25), Units.degreesToRadians(-10));
+    for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
+      if (result.hasTargets()) {
+        PhotonTrackedTarget bestTarget = result.getBestTarget();
+        inputs.latesTargetObv =
+            new TargetObv(
+                Rotation2d.fromDegrees(bestTarget.getYaw()),
+                Rotation2d.fromDegrees(bestTarget.getPitch()));
 
-//   Transform3d LrobotToCamera = new Transform3d(LcameraPos, LcameraRot);
+        for (PhotonTrackedTarget target : result.targets) {
+          tagIds.add(target.getFiducialId());
+          Optional<Pose3d> tagPose = CameraConstants.aprilFeild.getTagPose(target.getFiducialId());
 
-//   private Supplier<Pose2d> poseSupplier;
+          if (tagPose.isPresent()) {
+            Transform3d fieldToTarget =
+                new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
+            Transform3d cameraToTarget = target.getBestCameraToTarget();
+            Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
+            Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
+            Pose3d robotPose =
+                new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
 
-//   public VisionIOSim(Supplier<Pose2d> poseSupplier) {
-//     this.poseSupplier = poseSupplier;
-//     lCamera = new PhotonCamera("LeftCam");
-//     rCamera = new PhotonCamera("RightCam");
-//     visionSim = new VisionSystemSim("main");
-//     targetModel = (TargetModel.kAprilTag36h11);
-//     cameraProp = new SimCameraProperties();
-//     cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(75));
-//     cameraProp.setCalibError(0.20, 0.05);
-//     cameraProp.setFPS(50);
-//     cameraProp.setAvgLatencyMs(25);
-//     cameraProp.setLatencyStdDevMs(5);
-//     lCameraSim = new PhotonCameraSim(lCamera, cameraProp);
-//     rCameraSim = new PhotonCameraSim(rCamera, cameraProp);
-//     visionSim.addAprilTags(getTagLayout());
-//     visionSim.addCamera(rCameraSim, RrobotToCamera);
-//     visionSim.addCamera(lCameraSim, LrobotToCamera);
-//   }
+            poseObservations.add(
+                new PoseObv(
+                    result.getTimestampSeconds(),
+                    robotPose,
+                    target.getPoseAmbiguity(),
+                    1,
+                    cameraToTarget.getTranslation().getNorm(),
+                    List.of((short) target.getFiducialId())));
+          }
+        }
+      }
+    }
 
-//   public void updateInputs(VisionIOinputs inputs) {
-//     visionSim.update(poseSupplier.get());
-
-//     inputs.RrobotToCamera = RrobotToCamera;
-//     inputs.LrobotToCamera = LrobotToCamera;
-//     for (var result : lCamera.getAllUnreadResults()) {
-//       // Lcamera Sees
-//       if (result.hasTargets()) {
-//         PhotonTrackedTarget target = result.getBestTarget();
-//         inputs.lBestTag = target.getFiducialId();
-//         inputs.lTargetArea = target.getArea();
-//         inputs.lTargetPitch = target.getPitch();
-//         inputs.lTargetYaw = target.getYaw();
-//         inputs.lhasTargets = true;
-//         inputs.lposeAmbiguity = target.getPoseAmbiguity();
-//         inputs.ltargetDistance = target.getBestCameraToTarget();
-//       } else {
-
-//       }
-//     }
-
-//     for (var result : rCamera.getAllUnreadResults()) {
-//       // Rcamera Sees
-//       if (result.hasTargets()) {
-
-//       } else {
-
-//       }
-//     }
-//   }
-
-//   private static AprilTagFieldLayout getTagLayout() {
-//     if (kTagLayout == null) {
-//       kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
-//     }
-//     return kTagLayout;
-//   }
-// }
+    inputs.poseObvs = poseObservations.toArray(new PoseObv[0]);
+    inputs.tagID = tagIds.stream().mapToInt(Integer::intValue).toArray();
+  }
+}

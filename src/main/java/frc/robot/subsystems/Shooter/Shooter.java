@@ -49,7 +49,6 @@ public class Shooter extends SubsystemBase {
     return targetLength;
   }
 
-
   public void FireVoid(double Distance) {
     double LinActPos = ProccesDistanceActuatorMM(Distance);
     double MotorVoltage = ProccesDistanceMotor(Distance);
