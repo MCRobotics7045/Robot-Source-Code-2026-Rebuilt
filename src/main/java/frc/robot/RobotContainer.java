@@ -7,37 +7,18 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.CameraConstants;
-import frc.robot.commands.DriveCommands;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerIO;
 import frc.robot.subsystems.Indexer.IndexerIOSparkMax;
-import frc.robot.subsystems.Intake.Intake;
-import frc.robot.subsystems.Intake.IntakeIO;
-import frc.robot.subsystems.Intake.IntakeIOSim;
-import frc.robot.subsystems.Intake.IntakeIOSparkMax;
+import frc.robot.subsystems.Intake.*;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.ShooterIO;
 import frc.robot.subsystems.Shooter.ShooterIOActuators;
 import frc.robot.subsystems.Shooter.ShooterIOTalonFX;
-import frc.robot.subsystems.Vision.Vision;
-import frc.robot.subsystems.Vision.VisionIO;
-import frc.robot.subsystems.Vision.VisionIOReal;
-import frc.robot.subsystems.Vision.VisionIOSim;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
-import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.util.FuelSim;
 
 /**
@@ -48,10 +29,10 @@ import frc.robot.util.FuelSim;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
+  // private final Drive drive;
   private final Intake intake;
   private final Indexer indexer;
-  private final Vision vision;
+  // private final Vision vision;
   private final Shooter shooter;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -69,20 +50,21 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
-        intake = new Intake(new IntakeIOSparkMax(34, 38));
-        indexer = new Indexer(new IndexerIOSparkMax(33));
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOReal("Camera1", CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
-                new VisionIOReal("Camera2", CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
+        // drive =
+        //     new Drive(
+        //         new GyroIOPigeon2(),
+        //         new ModuleIOTalonFX(TunerConstants.FrontLeft),
+        //         new ModuleIOTalonFX(TunerConstants.FrontRight),
+        //         new ModuleIOTalonFX(TunerConstants.BackLe
+
+        //         new ModuleIOTalonFX(TunerConstants.BackRight));
+        intake = new Intake(new IntakeIOSparkMax(33, 38));
+        indexer = new Indexer(new IndexerIOSparkMax(37));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOReal("Camera1", CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
+        //         new VisionIOReal("Camera2", CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
         shooter = new Shooter(new ShooterIOTalonFX(20, 20), new ShooterIOActuators());
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -105,38 +87,38 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(TunerConstants.FrontLeft),
-                new ModuleIOSim(TunerConstants.FrontRight),
-                new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight));
+        // drive =
+        //     new Drive(
+        //         new GyroIO() {},
+        //         new ModuleIOSim(TunerConstants.FrontLeft),
+        //         new ModuleIOSim(TunerConstants.FrontRight),
+        //         new ModuleIOSim(TunerConstants.BackLeft),
+        //         new ModuleIOSim(TunerConstants.BackRight));
         intake = new Intake(new IntakeIOSim());
         indexer = new Indexer(new IndexerIO() {});
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOSim(drive::getPose, CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
-                new VisionIOSim(drive::getPose, CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOSim(drive::getPose, CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
+        //         new VisionIOSim(drive::getPose, CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
         shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
-        configureFuelSim();
+        // configureFuelSim();
         fuelSim.enableAirResistance();
         fuelSim.start();
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
+        // drive =
+        //     new Drive(
+        //         new GyroIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {});
         intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        // vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
 
         shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
         break;
@@ -173,45 +155,47 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+    // drive.setDefaultCommand(
+    //     DriveCommands.joystickDrive(
+    //         drive,
+    //         () -> -controller.getLeftY(),
+    //         () -> -controller.getLeftX(),
+    //         () -> -controller.getRightX()));
 
-    // Lock to 0° when A button is held
-    controller
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> Rotation2d.kZero));
+    // // Lock to 0° when A button is held
+    // controller
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -controller.getLeftY(),
+    //             () -> -controller.getLeftX(),
+    //             () -> Rotation2d.kZero));
 
-    // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // // Switch to X pattern when X button is pressed
+    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Reset gyro to 0° when B button is pressed
-    controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));
+    // // Reset gyro to 0° when B button is pressed
+    // controller
+    //     .b()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //                 () ->
+    //                     drive.setPose(
+    //                         new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+    //                 drive)
+    //             .ignoringDisable(true));
 
     /////// TESTING.......
     // controller.y().onTrue(uptake.runUptake());
     // controller.y().onTrue(intake.SetIntakeAngle(0));
     // controller.back().onTrue(intake.SetIntakeAngle(120));
-    controller.start().whileTrue(intake.RunIntakeShaft(1));
+    controller.y().whileTrue(intake.RunIntakeShaft(0.5));
     // controller.b().onTrue(shooter.Actuator());
     controller.b().onTrue(shooter.Actuator());
-    controller.a().onTrue(shooter.FireCommand(1.5));
+    controller.a().onTrue(indexer.RunIndexerF(1.2));
+
+    // controller.a().onTrue(shooter.FireCommand(1.5));
     // do i need a stop button still?
   }
 
@@ -224,14 +208,14 @@ public class RobotContainer {
   //   return autoChooser.get();
   // }
 
-  private void configureFuelSim() {
-    fuelSim.spawnStartingFuel();
-    fuelSim.registerRobot(
-        0.889, // L to R
-        0.8128, // F to B
-        0.1524, // bumper height
-        drive::getPose,
-        drive::getFieldRelativeSpeeds);
-    fuelSim.setSubticks(20);
-  }
+  // private void configureFuelSim() {
+  //   fuelSim.spawnStartingFuel();
+  //   fuelSim.registerRobot(
+  //       0.889, // L to R
+  //       0.8128, // F to B
+  //       0.1524, // bumper height
+  //       drive::getPose,
+  //       drive::getFieldRelativeSpeeds);
+  //   fuelSim.setSubticks(20);
+  // }
 }

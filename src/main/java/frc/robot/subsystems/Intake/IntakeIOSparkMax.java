@@ -32,7 +32,7 @@ public class IntakeIOSparkMax implements IntakeIO {
     PEncoder = Pos.getEncoder();
     config = new SparkMaxConfig();
     config
-        .smartCurrentLimit(10)
+        .smartCurrentLimit(40)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(
             0.1); // Unsure if I need to make a new Config or can i change it then apply again?
