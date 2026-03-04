@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -56,7 +59,7 @@ public class Shooter extends SubsystemBase {
     ioMotor.RunVoltage(MotorVoltage);
   }
 
-  public Command FireCommand(double Distance) {
-    return this.run(() -> FireVoid(Distance));
+  public Command FireCommand(DoubleSupplier Distance) {
+    return this.run(() -> FireVoid(Distance.getAsDouble()));
   }
 }
