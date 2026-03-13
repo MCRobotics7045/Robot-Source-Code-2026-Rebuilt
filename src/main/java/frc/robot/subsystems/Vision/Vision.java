@@ -17,6 +17,7 @@ import frc.robot.Constants.CameraConstants;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -25,9 +26,11 @@ public class Vision extends SubsystemBase {
 
   private final VisionIOinputsAutoLogged[] inputs;
   private final VisionConsumer consumer;
+  private final Supplier<Pose2d> poseSupplier;
   private final Alert[] disconnectedAlerts;
 
-  public Vision(VisionConsumer consumer, VisionIO... io) {
+  public Vision(VisionConsumer consumer, Supplier<Pose2d> poseSupplier, VisionIO... io) {
+    this.poseSupplier = poseSupplier;
     this.io = io;
     this.consumer = consumer;
 
@@ -103,6 +106,10 @@ public class Vision extends SubsystemBase {
       Logger.recordOutput(
           "Vision/Camera" + cameraIndex + "/RejectedPoses", rejectedPoses.toArray(new Pose3d[0]));
     }
+
+    Logger.recordOutput(
+        "Vision/CameraL/Pose",
+        new Pose3d(poseSupplier.get()).transformBy(CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT));
   }
 
   @FunctionalInterface

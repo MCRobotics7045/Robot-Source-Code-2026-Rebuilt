@@ -22,6 +22,7 @@ public class IntakeIOSparkMax implements IntakeIO {
   private final SparkClosedLoopController controller;
   private final RelativeEncoder DEncoder;
   private final RelativeEncoder PEncoder;
+  private boolean zerDebug = false;
   private double DesiredAngle;
 
   @SuppressWarnings("removal")
@@ -38,13 +39,8 @@ public class IntakeIOSparkMax implements IntakeIO {
             0.1); // Unsure if I need to make a new Config or can i change it then apply again?
     Drive.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // pOS CONFIG
-    config.closedLoop.p(0.5).i(0).d(0);
-    config
-        .closedLoop
-        .maxMotion
-        .maxAcceleration(1000)
-        .cruiseVelocity(10000)
-        .allowedProfileError(0.1);
+    config.closedLoop.p(1).i(0.001).d(0);
+    config.closedLoop.maxMotion.allowedProfileError(0.1).cruiseVelocity(1000).maxAcceleration(1000);
     Pos.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     controller = Pos.getClosedLoopController();
   }
@@ -57,18 +53,23 @@ public class IntakeIOSparkMax implements IntakeIO {
     inputs.DMotorRPM = DEncoder.getVelocity();
     inputs.DappliedVolts = Drive.getAppliedOutput() * Drive.getBusVoltage();
     inputs.DesiredAngle = DesiredAngle;
+    inputs.ZeroCommand = zerDebug;
   }
 
   @Override
-  public void setIntakePostion(double ang) {
-    double motorRotations = Units.degreesToRotations(ang) * 20.0;
-    controller.setSetpoint(motorRotations, SparkBase.ControlType.kMAXMotionPositionControl);
-    DesiredAngle = ang;
+  public void setIntakePostion(double angRads) {
+    controller.setSetpoint(angRads, SparkBase.ControlType.kMAXMotionPositionControl);
+    DesiredAngle = angRads;
   }
 
   public void ZeroIntake() {
     PEncoder.setPosition(0);
     DesiredAngle = 0;
+    if (zerDebug) {
+      zerDebug = !zerDebug;
+    } else {
+      zerDebug = !zerDebug;
+    }
   }
 
   @Override

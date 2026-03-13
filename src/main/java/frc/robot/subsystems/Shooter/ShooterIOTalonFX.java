@@ -13,13 +13,13 @@ import edu.wpi.first.math.MathUtil;
 /** Add your docs here. */
 public class ShooterIOTalonFX implements ShooterIO {
 
-  private final TalonFX motorL;
-  private final TalonFX motorR;
+  private final TalonFX motor;
+  // private final TalonFX motorR;
   private final TalonFXConfiguration motorConfig;
 
-  public ShooterIOTalonFX(int lMotorID, int rMotorID) {
-    motorL = new TalonFX(lMotorID);
-    motorR = new TalonFX(rMotorID);
+  public ShooterIOTalonFX(int lMotorID) {
+    motor = new TalonFX(lMotorID);
+    // motorR = new TalonFX(rMotorID);
 
     motorConfig = new TalonFXConfiguration();
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -30,29 +30,29 @@ public class ShooterIOTalonFX implements ShooterIO {
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     ///////////////////////////////////////////////////////////////
 
-    motorL.getConfigurator().apply(motorConfig);
-    motorR.getConfigurator().apply(motorConfig);
+    motor.getConfigurator().apply(motorConfig);
+    // motorR.getConfigurator().apply(motorConfig);
   }
 
   @Override
   public void updateInputs(ShooterIOinputs inputs) {
-    inputs.lMotorRPM = motorL.getVelocity().getValueAsDouble();
-    inputs.rMotorRPM = motorR.getVelocity().getValueAsDouble();
-    inputs.lMotorVolts = motorL.getSupplyVoltage().getValueAsDouble();
-    inputs.lMotorAmp = motorL.getSupplyCurrent().getValueAsDouble();
-    inputs.rMotorVolts = motorR.getSupplyVoltage().getValueAsDouble();
-    inputs.rMotorAmp = motorR.getSupplyCurrent().getValueAsDouble();
+    inputs.lMotorRPM = motor.getVelocity().getValueAsDouble();
+    // inputs.rMotorRPM = motorR.getVelocity().getValueAsDouble();
+    inputs.lMotorVolts = motor.getSupplyVoltage().getValueAsDouble();
+    inputs.lMotorAmp = motor.getSupplyCurrent().getValueAsDouble();
+    // inputs.rMotorVolts = motorR.getSupplyVoltage().getValueAsDouble();
+    // inputs.rMotorAmp = motorR.getSupplyCurrent().getValueAsDouble();
   }
 
   @Override
   public void RunVoltage(double Voltage) {
-    motorL.setVoltage(MathUtil.clamp(Voltage, -12.0, 12.0));
-    motorR.setVoltage(MathUtil.clamp(-Voltage, -12.0, 12.0));
+    motor.setVoltage(MathUtil.clamp(Voltage, -12.0, 12.0));
+    // motorR.setVoltage(MathUtil.clamp(-Voltage, -12.0, 12.0));
   }
 
   @Override
   public void StopMotor() {
-    motorL.stopMotor();
-    motorR.stopMotor();
+    motor.stopMotor();
+    // motorR.stopMotor();
   }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Intake;
 
+import static frc.robot.Constants.MotorConstants.*;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -11,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,6 +30,7 @@ public class Intake extends SubsystemBase {
   double offset;
   Rotation3d hingeRotation;
   Pose3d armPose;
+  private boolean isDeployed = false;
 
   public Intake(IntakeIO io) {
     this.io = io;
@@ -42,8 +46,44 @@ public class Intake extends SubsystemBase {
     mechPub.set(armPose);
   }
 
-  public Command SetIntakeAngle(double Angle) {
-    return this.run(() -> io.setIntakePostion(Angle));
+  public Command ToggleIntakeComand(double angle, double angle2) {
+    return this.runOnce(
+        () -> {
+          if (isDeployed) {
+            io.setIntakePostion(angle);
+          } else {
+            io.setIntakePostion(angle2);
+          }
+          isDeployed = !isDeployed; // Flip the state
+        });
+  }
+
+  public Command SetIntakeCommand(double Angle) {
+    return this.runOnce(() -> io.setIntakePostion(Angle));
+  }
+
+  public Command ReturnIntake() {
+    isDeployed = false;
+    return this.run(() -> io.setIntakePostion(IntakeStowed));
+  }
+
+  public Command IntakeCommand(double OutAngle, double IntakeSpeed) {
+    if (isDeployed) {
+      return RunIntakeShaft(IntakeSpeed);
+    } else {
+      isDeployed = true;
+      return Commands.run(() -> io.setIntakePostion(OutAngle))
+          .alongWith(RunIntakeShaft(IntakeSpeed));
+    }
+  }
+
+  public Command ShutterBalls(double IntakeAngle, double MaxShutter, double TimeBetween) {
+    return Commands.repeatingSequence(
+            Commands.runOnce(() -> io.setIntakePostion(IntakeAngle)),
+            Commands.waitSeconds(TimeBetween),
+            Commands.runOnce(() -> io.setIntakePostion(MaxShutter)),
+            Commands.waitSeconds(TimeBetween))
+        .finallyDo(interrupted -> io.setIntakePostion(IntakeCollect));
   }
 
   public Command RunIntakeShaft(double speed) {

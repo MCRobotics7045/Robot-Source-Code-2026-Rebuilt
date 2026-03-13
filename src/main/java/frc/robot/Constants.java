@@ -50,14 +50,14 @@ public final class Constants {
     public static final Transform3d CAMERA_L_TRANSFORM_TO_ROBOT =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(-3.010),
-                Units.inchesToMeters(13.027),
-                Units.inchesToMeters(19.431)),
+                Units.inchesToMeters(-11.559285), // FWD and BACK
+                Units.inchesToMeters(9.888952), // LEFT AND RIGHT
+                Units.inchesToMeters(19.046643)),
             new Rotation3d(0.0, Units.degreesToRadians(-25), Units.degreesToRadians(-10)));
 
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(5, 5, 8);
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1, 1, 2);
 
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.3, 0.3, 0.5);
   }
 
   public static final class ShooterConstants {
@@ -72,5 +72,17 @@ public final class Constants {
       kDistanceToVoltageMap.put(1.0, 6.0);
       kDistanceToAngleMap.put(1.0, 50.0);
     }
+  }
+
+  public static final class MotorConstants {
+    // Intake POS
+    public static final double IntakeStowed = 0; // stowed postion (should be 0)
+    public static final double IntakeCollect = 4.5; // Intake Out Position
+    public static final double MaxShutter = 3; // Max Shutter angle(proably could be less)
+
+    // Intake Drive
+    public static final double IntakeMaxSpeed = 0.5; // Speed of roller wheels
+    public static final double ShutterSpeed =
+        0.5; // How fast to mvoe between each angle for shutter
   }
 }

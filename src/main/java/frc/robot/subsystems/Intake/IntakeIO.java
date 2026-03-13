@@ -16,6 +16,7 @@ public interface IntakeIO {
     public double DappliedVolts = 0.0;
     public double DAmprege = 0.0;
     public double DesiredAngle = 0.0;
+    public boolean ZeroCommand = false;
   }
 
   default void updateInputs(IntakeIoinputs inputs) {}
