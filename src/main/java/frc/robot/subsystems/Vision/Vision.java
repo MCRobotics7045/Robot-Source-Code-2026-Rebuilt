@@ -4,12 +4,6 @@
 
 package frc.robot.subsystems.Vision;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,6 +14,10 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
 
@@ -28,6 +26,12 @@ public class Vision extends SubsystemBase {
   private final VisionIOinputsAutoLogged[] inputs;
   private final VisionConsumer consumer;
   private final Alert[] disconnectedAlerts;
+
+  private final List<Pose3d> tagPoses = new LinkedList<>();
+  private final List<Pose3d> robotPoses = new LinkedList<>();
+  private final List<Pose3d> acceptedPoses = new LinkedList<>();
+  private final List<Pose3d> rejectedPoses = new LinkedList<>();
+  private Matrix<N3, N1> stdDevs = CameraConstants.kSingleTagStdDevs;
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.io = io;
@@ -53,11 +57,10 @@ public class Vision extends SubsystemBase {
 
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
       disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].CameraConnection);
-      List<Pose3d> tagPoses = new LinkedList<>();
-      List<Pose3d> robotPoses = new LinkedList<>();
-      List<Pose3d> acceptedPoses = new LinkedList<>();
-      List<Pose3d> rejectedPoses = new LinkedList<>();
-
+      tagPoses.clear();
+      robotPoses.clear();
+      acceptedPoses.clear();
+      rejectedPoses.clear();
       for (int tagId : inputs[cameraIndex].tagID) {
         Optional<Pose3d> tagPose = CameraConstants.aprilFeild.getTagPose(tagId);
         tagPose.ifPresent(tagPoses::add);
@@ -81,7 +84,7 @@ public class Vision extends SubsystemBase {
 
         acceptedPoses.add(observation.pose());
 
-        Matrix<N3, N1> stdDevs = CameraConstants.kSingleTagStdDevs;
+        
         if (observation.tagCount() > 1) {
           stdDevs = CameraConstants.kMultiTagStdDevs;
         }
@@ -90,8 +93,7 @@ public class Vision extends SubsystemBase {
           stdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         } else {
           stdDevs =
-              stdDevs.times(1 + (observation.avgTagDistance() * observation.avgTagDistance() /
-    30));
+              stdDevs.times(1 + (observation.avgTagDistance() * observation.avgTagDistance() / 30));
         }
 
         consumer.accept(observation.pose().toPose2d(), observation.time(), stdDevs);
@@ -102,11 +104,9 @@ public class Vision extends SubsystemBase {
       Logger.recordOutput(
           "Vision/Camera" + cameraIndex + "/RobotPoses", robotPoses.toArray(new Pose3d[0]));
       Logger.recordOutput(
-          "Vision/Camera" + cameraIndex + "/AcceptedPoses", acceptedPoses.toArray(new
-    Pose3d[0]));
+          "Vision/Camera" + cameraIndex + "/AcceptedPoses", acceptedPoses.toArray(new Pose3d[0]));
       Logger.recordOutput(
-          "Vision/Camera" + cameraIndex + "/RejectedPoses", rejectedPoses.toArray(new
-    Pose3d[0]));
+          "Vision/Camera" + cameraIndex + "/RejectedPoses", rejectedPoses.toArray(new Pose3d[0]));
     }
   }
 
