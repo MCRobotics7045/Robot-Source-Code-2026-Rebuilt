@@ -57,6 +57,10 @@ public class VisionIOReal implements VisionIO {
         }
         tagIds.addAll(multiTargetPNPResult.fiducialIDsUsed);
 
+        short[] multiTagIDs = new short[multiTargetPNPResult.fiducialIDsUsed.size()];
+        for (int j = 0; j < multiTagIDs.length; j++)
+          multiTagIDs[j] = multiTargetPNPResult.fiducialIDsUsed.get(j);
+
         poseObservations.add(
             new PoseObv(
                 result.getTimestampSeconds(),
@@ -64,7 +68,7 @@ public class VisionIOReal implements VisionIO {
                 multiTargetPNPResult.estimatedPose.ambiguity,
                 multiTargetPNPResult.fiducialIDsUsed.size(),
                 TrargetDist / result.targets.size(),
-                multiTargetPNPResult.fiducialIDsUsed));
+                multiTagIDs));
       } else if (!result.targets.isEmpty()) {
         PhotonTrackedTarget target = result.targets.get(0);
 
@@ -88,7 +92,7 @@ public class VisionIOReal implements VisionIO {
                   target.poseAmbiguity,
                   1,
                   CameraToTarget.getTranslation().getNorm(),
-                  List.of((short) target.getFiducialId())));
+                  new short[] {(short) target.getFiducialId()}));
         }
       }
     }

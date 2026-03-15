@@ -13,7 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -72,18 +72,15 @@ public class Intake extends SubsystemBase {
       return RunIntakeShaft(IntakeSpeed);
     } else {
       isDeployed = true;
-      return Commands.run(() -> io.setIntakePostion(OutAngle))
-          .alongWith(RunIntakeShaft(IntakeSpeed));
+      // return run(() -> io.setIntakePostion(OutAngle)).alongWith(RunIntakeShaft(IntakeSpeed));
+
+      return new SequentialCommandGroup(
+          run(() -> io.setIntakePostion(OutAngle)).withTimeout(2), RunIntakeShaft(IntakeSpeed));
     }
   }
 
-  public Command ShutterBalls(double IntakeAngle, double MaxShutter, double TimeBetween) {
-    return Commands.repeatingSequence(
-            Commands.runOnce(() -> io.setIntakePostion(IntakeAngle)),
-            Commands.waitSeconds(TimeBetween),
-            Commands.runOnce(() -> io.setIntakePostion(MaxShutter)),
-            Commands.waitSeconds(TimeBetween))
-        .finallyDo(interrupted -> io.setIntakePostion(IntakeCollect));
+  public Command ShutterBalls(double MaxShutter) {
+    return this.run(() -> io.setIntakePostion(MaxShutter));
   }
 
   public Command RunIntakeShaft(double speed) {
@@ -91,7 +88,7 @@ public class Intake extends SubsystemBase {
   }
 
   public Command StopIntakeShaft() {
-    return this.startEnd(() -> io.stopIntakeD(), () -> io.stopIntakeD());
+    return this.runOnce(() -> io.stopIntakeD());
   }
 
   public Command ZeroIntake() {

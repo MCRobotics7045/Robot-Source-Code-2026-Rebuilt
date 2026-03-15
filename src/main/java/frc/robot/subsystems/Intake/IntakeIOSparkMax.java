@@ -33,14 +33,20 @@ public class IntakeIOSparkMax implements IntakeIO {
     PEncoder = Pos.getEncoder();
     config = new SparkMaxConfig();
     config
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(60)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(
             0.1); // Unsure if I need to make a new Config or can i change it then apply again?
     Drive.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // pOS CONFIG
-    config.closedLoop.p(1).i(0.001).d(0);
-    config.closedLoop.maxMotion.allowedProfileError(0.1).cruiseVelocity(1000).maxAcceleration(1000);
+    config.closedLoop.p(1).i(0.002).d(0.48);
+    config
+        .closedLoop
+        .maxMotion
+        .allowedProfileError(0.1)
+        .cruiseVelocity(10000)
+        
+        .maxAcceleration(1000);
     Pos.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     controller = Pos.getClosedLoopController();
   }
@@ -58,6 +64,11 @@ public class IntakeIOSparkMax implements IntakeIO {
 
   @Override
   public void setIntakePostion(double angRads) {
+    double current = Pos.getOutputCurrent();
+    if (current > 35 && Math.abs(Pos.getEncoder().getVelocity()) < 0.1) {
+      Pos.stopMotor();
+      return;
+    }
     controller.setSetpoint(angRads, SparkBase.ControlType.kMAXMotionPositionControl);
     DesiredAngle = angRads;
   }

@@ -80,7 +80,7 @@ public class VisionIOSim implements VisionIO {
                     target.getPoseAmbiguity(),
                     1,
                     cameraToTarget.getTranslation().getNorm(),
-                    List.of((short) target.getFiducialId())));
+                    new short[] {(short) target.getFiducialId()}));
           }
         }
       }

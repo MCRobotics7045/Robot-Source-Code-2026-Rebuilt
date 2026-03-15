@@ -24,6 +24,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerIO;
+import frc.robot.subsystems.Indexer.IndexerIOSparkMax;
 import frc.robot.subsystems.Intake.*;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.ShooterIO;
@@ -33,8 +34,10 @@ import frc.robot.subsystems.Vision.VisionIOReal;
 import frc.robot.subsystems.Vision.VisionIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.util.FuelSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -63,37 +66,38 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // REAL Drive
-        // drive =
-        //     new Drive(
-        //         new GyroIOPigeon2(),
-        //         new ModuleIOTalonFX(TunerConstants.FrontLeft),
-        //         new ModuleIOTalonFX(TunerConstants.FrontRight),
-        //         new ModuleIOTalonFX(TunerConstants.BackLeft),
-        //         new ModuleIOTalonFX(TunerConstants.BackRight));
-
-        // At Home Drive
         drive =
             new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                new ModuleIOTalonFX(TunerConstants.FrontRight),
+                new ModuleIOTalonFX(TunerConstants.BackLeft),
+                new ModuleIOTalonFX(TunerConstants.BackRight));
 
-        intake = new Intake(new IntakeIOSparkMax(32, 30)); // 37 38
+        // At Home Drive
+        // drive =
+        //     new Drive(
+        //         new GyroIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {});
 
-        // indexer = new Indexer(new IndexerIOSparkMax(33));
-        indexer = new Indexer(new IndexerIO() {});
+        intake = new Intake(new IntakeIOSparkMax(37, 38)); // 37 38
+
+        indexer = new Indexer(new IndexerIOSparkMax(33));
+        // indexer = new Indexer(new IndexerIO() {});
         // REAL Vision
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                drive::getPose,
                 new VisionIOReal(
                     "Arducam_OV9281_USB_Camera", CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT));
 
         // At Home Vision
-        // vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
 
         // shooter = new Shooter(new ShooterIOTalonFX(20), new ShooterIOActuators());
         shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
@@ -112,7 +116,6 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                drive::getPose,
                 new VisionIOSim(drive::getPose, CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
                 new VisionIOSim(drive::getPose, CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
         shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
@@ -131,9 +134,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
-        vision =
-            new Vision(
-                drive::addVisionMeasurement, drive::getPose, new VisionIO() {}, new VisionIO() {});
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
 
         shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
         break;
@@ -162,15 +163,15 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
 
-    // // Lock to 0° when A button is held
-    jackController
-        .square()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -jackController.getLeftY(),
-                () -> -jackController.getLeftX(),
-                () -> Rotation2d.kZero));
+    // // // Lock to 0° when A button is held
+    // jackController
+    //     .square()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -jackController.getLeftY(),
+    //             () -> -jackController.getLeftX(),
+    //             () -> Rotation2d.kZero));
 
     // // Switch to X pattern when X button is pressed
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -222,8 +223,9 @@ public class RobotContainer {
 
     jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
     jackController.L1().onTrue(intake.ReturnIntake());
-
-    jackController.R1().whileTrue(intake.ShutterBalls(IntakeCollect, MaxShutter, ShutterSpeed));
+    jackController.square().onTrue(intake.ZeroIntake());
+    jackController.R1().whileTrue(intake.ShutterBalls(MaxShutter));
+    jackController.triangle().whileTrue(intake.RunIntakeShaft(0.5));
     // do i need a stop button still?
   }
 
