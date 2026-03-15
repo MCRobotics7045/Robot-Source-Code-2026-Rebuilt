@@ -24,20 +24,18 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerIO;
-import frc.robot.subsystems.Indexer.IndexerIOSparkMax;
 import frc.robot.subsystems.Intake.*;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.ShooterIO;
+import frc.robot.subsystems.Shooter.ShooterIOHoodMotor;
+import frc.robot.subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.Vision.Vision;
 import frc.robot.subsystems.Vision.VisionIO;
-import frc.robot.subsystems.Vision.VisionIOReal;
 import frc.robot.subsystems.Vision.VisionIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.util.FuelSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -62,45 +60,46 @@ public class RobotContainer {
   public RobotContainer() {
     fuelSim = new FuelSim();
     SmartDashboard.putNumber("Hood Angle", 0);
-
+    SmartDashboard.putNumber("Kp", 0);
+    SmartDashboard.putNumber("Ki", 0);
+    SmartDashboard.putNumber("Kd", 0);
     switch (Constants.currentMode) {
       case REAL:
         // REAL Drive
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
-
-        // At Home Drive
         // drive =
         //     new Drive(
-        //         new GyroIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {});
+        //         new GyroIOPigeon2(),
+        //         new ModuleIOTalonFX(TunerConstants.FrontLeft),
+        //         new ModuleIOTalonFX(TunerConstants.FrontRight),
+        //         new ModuleIOTalonFX(TunerConstants.BackLeft),
+        //         new ModuleIOTalonFX(TunerConstants.BackRight));
 
-        intake = new Intake(new IntakeIOSparkMax(37, 38)); // 37 38
+        // At Home Drive
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
 
-        indexer = new Indexer(new IndexerIOSparkMax(33));
-        // indexer = new Indexer(new IndexerIO() {});
+        // intake = new Intake(new IntakeIOSparkMax(37, 38)); // 37 38
+        intake = new Intake(new IntakeIO() {});
+        // indexer = new Indexer(new IndexerIOSparkMax(33));
+        indexer = new Indexer(new IndexerIO() {});
         // REAL Vision
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOReal(
-                    "Arducam_OV9281_USB_Camera", CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT));
-
-        // At Home Vision
         // vision =
         //     new Vision(
-        //         drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        //         drive::addVisionMeasurement,
+        //         new VisionIOReal(
+        //             "Arducam_OV9281_USB_Camera", CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT));
 
-        // shooter = new Shooter(new ShooterIOTalonFX(20), new ShooterIOActuators());
-        shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
+        // At Home Vision
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+
+        shooter =
+            new Shooter(new ShooterIOTalonFX(20), new ShooterIO() {}, new ShooterIOHoodMotor());
+        // shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {}, new ShooterIOHoodMotor());
         break;
 
       case SIM:
@@ -118,7 +117,7 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOSim(drive::getPose, CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
                 new VisionIOSim(drive::getPose, CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
-        shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
+        shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {}, new ShooterIO() {});
         configureFuelSim();
         fuelSim.enableAirResistance();
         fuelSim.start();
@@ -136,7 +135,7 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
 
-        shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
+        shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {}, new ShooterIO() {});
         break;
     }
 
@@ -224,9 +223,15 @@ public class RobotContainer {
     jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
     jackController.L1().onTrue(intake.ReturnIntake());
     jackController.square().onTrue(intake.ZeroIntake());
-    jackController.R1().whileTrue(intake.ShutterBalls(MaxShutter));
+    jackController.R1().whileTrue(shooter.hoodPidFromDashboard());
     jackController.triangle().whileTrue(intake.RunIntakeShaft(0.5));
     // do i need a stop button still?
+
+    // Will Commands — Hood
+    // While A is held, PID tracks the "Hood Angle" SmartDashboard value (0–100 → 0–1.2 enc rot)
+
+    // B instantly stops the hood
+
   }
 
   /**

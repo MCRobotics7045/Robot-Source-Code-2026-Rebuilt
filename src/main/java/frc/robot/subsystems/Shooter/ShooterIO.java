@@ -36,4 +36,9 @@ public interface ShooterIO {
   default void VelocityPID() {}
 
   default void StopMotor() {}
+
+  // Hood motor methods
+  default void setHoodVoltage(double volts) {}
+
+  default void resetHoodEncoder() {}
 }
