@@ -27,6 +27,12 @@ public class Vision extends SubsystemBase {
   private final VisionConsumer consumer;
   private final Alert[] disconnectedAlerts;
 
+  private final List<Pose3d> tagPoses = new LinkedList<>();
+  private final List<Pose3d> robotPoses = new LinkedList<>();
+  private final List<Pose3d> acceptedPoses = new LinkedList<>();
+  private final List<Pose3d> rejectedPoses = new LinkedList<>();
+  private Matrix<N3, N1> stdDevs = CameraConstants.kSingleTagStdDevs;
+
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.io = io;
     this.consumer = consumer;
@@ -51,11 +57,10 @@ public class Vision extends SubsystemBase {
 
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
       disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].CameraConnection);
-      List<Pose3d> tagPoses = new LinkedList<>();
-      List<Pose3d> robotPoses = new LinkedList<>();
-      List<Pose3d> acceptedPoses = new LinkedList<>();
-      List<Pose3d> rejectedPoses = new LinkedList<>();
-
+      tagPoses.clear();
+      robotPoses.clear();
+      acceptedPoses.clear();
+      rejectedPoses.clear();
       for (int tagId : inputs[cameraIndex].tagID) {
         Optional<Pose3d> tagPose = CameraConstants.aprilFeild.getTagPose(tagId);
         tagPose.ifPresent(tagPoses::add);
@@ -79,7 +84,7 @@ public class Vision extends SubsystemBase {
 
         acceptedPoses.add(observation.pose());
 
-        Matrix<N3, N1> stdDevs = CameraConstants.kSingleTagStdDevs;
+        
         if (observation.tagCount() > 1) {
           stdDevs = CameraConstants.kMultiTagStdDevs;
         }
