@@ -46,6 +46,14 @@ public class Vision extends SubsystemBase {
     for (int i = 0; i < inputs.length; i++) {
       disconnectedAlerts[i] = new Alert("Vision Camera" + i + "Disconnected.", AlertType.kWarning);
     }
+
+    // Log camera poses relative to robot for visualization in AdvantageScope
+    Logger.recordOutput(
+        "Vision/CameraL/PoseOnRobot",
+        new Pose3d().transformBy(CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT));
+    Logger.recordOutput(
+        "Vision/CameraR/PoseOnRobot",
+        new Pose3d().transformBy(CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
   }
 
   @Override
@@ -84,7 +92,6 @@ public class Vision extends SubsystemBase {
 
         acceptedPoses.add(observation.pose());
 
-        
         if (observation.tagCount() > 1) {
           stdDevs = CameraConstants.kMultiTagStdDevs;
         }

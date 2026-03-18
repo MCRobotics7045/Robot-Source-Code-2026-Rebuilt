@@ -42,18 +42,24 @@ public final class Constants {
     public static final Transform3d CAMERA_R_TRANSFORM_TO_ROBOT =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(-3.010),
-                Units.inchesToMeters(-13.027),
-                Units.inchesToMeters(19.431)),
-            new Rotation3d(10.0, Units.degreesToRadians(-25), Units.degreesToRadians(10)));
+                Units.inchesToMeters(-7.673),
+                Units.inchesToMeters(-8.980265),
+                Units.inchesToMeters(17.289050)),
+            new Rotation3d(
+                Units.degreesToRadians(0),
+                Units.degreesToRadians(-26.805957),
+                Units.degreesToRadians(-170)));
 
     public static final Transform3d CAMERA_L_TRANSFORM_TO_ROBOT =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(-11.559285), // FWD and BACK
-                Units.inchesToMeters(9.888952), // LEFT AND RIGHT
-                Units.inchesToMeters(19.046643)),
-            new Rotation3d(0.0, Units.degreesToRadians(-25), Units.degreesToRadians(-10)));
+                Units.inchesToMeters(-7.673), // FWD and BACK
+                Units.inchesToMeters(8.980265), // LEFT AND RIGHT
+                Units.inchesToMeters(17.289050)),
+            new Rotation3d(
+                Units.degreesToRadians(0),
+                Units.degreesToRadians(-26.805957),
+                Units.degreesToRadians(-190)));
 
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1, 1, 2);
 
@@ -67,10 +73,10 @@ public final class Constants {
         new InterpolatingDoubleTreeMap();
 
     static {
-      kDistanceToVoltageMap.put(2.0, 4.0);
-      kDistanceToAngleMap.put(2.0, 40.0);
+      kDistanceToVoltageMap.put(2.0, -4.0);
+      kDistanceToAngleMap.put(2.0, 0.5);
       kDistanceToVoltageMap.put(1.0, 6.0);
-      kDistanceToAngleMap.put(1.0, 50.0);
+      kDistanceToAngleMap.put(1.0, 1.0);
     }
   }
 

@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 
 public class ShooterIOHoodMotor implements ShooterIO {
 
@@ -19,8 +20,15 @@ public class ShooterIOHoodMotor implements ShooterIO {
   public static final double ENCODER_MIN = 0.0;
   public static final double ENCODER_MAX = 1.2;
 
+  private static final double kP = 1.0;
+  private static final double kI = 0.0;
+  private static final double kD = 0.0;
+  private static final double kG = 0.5;
+  private static final double TOLERANCE = 0.02; // rotations
+
   private final SparkMax motor;
   private final RelativeEncoder encoder;
+  private final PIDController pid;
 
   @SuppressWarnings("removal")
   public ShooterIOHoodMotor() {
@@ -31,21 +39,32 @@ public class ShooterIOHoodMotor implements ShooterIO {
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder = motor.getEncoder();
+
+    pid = new PIDController(kP, kI, kD);
+    pid.setTolerance(TOLERANCE);
   }
 
   @Override
   public void updateInputs(ShooterIOinputs inputs) {
-    inputs.HoodAngle = MathUtil.clamp(encoder.getPosition(), ENCODER_MIN, ENCODER_MAX);
+    inputs.MotorHoodAngle = encoder.getPosition();
   }
 
   @Override
-  public void setHoodVoltage(double volts) {
-    double pos = MathUtil.clamp(encoder.getPosition(), ENCODER_MIN, ENCODER_MAX);
-    if ((pos <= ENCODER_MIN && volts < 0) || (pos >= ENCODER_MAX && volts > 0)) {
+  public void setHoodPosition(double targetRotations) {
+    double clampedTarget = MathUtil.clamp(targetRotations, ENCODER_MIN, ENCODER_MAX);
+    double pos = encoder.getPosition();
+    double pidOutput = pid.calculate(pos, clampedTarget);
+    double output = MathUtil.clamp(pidOutput + kG, -12.0, 12.0);
+    if ((pos <= ENCODER_MIN && output < 0) || (pos >= ENCODER_MAX && output > 0)) {
       motor.stopMotor();
       return;
     }
-    motor.setVoltage(volts);
+    motor.setVoltage(output);
+  }
+
+  @Override
+  public boolean isHoodAtSetpoint() {
+    return pid.atSetpoint();
   }
 
   @Override

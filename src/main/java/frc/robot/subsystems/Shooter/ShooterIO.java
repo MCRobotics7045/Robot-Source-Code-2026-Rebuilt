@@ -11,7 +11,7 @@ public interface ShooterIO {
   @AutoLog
   public static class ShooterIOinputs {
     public double LinearPOSMM = 0.0;
-    public double HoodAngle = 0.0;
+    public double MotorHoodAngle = 0.0;
     public double RequestedPostionPercent = 0.0;
     public double lMotorRPM = 0.0;
     public double rMotorRPM = 0.0;
@@ -39,6 +39,12 @@ public interface ShooterIO {
 
   // Hood motor methods
   default void setHoodVoltage(double volts) {}
+
+  default void setHoodPosition(double targetRotations) {}
+
+  default boolean isHoodAtSetpoint() {
+    return false;
+  }
 
   default void resetHoodEncoder() {}
 }

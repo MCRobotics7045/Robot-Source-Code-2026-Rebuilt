@@ -97,8 +97,7 @@ public class RobotContainer {
         // At Home Vision
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
 
-        shooter =
-            new Shooter(new ShooterIOTalonFX(20), new ShooterIO() {}, new ShooterIOHoodMotor());
+        shooter = new Shooter(new ShooterIOTalonFX(20), new ShooterIOHoodMotor());
         // shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {}, new ShooterIOHoodMotor());
         break;
 
@@ -117,7 +116,7 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOSim(drive::getPose, CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
                 new VisionIOSim(drive::getPose, CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
-        shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {}, new ShooterIO() {});
+        shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
         configureFuelSim();
         fuelSim.enableAirResistance();
         fuelSim.start();
@@ -135,7 +134,7 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
 
-        shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {}, new ShooterIO() {});
+        shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
         break;
     }
 
@@ -223,8 +222,10 @@ public class RobotContainer {
     jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
     jackController.L1().onTrue(intake.ReturnIntake());
     jackController.square().onTrue(intake.ZeroIntake());
-    jackController.R1().whileTrue(shooter.hoodPidFromDashboard());
+
+    jackController.R1().whileTrue(shooter.FireCommand(2.0));
     jackController.triangle().whileTrue(intake.RunIntakeShaft(0.5));
+
     // do i need a stop button still?
 
     // Will Commands — Hood
