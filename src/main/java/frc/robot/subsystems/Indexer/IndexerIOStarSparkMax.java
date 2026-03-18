@@ -12,13 +12,13 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class IndexerIOSparkMax implements IndexerIO {
+public class IndexerIOStarSparkMax implements IndexerIO {
   private final SparkMax spark;
   private final SparkMaxConfig config;
   private final RelativeEncoder sparkEncoder;
 
   @SuppressWarnings("removal")
-  public IndexerIOSparkMax(int MotorID) {
+  public IndexerIOStarSparkMax(int MotorID) {
     spark = new SparkMax(MotorID, MotorType.kBrushless);
     config = new SparkMaxConfig();
     config.smartCurrentLimit(60).idleMode(IdleMode.kBrake).openLoopRampRate(0.1);
@@ -27,9 +27,9 @@ public class IndexerIOSparkMax implements IndexerIO {
   }
 
   public void updateInputs(IndexerIOInputs inputs) {
-    inputs.BeltMotorRPM = sparkEncoder.getVelocity();
-    inputs.BeltappliedVolts = spark.getAppliedOutput() * spark.getBusVoltage();
-    inputs.BeltcurrentAmps = spark.getOutputCurrent();
+    inputs.StarMotorRPM = sparkEncoder.getVelocity();
+    inputs.StarappliedVolts = spark.getAppliedOutput() * spark.getBusVoltage();
+    inputs.StarcurrentAmps = spark.getOutputCurrent();
   }
 
   @Override

@@ -10,9 +10,12 @@ public interface IndexerIO {
 
   @AutoLog
   public static class IndexerIOInputs {
-    public double MotorRPM = 0.0;
-    public double appliedVolts = 0.0;
-    public double currentAmps = 0.0;
+    public double BeltMotorRPM = 0.0;
+    public double BeltappliedVolts = 0.0;
+    public double BeltcurrentAmps = 0.0;
+    public double StarMotorRPM = 0.0;
+    public double StarappliedVolts = 0.0;
+    public double StarcurrentAmps = 0.0;
   }
 
   default void updateInputs(IndexerIOInputs inputs) {}

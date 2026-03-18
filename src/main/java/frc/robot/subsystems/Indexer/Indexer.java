@@ -11,11 +11,12 @@ import org.littletonrobotics.junction.Logger;
 public class Indexer extends SubsystemBase {
 
   private final IndexerIO io;
-
+  private final IndexerIO ioStar;
   private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
-  public Indexer(IndexerIO io) {
+  public Indexer(IndexerIO io, IndexerIO ioStar) {
     this.io = io;
+    this.ioStar = ioStar;
   }
 
   @Override
@@ -32,7 +33,15 @@ public class Indexer extends SubsystemBase {
     return this.startEnd(() -> io.RunIndexerB(0.3 * speedMulti), () -> io.StopIndexer());
   }
 
+  public Command RunStarWheels(double speedMulti) {
+    return this.startEnd(() -> ioStar.RunIndexerF(1), () -> io.StopIndexer());
+  }
+
   public Command StopIndexer() {
     return this.run(() -> io.StopIndexer());
+  }
+
+  public Command StopStar() {
+    return this.run(() -> ioStar.StopIndexer());
   }
 }

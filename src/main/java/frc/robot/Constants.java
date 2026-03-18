@@ -90,5 +90,13 @@ public final class Constants {
     public static final double IntakeMaxSpeed = 0.5; // Speed of roller wheels
     public static final double ShutterSpeed =
         0.5; // How fast to mvoe between each angle for shutter
+
+    // ID
+    public static final int ShooterMotorID = 20;
+    public static final int HoodMotorID = 35;
+    public static final int IntakePosMotorID = 37;
+    public static final int IntakeDrivMotorID = 38;
+    public static final int IndexerBeltMotorID = 33;
+    public static final int IndexerStarMotorID = 32;
   }
 }
