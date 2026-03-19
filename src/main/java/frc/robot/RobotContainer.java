@@ -68,7 +68,6 @@ public class RobotContainer {
   public RobotContainer() {
     fuelSim = new FuelSim();
 
-    
     SmartDashboard.putNumber("Hood Angle", 0);
     switch (Constants.currentMode) {
       case REAL:
@@ -86,15 +85,12 @@ public class RobotContainer {
             new Indexer(
                 new IndexerIOSparkMax(IndexerBeltMotorID),
                 new IndexerIOStarSparkMax(IndexerStarMotorID));
-        shooter =
-            new Shooter(new ShooterIOTalonFX(ShooterMotorID), new ShooterIOHoodMotor(HoodMotorID));
+        shooter = new Shooter(new ShooterIOTalonFX(ShooterMotorID), new ShooterIOHoodMotor());
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOReal(
-                    "Arducam_OV9281_USB_Camera", CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
-                new VisionIOReal(
-                    "Arducam_OV9281_USB_Camera", CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
+                new VisionIOReal("LeftCamera", CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
+                new VisionIOReal("RightCamera", CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
 
         // // At Home
         // drive =
@@ -195,14 +191,18 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-
-    jackController.R2().whileTrue(
-      DriveCommands.joystickDriveAtAngle(
-        drive,
-        () -> -jackController.getLeftY(),
-        () -> -jackController.getLeftX(), 
-        ()-> autoAlign.getRotationSpeed())
-    );
+    jackController
+        .R2()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -jackController.getLeftY(),
+                () -> -jackController.getLeftX(),
+                () -> {
+                  var robotPos = drive.getPose().getTranslation();
+                  var hubCenter = FieldConstants.getHubCenter(IsRed());
+                  return hubCenter.minus(robotPos).getAngle();
+                }));
 
     // Command Section
 
@@ -243,7 +243,7 @@ public class RobotContainer {
     jackController.square().onTrue(intake.ZeroIntake());
 
     jackController.R2().whileTrue(shooter.FireCommand(2.0));
-    jackController.triangle().whileTrue(intake.RunIntakeShaft(0.5));
+    jackController.triangle().whileTrue(indexer.RunBothIndexer(1));
 
     // do i need a stop button still?
 

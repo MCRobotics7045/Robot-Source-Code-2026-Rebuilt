@@ -22,6 +22,7 @@ public class Indexer extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+    ioStar.updateInputs(inputs);
     Logger.processInputs("Indexer Inputs", inputs);
   }
 
@@ -34,7 +35,19 @@ public class Indexer extends SubsystemBase {
   }
 
   public Command RunStarWheels(double speedMulti) {
-    return this.startEnd(() -> ioStar.RunIndexerF(1), () -> io.StopIndexer());
+    return this.startEnd(() -> ioStar.RunIndexerF(-1), () -> ioStar.StopIndexer());
+  }
+
+  public Command RunBothIndexer(double speedMulti) {
+    return this.startEnd(
+        () -> {
+          io.RunIndexerF(0.3 * speedMulti);
+          ioStar.RunIndexerF(-1);
+        },
+        () -> {
+          io.StopIndexer();
+          ioStar.StopIndexer();
+        });
   }
 
   public Command StopIndexer() {

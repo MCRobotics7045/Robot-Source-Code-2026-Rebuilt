@@ -16,6 +16,7 @@ import edu.wpi.first.math.controller.PIDController;
 
 public class ShooterIOHoodMotor implements ShooterIO {
 
+  public static final int HOOD_CAN_ID = 35;
   public static final double ENCODER_MIN = 0.0;
   public static final double ENCODER_MAX = 1.2;
 
@@ -30,7 +31,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
   private final PIDController pid;
 
   @SuppressWarnings("removal")
-  public ShooterIOHoodMotor(int HOOD_CAN_ID) {
+  public ShooterIOHoodMotor() {
     motor = new SparkMax(HOOD_CAN_ID, MotorType.kBrushless);
 
     SparkMaxConfig config = new SparkMaxConfig();

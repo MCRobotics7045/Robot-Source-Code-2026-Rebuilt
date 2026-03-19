@@ -42,24 +42,24 @@ public final class Constants {
     public static final Transform3d CAMERA_R_TRANSFORM_TO_ROBOT =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(-7.673),
-                Units.inchesToMeters(-8.980265),
-                Units.inchesToMeters(17.289050)),
+                Units.inchesToMeters(7.673), // FWD: positive = front of robot
+                Units.inchesToMeters(-8.980265), // RIGHT side (negative Y)
+                Units.inchesToMeters(17.289050)), // HEIGHT: on top
             new Rotation3d(
-                Units.degreesToRadians(0),
-                Units.degreesToRadians(-26.805957),
-                Units.degreesToRadians(-170)));
+                Units.degreesToRadians(-10), // ROLL: banked outward to the right
+                Units.degreesToRadians(-26.805957), // PITCH: angled up (negative = nose up)
+                Units.degreesToRadians(0))); // YAW: facing forward
 
     public static final Transform3d CAMERA_L_TRANSFORM_TO_ROBOT =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(-7.673), // FWD and BACK
-                Units.inchesToMeters(8.980265), // LEFT AND RIGHT
-                Units.inchesToMeters(17.289050)),
+                Units.inchesToMeters(7.673), // FWD: positive = front of robot
+                Units.inchesToMeters(8.980265), // LEFT side (positive Y)
+                Units.inchesToMeters(17.289050)), // HEIGHT: on top
             new Rotation3d(
-                Units.degreesToRadians(0),
-                Units.degreesToRadians(-26.805957),
-                Units.degreesToRadians(-190)));
+                Units.degreesToRadians(10), // ROLL: banked outward to the left
+                Units.degreesToRadians(-26.805957), // PITCH: angled up (negative = nose up)
+                Units.degreesToRadians(0))); // YAW: facing forward
 
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1, 1, 2);
 
@@ -83,7 +83,7 @@ public final class Constants {
   public static final class MotorConstants {
     // Intake POS
     public static final double IntakeStowed = 0; // stowed postion (should be 0)
-    public static final double IntakeCollect = 5.3; // Intake Out Position
+    public static final double IntakeCollect = 122; // Intake Out Position
     public static final double MaxShutter = 3; // Max Shutter angle(proably could be less)
 
     // Intake Drive
@@ -97,6 +97,6 @@ public final class Constants {
     public static final int IntakePosMotorID = 37;
     public static final int IntakeDrivMotorID = 38;
     public static final int IndexerBeltMotorID = 33;
-    public static final int IndexerStarMotorID = 32;
+    public static final int IndexerStarMotorID = 31;
   }
 }
