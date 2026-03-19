@@ -47,7 +47,7 @@ public class Shooter extends SubsystemBase {
 
   public double ProccesDistanceHoodAngle(double Distance) {
     double targetLength =
-        MathUtil.clamp(ShooterConstants.kDistanceToAngleMap.get(Distance), 0, 1.5);
+        MathUtil.clamp(ShooterConstants.kDistanceToAngleMap.get(Distance), 0, HOOD_ENC_MAX);
     return targetLength;
   }
 
