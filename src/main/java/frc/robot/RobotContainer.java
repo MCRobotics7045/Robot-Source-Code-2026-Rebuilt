@@ -69,6 +69,8 @@ public class RobotContainer {
     fuelSim = new FuelSim();
 
     SmartDashboard.putNumber("Hood Angle", 0);
+    SmartDashboard.putNumber("MotorVoltage", 0);
+
     switch (Constants.currentMode) {
       case REAL:
         // REAL Drive
@@ -89,6 +91,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                drive::setPose,
                 new VisionIOReal("LeftCamera", CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
                 new VisionIOReal("RightCamera", CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
 
@@ -119,6 +122,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                drive::setPose,
                 new VisionIOSim(drive::getPose, CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
                 new VisionIOSim(drive::getPose, CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT));
         shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
@@ -137,7 +141,9 @@ public class RobotContainer {
                 new ModuleIO() {});
         intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {}, new IndexerIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        vision =
+            new Vision(
+                drive::addVisionMeasurement, drive::setPose, new VisionIO() {}, new VisionIO() {});
 
         shooter = new Shooter(new ShooterIO() {}, new ShooterIO() {});
         break;
@@ -192,7 +198,7 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     jackController
-        .R2()
+        .R1()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -242,7 +248,7 @@ public class RobotContainer {
     jackController.L1().onTrue(intake.ReturnIntake());
     jackController.square().onTrue(intake.ZeroIntake());
 
-    jackController.R2().whileTrue(shooter.FireCommand(2.0));
+    jackController.R2().whileTrue(shooter.FireBlankCommand());
     jackController.triangle().whileTrue(indexer.RunBothIndexer(1));
 
     // do i need a stop button still?

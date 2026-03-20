@@ -21,9 +21,8 @@ public class ShooterIOHoodMotor implements ShooterIO {
   public static final double ENCODER_MAX = 1.2;
 
   private static final double kP = 1.0;
-  private static final double kI = 0.05;
+  private static final double kI = 0.0;
   private static final double kD = 0.0;
-  private static final double kG = 0.5;
   private static final double TOLERANCE = 0.02; // rotations
 
   private final SparkMax motor;
@@ -53,7 +52,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
   public void setHoodPosition(double targetRotations) {
     double pos = encoder.getPosition();
     double pidOutput = pid.calculate(pos, targetRotations);
-    double output = MathUtil.clamp(pidOutput + kG, -12.0, 12.0);
+    double output = MathUtil.clamp(pidOutput, -12.0, 12.0);
     if ((pos <= ENCODER_MIN && output < 0) || (pos >= ENCODER_MAX && output > 0)) {
       motor.stopMotor();
       return;

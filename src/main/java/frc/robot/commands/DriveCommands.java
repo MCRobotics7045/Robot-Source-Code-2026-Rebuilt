@@ -30,13 +30,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 5.0;
+  private static final double ANGLE_KP = 1.0;
   private static final double ANGLE_KD = 0.4;
-  private static final double ANGLE_MAX_VELOCITY = 3.0;
-  private static final double ANGLE_MAX_ACCELERATION = 8.0;
+  private static final double ANGLE_MAX_VELOCITY = 8.0; // rad/s
+  private static final double ANGLE_MAX_ACCELERATION = 8.0; // rad/s^2
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
@@ -127,9 +128,17 @@ public class DriveCommands {
                   getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
               // Calculate angular speed
+              Rotation2d targetAngle = rotationSupplier.get();
+              Logger.recordOutput(
+                  "DriveCommands/AutoAlign/TargetAngleDeg", targetAngle.getDegrees());
+              Logger.recordOutput(
+                  "DriveCommands/AutoAlign/RobotAngleDeg", drive.getRotation().getDegrees());
+              Logger.recordOutput(
+                  "DriveCommands/AutoAlign/ErrorDeg",
+                  targetAngle.minus(drive.getRotation()).getDegrees());
               double omega =
                   angleController.calculate(
-                      drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
+                      drive.getRotation().getRadians(), targetAngle.getRadians());
 
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =

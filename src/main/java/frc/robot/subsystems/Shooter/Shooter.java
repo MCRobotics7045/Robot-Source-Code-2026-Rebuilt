@@ -21,11 +21,14 @@ public class Shooter extends SubsystemBase {
   private final ShooterIO ioMotor;
   private final ShooterIO ioHood;
 
+  private double voltz;
   private double fPercent;
 
   public Shooter(ShooterIO ioMotor, ShooterIO ioHood) {
     this.ioMotor = ioMotor;
     this.ioHood = ioHood;
+    SmartDashboard.putNumber("MotorVoltage", 0);
+    SmartDashboard.putNumber("Hood Angle", 0);
   }
 
   @Override
@@ -33,7 +36,7 @@ public class Shooter extends SubsystemBase {
     ioMotor.updateInputs(inputs);
     ioHood.updateInputs(inputs);
     Logger.processInputs("Shooter Inputs", inputs);
-
+    voltz = SmartDashboard.getNumber("MotorVoltage", 0);
     fPercent = SmartDashboard.getNumber("Hood Angle", 0);
     SmartDashboard.putNumber("Hood Position (enc)", inputs.MotorHoodAngle);
     SmartDashboard.putBoolean("Hood At Setpoint", ioHood.isHoodAtSetpoint());
@@ -67,8 +70,17 @@ public class Shooter extends SubsystemBase {
         });
   }
 
-  public Command FireBlankCommand(double Voltage) {
-    return this.startEnd(() -> ioMotor.RunVoltage(Voltage), () -> ioMotor.StopMotor());
+  public Command FireBlankCommand() {
+    return this.run(
+            () -> {
+              ioMotor.RunVoltage(voltz);
+              ioHood.setHoodPosition(fPercent);
+            })
+        .finallyDo(
+            () -> {
+              ioMotor.StopMotor();
+              ioHood.StopMotor();
+            });
   }
 
   public Command hoodStop() {

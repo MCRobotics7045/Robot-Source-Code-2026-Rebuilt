@@ -17,6 +17,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   // private final TalonFX motorR;
   private final TalonFXConfiguration motorConfig;
 
+  public double MotorVoltage;
+
   public ShooterIOTalonFX(int lMotorID) {
     motor = new TalonFX(lMotorID);
     // motorR = new TalonFX(rMotorID);
@@ -38,7 +40,7 @@ public class ShooterIOTalonFX implements ShooterIO {
   public void updateInputs(ShooterIOinputs inputs) {
     inputs.lMotorRPM = motor.getVelocity().getValueAsDouble();
     // inputs.rMotorRPM = motorR.getVelocity().getValueAsDouble();
-    inputs.lMotorVolts = motor.getSupplyVoltage().getValueAsDouble();
+    inputs.lMotorVolts = MotorVoltage;
     inputs.lMotorAmp = motor.getSupplyCurrent().getValueAsDouble();
     // inputs.rMotorVolts = motorR.getSupplyVoltage().getValueAsDouble();
     // inputs.rMotorAmp = motorR.getSupplyCurrent().getValueAsDouble();
@@ -46,6 +48,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void RunVoltage(double Voltage) {
+    MotorVoltage = Voltage;
     motor.setVoltage(MathUtil.clamp(Voltage, -12.0, 12.0));
     // motorR.setVoltage(MathUtil.clamp(-Voltage, -12.0, 12.0));
   }

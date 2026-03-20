@@ -25,6 +25,7 @@ public class Vision extends SubsystemBase {
 
   private final VisionIOinputsAutoLogged[] inputs;
   private final VisionConsumer consumer;
+  private final PoseResetter poseResetter;
   private final Alert[] disconnectedAlerts;
 
   private final List<Pose3d> tagPoses = new LinkedList<>();
@@ -33,9 +34,12 @@ public class Vision extends SubsystemBase {
   private final List<Pose3d> rejectedPoses = new LinkedList<>();
   private Matrix<N3, N1> stdDevs = CameraConstants.kSingleTagStdDevs;
 
-  public Vision(VisionConsumer consumer, VisionIO... io) {
+  private boolean initialPoseSet = false;
+
+  public Vision(VisionConsumer consumer, PoseResetter poseResetter, VisionIO... io) {
     this.io = io;
     this.consumer = consumer;
+    this.poseResetter = poseResetter;
 
     this.inputs = new VisionIOinputsAutoLogged[io.length];
     for (int i = 0; i < inputs.length; i++) {
@@ -92,6 +96,14 @@ public class Vision extends SubsystemBase {
 
         acceptedPoses.add(observation.pose());
 
+        // Snap pose on first confident multi-tag fix so the estimator doesn't
+        // have to converge from Pose2d.kZero.
+        if (!initialPoseSet && observation.tagCount() >= 2) {
+          poseResetter.resetPose(observation.pose().toPose2d());
+          initialPoseSet = true;
+          Logger.recordOutput("Vision/InitialPoseSet", true);
+        }
+
         if (observation.tagCount() > 1) {
           stdDevs = CameraConstants.kMultiTagStdDevs;
         }
@@ -123,5 +135,10 @@ public class Vision extends SubsystemBase {
         Pose2d visionRobotPoseMeterPose2d,
         double getTimestampSeconds,
         Matrix<N3, N1> visionMeasurementStdDevs);
+  }
+
+  @FunctionalInterface
+  public interface PoseResetter {
+    void resetPose(Pose2d pose);
   }
 }

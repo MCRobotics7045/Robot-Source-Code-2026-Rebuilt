@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -45,9 +46,16 @@ public class VisionIOReal implements VisionIO {
                 Rotation2d.fromDegrees(result.getBestTarget().getPitch()));
       }
 
+      Logger.recordOutput(
+          "Vision/" + camera.getName() + "/UsingMultiTag", result.multitagResult.isPresent());
+      Logger.recordOutput("Vision/" + camera.getName() + "/HasTargets", result.hasTargets());
+
       if (result.multitagResult.isPresent()) {
         MultiTargetPNPResult multiTargetPNPResult = result.multitagResult.get();
         Transform3d feildToCamera = multiTargetPNPResult.estimatedPose.best;
+        Logger.recordOutput(
+            "Vision/" + camera.getName() + "/RawCameraPose",
+            new Pose3d(feildToCamera.getTranslation(), feildToCamera.getRotation()));
         Transform3d feildToRobot = feildToCamera.plus(robotToCamera.inverse());
         Pose3d robotPose = new Pose3d(feildToRobot.getTranslation(), feildToRobot.getRotation());
         double TrargetDist = 0.0;

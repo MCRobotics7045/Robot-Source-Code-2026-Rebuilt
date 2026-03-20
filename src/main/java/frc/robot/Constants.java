@@ -49,9 +49,9 @@ public final class Constants {
                 Units.inchesToMeters(-8.980265), // RIGHT side (negative Y)
                 Units.inchesToMeters(17.289050)), // HEIGHT: on top
             new Rotation3d(
-                Units.degreesToRadians(-10), // ROLL: banked outward to the right
+                Units.degreesToRadians(0), // ROLL: banked outward to the right
                 Units.degreesToRadians(-26.805957), // PITCH: angled up (negative = nose up)
-                Units.degreesToRadians(0))); // YAW: facing forward
+                Units.degreesToRadians(-10))); // YAW: facing forward
 
     public static final Transform3d CAMERA_L_TRANSFORM_TO_ROBOT =
         new Transform3d(
@@ -60,13 +60,13 @@ public final class Constants {
                 Units.inchesToMeters(8.980265), // LEFT side (positive Y)
                 Units.inchesToMeters(17.289050)), // HEIGHT: on top
             new Rotation3d(
-                Units.degreesToRadians(10), // ROLL: banked outward to the left
+                Units.degreesToRadians(0), // ROLL: banked outward to the left
                 Units.degreesToRadians(-26.805957), // PITCH: angled up (negative = nose up)
-                Units.degreesToRadians(0))); // YAW: facing forward
+                Units.degreesToRadians(10))); // YAW: facing forward
 
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1, 1, 2);
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.5, 0.5, 1.0);
 
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.3, 0.3, 0.5);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
   }
 
   public static final class ShooterConstants {
@@ -86,7 +86,7 @@ public final class Constants {
   public static final class MotorConstants {
     // Intake POS
     public static final double IntakeStowed = 0; // stowed postion (should be 0)
-    public static final double IntakeCollect = 122; // Intake Out Position
+    public static final double IntakeCollect = 7; // Intake Out Position
     public static final double MaxShutter = 3; // Max Shutter angle(proably could be less)
 
     // Intake Drive

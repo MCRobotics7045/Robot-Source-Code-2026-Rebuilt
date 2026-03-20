@@ -13,7 +13,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.util.Units;
 
 public class IntakeIOSparkMax implements IntakeIO {
   private final SparkMax Drive;
@@ -52,7 +51,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 
   public void updateInputs(IntakeIoinputs inputs) {
     inputs.CurrentAmps = Pos.getOutputCurrent();
-    inputs.MotorPos = Units.rotationsToDegrees(PEncoder.getPosition() / 20.0);
+    inputs.MotorPos = PEncoder.getPosition();
     inputs.appliedVolts = Pos.getAppliedOutput() * Pos.getBusVoltage();
     inputs.DAmprege = Drive.getOutputCurrent();
     inputs.DMotorRPM = DEncoder.getVelocity();
