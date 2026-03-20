@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.CameraConstants;
-import frc.robot.commands.AutoAlign;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Indexer.Indexer;
@@ -63,7 +62,6 @@ public class RobotContainer {
 
   private boolean intakeDeployed = false;
 
-  private final AutoAlign autoAlign;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     fuelSim = new FuelSim();
@@ -167,7 +165,6 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    autoAlign = new AutoAlign(drive);
     configureButtonBindings();
   }
 

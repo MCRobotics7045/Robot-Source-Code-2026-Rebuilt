@@ -19,6 +19,8 @@ public interface ShooterIO {
     public double rMotorVolts = 0.0;
     public double lMotorAmp = 0.0;
     public double rMotorAmp = 0.0;
+    public double hoodAppliedVolts = 0.0;
+    public double hoodCurrentAmps = 0.0;
   }
 
   default void updateInputs(ShooterIOinputs inputs) {}

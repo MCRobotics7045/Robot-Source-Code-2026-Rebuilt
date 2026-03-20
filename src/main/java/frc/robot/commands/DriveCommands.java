@@ -34,8 +34,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 1.0;
-  private static final double ANGLE_KD = 0.4;
+  private static final double ANGLE_KP = 3.0;
+  private static final double ANGLE_KD = 0.8;
   private static final double ANGLE_MAX_VELOCITY = 8.0; // rad/s
   private static final double ANGLE_MAX_ACCELERATION = 8.0; // rad/s^2
   private static final double FF_START_DELAY = 2.0; // Secs
@@ -89,7 +89,7 @@ public class DriveCommands {
                       * Constants.DRIVETRAIN_TURN_SPEED_MODIFIER);
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
+                  && DriverStation.getAlliance().get() == Alliance.Blue;
           drive.runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   speeds,
@@ -148,7 +148,7 @@ public class DriveCommands {
                       omega);
               boolean isFlipped =
                   DriverStation.getAlliance().isPresent()
-                      && DriverStation.getAlliance().get() == Alliance.Red;
+                      && DriverStation.getAlliance().get() == Alliance.Blue;
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                       speeds,

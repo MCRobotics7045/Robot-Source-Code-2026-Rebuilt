@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOHoodMotor implements ShooterIO {
 
@@ -28,6 +29,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
   private final SparkMax motor;
   private final RelativeEncoder encoder;
   private final PIDController pid;
+  private double appliedVolts = 0.0;
 
   @SuppressWarnings("removal")
   public ShooterIOHoodMotor() {
@@ -46,18 +48,32 @@ public class ShooterIOHoodMotor implements ShooterIO {
   @Override
   public void updateInputs(ShooterIOinputs inputs) {
     inputs.MotorHoodAngle = encoder.getPosition();
+    inputs.hoodAppliedVolts = appliedVolts;
+    inputs.hoodCurrentAmps = motor.getOutputCurrent();
   }
 
   @Override
   public void setHoodPosition(double targetRotations) {
     double pos = encoder.getPosition();
     double pidOutput = pid.calculate(pos, targetRotations);
-    double output = MathUtil.clamp(pidOutput, -12.0, 12.0);
-    if ((pos <= ENCODER_MIN && output < 0) || (pos >= ENCODER_MAX && output > 0)) {
+    double clampedOutput = MathUtil.clamp(pidOutput, -12.0, 12.0);
+    boolean softLimitHit = (pos <= ENCODER_MIN && clampedOutput < 0) || (pos >= ENCODER_MAX && clampedOutput > 0);
+
+    Logger.recordOutput("Hood/TargetRotations", targetRotations);
+    Logger.recordOutput("Hood/CurrentRotations", pos);
+    Logger.recordOutput("Hood/ErrorRotations", targetRotations - pos);
+    Logger.recordOutput("Hood/RawPIDOutput", pidOutput);
+    Logger.recordOutput("Hood/ClampedOutputVolts", clampedOutput);
+    Logger.recordOutput("Hood/SoftLimitHit", softLimitHit);
+    Logger.recordOutput("Hood/AtSetpoint", pid.atSetpoint());
+
+    if (softLimitHit) {
       motor.stopMotor();
+      appliedVolts = 0.0;
       return;
     }
-    motor.setVoltage(output);
+    motor.setVoltage(clampedOutput);
+    appliedVolts = clampedOutput;
   }
 
   @Override
