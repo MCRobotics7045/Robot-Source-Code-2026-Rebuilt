@@ -63,11 +63,13 @@ public class Shooter extends SubsystemBase {
     ioMotor.RunVoltage(MotorVoltage);
   }
 
-  public Command FireCommand(DoubleSupplier Distance) {
-    return this.startEnd(
-        () -> FireVoid(Distance),
+  public Command FireCommand() {
+    return this.runEnd(
         () -> {
-          ioHood.StopMotor();
+              ioMotor.SetRpm(-voltz);
+              ioHood.setHoodPosition(fPercent);
+            },
+        () -> {
           ioMotor.StopMotor();
         });
   }

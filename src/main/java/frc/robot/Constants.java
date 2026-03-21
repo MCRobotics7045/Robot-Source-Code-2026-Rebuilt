@@ -99,7 +99,7 @@ public final class Constants {
     public static final double MaxShutter = 3; // Max Shutter angle(proably could be less)
 
     // Intake Drive
-    public static final double IntakeMaxSpeed = 0.5; // Speed of roller wheels
+    public static final double IntakeMaxSpeed = 0.7; // Speed of roller wheels
     public static final double ShutterSpeed =
         0.5; // How fast to mvoe between each angle for shutter
 

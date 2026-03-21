@@ -48,5 +48,7 @@ public interface ShooterIO {
     return false;
   }
 
+  default void SetRpm(double rpm) {}
+
   default void resetHoodEncoder() {}
 }
