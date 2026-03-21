@@ -21,7 +21,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
   public static final double ENCODER_MIN = 0.0;
   public static final double ENCODER_MAX = 1.2;
 
-  private static final double kP = 1.0;
+  private static final double kP = 4.0;
   private static final double kI = 0.0;
   private static final double kD = 0.0;
   private static final double TOLERANCE = 0.02; // rotations
@@ -57,7 +57,8 @@ public class ShooterIOHoodMotor implements ShooterIO {
     double pos = encoder.getPosition();
     double pidOutput = pid.calculate(pos, targetRotations);
     double clampedOutput = MathUtil.clamp(pidOutput, -12.0, 12.0);
-    boolean softLimitHit = (pos <= ENCODER_MIN && clampedOutput < 0) || (pos >= ENCODER_MAX && clampedOutput > 0);
+    boolean softLimitHit =
+        (pos <= ENCODER_MIN && clampedOutput < 0) || (pos >= ENCODER_MAX && clampedOutput > 0);
 
     Logger.recordOutput("Hood/TargetRotations", targetRotations);
     Logger.recordOutput("Hood/CurrentRotations", pos);

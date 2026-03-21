@@ -35,9 +35,8 @@ import org.littletonrobotics.junction.Logger;
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static final double ANGLE_KP = 3.0;
-  private static final double ANGLE_KD = 0.8;
-  private static final double ANGLE_MAX_VELOCITY = 8.0; // rad/s
-  private static final double ANGLE_MAX_ACCELERATION = 8.0; // rad/s^2
+  private static final double ANGLE_MAX_VELOCITY = 4.0; // rad/s — cruise speed during alignment
+  private static final double ANGLE_MAX_ACCEL = 8.0; // rad/s^2 — decelerates to 0 in 0.5s
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
@@ -89,7 +88,7 @@ public class DriveCommands {
                       * Constants.DRIVETRAIN_TURN_SPEED_MODIFIER);
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Blue;
+                  && DriverStation.getAlliance().get() == Alliance.Red;
           drive.runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   speeds,
@@ -111,13 +110,14 @@ public class DriveCommands {
       DoubleSupplier ySupplier,
       Supplier<Rotation2d> rotationSupplier) {
 
-    // Create PID controller
+    // Profiled PID: generates a trapezoidal velocity profile so the robot
+    // decelerates before reaching the target instead of overshooting.
     ProfiledPIDController angleController =
         new ProfiledPIDController(
             ANGLE_KP,
             0.0,
-            ANGLE_KD,
-            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+            0.0,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCEL));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Construct command
@@ -127,18 +127,19 @@ public class DriveCommands {
               Translation2d linearVelocity =
                   getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
-              // Calculate angular speed
+              // Calculate angular speed — live target, updates every loop as robot moves
               Rotation2d targetAngle = rotationSupplier.get();
+              Rotation2d gyroAngle = drive.getRotation();
               Logger.recordOutput(
                   "DriveCommands/AutoAlign/TargetAngleDeg", targetAngle.getDegrees());
+              Logger.recordOutput("DriveCommands/AutoAlign/RobotAngleDeg", gyroAngle.getDegrees());
               Logger.recordOutput(
-                  "DriveCommands/AutoAlign/RobotAngleDeg", drive.getRotation().getDegrees());
-              Logger.recordOutput(
-                  "DriveCommands/AutoAlign/ErrorDeg",
-                  targetAngle.minus(drive.getRotation()).getDegrees());
+                  "DriveCommands/AutoAlign/ErrorDeg", targetAngle.minus(gyroAngle).getDegrees());
               double omega =
-                  angleController.calculate(
-                      drive.getRotation().getRadians(), targetAngle.getRadians());
+                  -MathUtil.applyDeadband(
+                      angleController.calculate(gyroAngle.getRadians(), targetAngle.getRadians()),
+                      0.05);
+              Logger.recordOutput("DriveCommands/AutoAlign/OmegaRadPerSec", omega);
 
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
@@ -148,7 +149,7 @@ public class DriveCommands {
                       omega);
               boolean isFlipped =
                   DriverStation.getAlliance().isPresent()
-                      && DriverStation.getAlliance().get() == Alliance.Blue;
+                      && DriverStation.getAlliance().get() == Alliance.Red;
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                       speeds,
@@ -158,8 +159,12 @@ public class DriveCommands {
             },
             drive)
 
-        // Reset PID controller when command starts
-        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+        // Freeze target angle and reset PID when command starts
+        .beforeStarting(
+            () ->
+                angleController.reset(
+                    drive.getRotation().getRadians(),
+                    drive.getChassisSpeeds().omegaRadiansPerSecond));
   }
 
   /**

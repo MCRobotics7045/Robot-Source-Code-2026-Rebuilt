@@ -45,28 +45,31 @@ public final class Constants {
     public static final Transform3d CAMERA_R_TRANSFORM_TO_ROBOT =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(7.673), // FWD: positive = front of robot
+                Units.inchesToMeters(
+                    -7.673), // FWD: negative = rear of robot (new frame after Pigeon re-zero)
                 Units.inchesToMeters(-8.980265), // RIGHT side (negative Y)
                 Units.inchesToMeters(17.289050)), // HEIGHT: on top
             new Rotation3d(
                 Units.degreesToRadians(0), // ROLL: banked outward to the right
                 Units.degreesToRadians(-26.805957), // PITCH: angled up (negative = nose up)
-                Units.degreesToRadians(-10))); // YAW: facing forward
+                Units.degreesToRadians(170))); // YAW: facing rearward in new robot frame (180 - 10)
 
     public static final Transform3d CAMERA_L_TRANSFORM_TO_ROBOT =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(7.673), // FWD: positive = front of robot
+                Units.inchesToMeters(
+                    -7.673), // FWD: negative = rear of robot (new frame after Pigeon re-zero)
                 Units.inchesToMeters(8.980265), // LEFT side (positive Y)
                 Units.inchesToMeters(17.289050)), // HEIGHT: on top
             new Rotation3d(
                 Units.degreesToRadians(0), // ROLL: banked outward to the left
                 Units.degreesToRadians(-26.805957), // PITCH: angled up (negative = nose up)
-                Units.degreesToRadians(10))); // YAW: facing forward
+                Units.degreesToRadians(
+                    -170))); // YAW: facing rearward in new robot frame (-(180 - 10))
 
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.5, 0.5, 1.0);
 
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(1.0, 1.0, 1.0);
   }
 
   public static final class ShooterConstants {
@@ -76,10 +79,16 @@ public final class Constants {
         new InterpolatingDoubleTreeMap();
 
     static {
-      kDistanceToVoltageMap.put(2.0, -4.0);
+      kDistanceToVoltageMap.put(2.0, 6.0);
       kDistanceToAngleMap.put(2.0, 0.5);
       kDistanceToVoltageMap.put(1.0, 6.0);
-      kDistanceToAngleMap.put(1.0, 1.0);
+      kDistanceToAngleMap.put(1.0, 0.0);
+      kDistanceToVoltageMap.put(3.0, 6.0);
+      kDistanceToAngleMap.put(3.0, 1.2);
+      //   kDistanceToVoltageMap.put(10.0, 6.0);
+      //   kDistanceToAngleMap.put(10.0, 1.2);
+      //   kDistanceToVoltageMap.put(5.0, 6.0);
+      //   kDistanceToAngleMap.put(5.0, 1.1);
     }
   }
 

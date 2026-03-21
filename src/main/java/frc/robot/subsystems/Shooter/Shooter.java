@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -42,26 +43,27 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putBoolean("Hood At Setpoint", ioHood.isHoodAtSetpoint());
   }
 
-  public double ProccesDistanceMotor(double Distance) {
+  public double ProccesDistanceMotor(DoubleSupplier Distance) {
     double targetVolts =
-        MathUtil.clamp(ShooterConstants.kDistanceToVoltageMap.get(Distance), -12, 12);
+        MathUtil.clamp(ShooterConstants.kDistanceToVoltageMap.get(Distance.getAsDouble()), -12, 12);
     return targetVolts;
   }
 
-  public double ProccesDistanceHoodAngle(double Distance) {
+  public double ProccesDistanceHoodAngle(DoubleSupplier Distance) {
     double targetLength =
-        MathUtil.clamp(ShooterConstants.kDistanceToAngleMap.get(Distance), 0, HOOD_ENC_MAX);
+        MathUtil.clamp(
+            ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()), 0, HOOD_ENC_MAX);
     return targetLength;
   }
 
-  public void FireVoid(double Distance) {
+  public void FireVoid(DoubleSupplier Distance) {
     double MotorVoltage = ProccesDistanceMotor(Distance);
     double HoodRotations = ProccesDistanceHoodAngle(Distance);
     ioHood.setHoodPosition(HoodRotations);
     ioMotor.RunVoltage(MotorVoltage);
   }
 
-  public Command FireCommand(Double Distance) {
+  public Command FireCommand(DoubleSupplier Distance) {
     return this.startEnd(
         () -> FireVoid(Distance),
         () -> {
@@ -98,11 +100,17 @@ public class Shooter extends SubsystemBase {
     return this.startEnd(() -> ioHood.setHoodVoltage(volts), () -> ioHood.StopMotor());
   }
 
-  public Command hoodDistanceToPosition(double Distance) {
-    double clampedTarget =
-        MathUtil.clamp(
-            ShooterConstants.kDistanceToAngleMap.get(Distance), HOOD_ENC_MIN, HOOD_ENC_MAX);
-    return this.run(() -> ioHood.setHoodPosition(clampedTarget));
+  public Command hoodDistanceToPosition(DoubleSupplier Distance) {
+    return this.run(
+            () -> {
+              double clampedTarget =
+                  MathUtil.clamp(
+                      ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()),
+                      HOOD_ENC_MIN,
+                      HOOD_ENC_MAX);
+              ioHood.setHoodPosition(clampedTarget);
+            })
+        .finallyDo(() -> ioHood.StopMotor());
   }
 
   public Command hoodPidFromDashboard() {

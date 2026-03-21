@@ -32,8 +32,6 @@ public class Vision extends SubsystemBase {
   private final List<Pose3d> robotPoses = new LinkedList<>();
   private final List<Pose3d> acceptedPoses = new LinkedList<>();
   private final List<Pose3d> rejectedPoses = new LinkedList<>();
-  private Matrix<N3, N1> stdDevs = CameraConstants.kSingleTagStdDevs;
-
   private boolean initialPoseSet = false;
 
   public Vision(VisionConsumer consumer, PoseResetter poseResetter, VisionIO... io) {
@@ -104,18 +102,22 @@ public class Vision extends SubsystemBase {
           Logger.recordOutput("Vision/InitialPoseSet", true);
         }
 
+        Matrix<N3, N1> curStdDevs;
         if (observation.tagCount() > 1) {
-          stdDevs = CameraConstants.kMultiTagStdDevs;
+          curStdDevs = CameraConstants.kMultiTagStdDevs;
+        } else {
+          curStdDevs = CameraConstants.kSingleTagStdDevs;
         }
 
         if (observation.tagCount() == 1 && observation.avgTagDistance() > 3.0) {
-          stdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+          curStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         } else {
-          stdDevs =
-              stdDevs.times(1 + (observation.avgTagDistance() * observation.avgTagDistance() / 30));
+          curStdDevs =
+              curStdDevs.times(
+                  1 + (observation.avgTagDistance() * observation.avgTagDistance() / 30));
         }
 
-        consumer.accept(observation.pose().toPose2d(), observation.time(), stdDevs);
+        consumer.accept(observation.pose().toPose2d(), observation.time(), curStdDevs);
       }
 
       Logger.recordOutput(

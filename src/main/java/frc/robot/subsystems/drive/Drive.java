@@ -22,6 +22,7 @@ import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -208,6 +209,15 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+    // Log camera poses in field coordinates for AdvantageScope 3D visualization
+    Pose3d robotPose3d = new Pose3d(getPose());
+    Logger.recordOutput(
+        "Vision/CameraPoses",
+        new Pose3d[] {
+          robotPose3d.transformBy(Constants.CameraConstants.CAMERA_L_TRANSFORM_TO_ROBOT),
+          robotPose3d.transformBy(Constants.CameraConstants.CAMERA_R_TRANSFORM_TO_ROBOT)
+        });
   }
 
   /**
@@ -224,6 +234,12 @@ public class Drive extends SubsystemBase {
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
     Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
+
+    Logger.recordOutput(
+        "AutoAlign/DistanceToHub",
+        getPose()
+            .getTranslation()
+            .getDistance(FieldConstants.getHubCenter(RobotContainer.IsRed())));
 
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
@@ -323,6 +339,11 @@ public class Drive extends SubsystemBase {
   /** Returns the current odometry rotation. */
   public Rotation2d getRotation() {
     return getPose().getRotation();
+  }
+
+  /** Returns the raw gyro rotation, unaffected by vision fusion. Use this for heading control. */
+  public Rotation2d getGyroRotation() {
+    return rawGyroRotation;
   }
 
   /** Resets the current odometry pose. */

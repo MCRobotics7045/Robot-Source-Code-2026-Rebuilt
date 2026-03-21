@@ -10,6 +10,7 @@ package frc.robot;
 import static frc.robot.Constants.MotorConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -165,6 +166,9 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    NamedCommands.registerCommand(
+        "Intake Deploy", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+
     configureButtonBindings();
   }
 
@@ -204,7 +208,7 @@ public class RobotContainer {
                 () -> {
                   var robotPos = drive.getPose().getTranslation();
                   var hubCenter = FieldConstants.getHubCenter(IsRed());
-                  return hubCenter.minus(robotPos).getAngle();
+                  return hubCenter.minus(robotPos).getAngle().plus(Rotation2d.fromDegrees(180));
                 }));
 
     // Command Section
@@ -245,7 +249,7 @@ public class RobotContainer {
     jackController.L1().onTrue(intake.ReturnIntake());
     jackController.square().onTrue(intake.ZeroIntake());
 
-    jackController.R2().whileTrue(shooter.FireBlankCommand());
+    jackController.R2().whileTrue(shooter.hoodDistanceToPosition(() -> drive.getDistanceToHub()));
     jackController.triangle().whileTrue(indexer.RunBothIndexer(1));
 
     // do i need a stop button still?
@@ -264,6 +268,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public Drive getDrive() {
+    return drive;
   }
 
   public static boolean IsRed() {
