@@ -149,6 +149,28 @@ public class RobotContainer {
         break;
     }
 
+
+    NamedCommands.registerCommand(
+        "Intake Deploy", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    NamedCommands.registerCommand(
+        "Roller Enable", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    NamedCommands.registerCommand(
+        "Intake Retract", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    NamedCommands.registerCommand(
+        "Fire Preset Left Command", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    NamedCommands.registerCommand(
+        "Fire Blank Command", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    NamedCommands.registerCommand(
+        "Indexer Start", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    NamedCommands.registerCommand(
+        "Indexer Reverse", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    NamedCommands.registerCommand(
+        "Stop Shooter", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    NamedCommands.registerCommand(
+        "Stop Rollers", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    NamedCommands.registerCommand(
+        "Stop Indexer", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -167,23 +189,19 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-     NamedCommands.registerCommand(
-        "Intake Deploy", intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+     
 
     configureButtonBindings();
   }
 
   private void configureButtonBindings() {
-
-    // // // Lock to 0° when A button is held
-    // jackController
-    //     .square()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -jackController.getLeftY(),
-    //             () -> -jackController.getLeftX(),
-    //             () -> Rotation2d.kZero));
+    // Feild Relative Drive
+    drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive,
+            () -> -jackController.getLeftY(),
+            () -> -jackController.getLeftX(),
+            () -> jackController.getRightX()));
 
     // // Switch to X pattern when X button is pressed
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -199,8 +217,13 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+
+
+    //##########################################
+    //AUTO FIRING SECTION 
+    //##########################################
     jackController
-        .R1()
+        .R2()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -212,22 +235,22 @@ public class RobotContainer {
                   return hubCenter.minus(robotPos).getAngle().plus(Rotation2d.fromDegrees(180));
                 }));
 
-    // Command Section
+    jackController.R2().whileTrue(
+    shooter.shooterDistanceToPosition(() -> drive.getDistanceToHub())
+        .alongWith(Commands.waitUntil(() -> shooter.isShooterAtSpeed())
+            .andThen(indexer.RunBothIndexer(1)))
+    );
 
-    // If your reading this. Commands are split into two sections, 1 for Jack, 1 for Will. All
-    // controlls will have comments for clarity
+    jackController.R2().onFalse(shooter.StowHood().alongWith(shooter.MotorStop()));
 
-    // Jack Commands
 
-    // Feild Relative Drive
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            () -> -jackController.getLeftY(),
-            () -> -jackController.getLeftX(),
-            () -> jackController.getRightX()));
-    // jackController.R2().whileTrue(shooter.FireCommand(() -> drive.getDistanceToHub()));
-    // Toggle Intake
+
+    //##########################################
+    //Intake Section 
+    //##########################################
+    jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+
+
     // Shooter Command
 
     // Will Commands
@@ -246,13 +269,13 @@ public class RobotContainer {
     // jackController.R2().whileTrue(shooter.FireBlankCommand(-7.5));
     // jackController.cross().whileTrue(indexer.RunIndexerF(1.2));
 
-    jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
+    
     jackController.L1().onTrue(intake.ReturnIntake());
     jackController.square().onTrue(intake.ZeroIntake());
 
     // jackController.R2().whileTrue(shooter.hoodDistanceToPosition(() ->
     // drive.getDistanceToHub()));
-    jackController.R2().whileTrue(shooter.FireCommand());
+    
     jackController.triangle().whileTrue(indexer.RunBothIndexer(1));
 
     // do i need a stop button still?

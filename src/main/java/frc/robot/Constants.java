@@ -73,23 +73,18 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final InterpolatingDoubleTreeMap kDistanceToVoltageMap =
+    public static final InterpolatingDoubleTreeMap kDistanceToRPMmap =
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap kDistanceToAngleMap =
         new InterpolatingDoubleTreeMap();
 
     static {
-      kDistanceToVoltageMap.put(2.0, 6.0);
-      kDistanceToAngleMap.put(2.0, 0.5);
-      kDistanceToVoltageMap.put(1.0, 6.0);
-      kDistanceToAngleMap.put(1.0, 0.0);
-      kDistanceToVoltageMap.put(3.0, 6.0);
-      kDistanceToAngleMap.put(3.0, 1.2);
-      //   kDistanceToVoltageMap.put(10.0, 6.0);
-      //   kDistanceToAngleMap.put(10.0, 1.2);
-      //   kDistanceToVoltageMap.put(5.0, 6.0);
-      //   kDistanceToAngleMap.put(5.0, 1.1);
+      kDistanceToRPMmap.put(0.13, 2500.0); kDistanceToAngleMap.put(0.13, 0.0);
+      kDistanceToRPMmap.put(1.02, 3100.0); kDistanceToAngleMap.put(1.02, 0.12);
+      kDistanceToRPMmap.put(2.03, 3250.0); kDistanceToAngleMap.put(2.03, 0.33);
+      kDistanceToRPMmap.put(3.05, 3900.0); kDistanceToAngleMap.put(3.05, 0.21);
     }
+
   }
 
   public static final class MotorConstants {

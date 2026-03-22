@@ -43,48 +43,17 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putBoolean("Hood At Setpoint", ioHood.isHoodAtSetpoint());
   }
 
-  public double ProccesDistanceMotor(DoubleSupplier Distance) {
-    double targetVolts =
-        MathUtil.clamp(ShooterConstants.kDistanceToVoltageMap.get(Distance.getAsDouble()), -12, 12);
-    return targetVolts;
+  public double ProccesRPMmotor(DoubleSupplier Distance) {
+    double targetRPM =
+        MathUtil.clamp(ShooterConstants.kDistanceToRPMmap.get(Distance.getAsDouble()), -6065, 6065);
+    return targetRPM;
   }
 
   public double ProccesDistanceHoodAngle(DoubleSupplier Distance) {
-    double targetLength =
+    double targetAngle =
         MathUtil.clamp(
             ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()), 0, HOOD_ENC_MAX);
-    return targetLength;
-  }
-
-  public void FireVoid(DoubleSupplier Distance) {
-    double MotorVoltage = ProccesDistanceMotor(Distance);
-    double HoodRotations = ProccesDistanceHoodAngle(Distance);
-    ioHood.setHoodPosition(HoodRotations);
-    ioMotor.RunVoltage(MotorVoltage);
-  }
-
-  public Command FireCommand() {
-    return this.runEnd(
-        () -> {
-              ioMotor.SetRpm(-voltz);
-              ioHood.setHoodPosition(fPercent);
-            },
-        () -> {
-          ioMotor.StopMotor();
-        });
-  }
-
-  public Command FireBlankCommand() {
-    return this.run(
-            () -> {
-              ioMotor.RunVoltage(voltz);
-              ioHood.setHoodPosition(fPercent);
-            })
-        .finallyDo(
-            () -> {
-              ioMotor.StopMotor();
-              ioHood.StopMotor();
-            });
+    return targetAngle;
   }
 
   public Command hoodStop() {
@@ -95,31 +64,68 @@ public class Shooter extends SubsystemBase {
     return this.runOnce(() -> ioMotor.StopMotor());
   }
 
-  /**
-   * @param volts voltage to apply (positive = toward ENCODER_MAX)
-   */
-  public Command hoodRunVoltage(double volts) {
-    return this.startEnd(() -> ioHood.setHoodVoltage(volts), () -> ioHood.StopMotor());
-  }
 
   public Command hoodDistanceToPosition(DoubleSupplier Distance) {
-    return this.run(
-            () -> {
-              double clampedTarget =
-                  MathUtil.clamp(
-                      ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()),
-                      HOOD_ENC_MIN,
-                      HOOD_ENC_MAX);
-              ioHood.setHoodPosition(clampedTarget);
-            })
-        .finallyDo(() -> ioHood.StopMotor());
+    return this.run(() -> ioHood.setHoodPosition(ProccesDistanceHoodAngle(Distance)));
   }
 
-  public Command hoodPidFromDashboard() {
-    return this.run(
-        () -> {
-          double targetPosition = MathUtil.clamp(fPercent, HOOD_ENC_MIN, HOOD_ENC_MAX);
-          ioHood.setHoodPosition(targetPosition);
-        });
+  public Command motorDistanceToPostion(DoubleSupplier Distance) {
+    return this.run(() -> ioMotor.SetRpm(ProccesRPMmotor(Distance)));
   }
+
+  public Command shooterDistanceToPosition(DoubleSupplier Distance) {
+    return this.run(()-> {
+      ioHood.setHoodPosition(ProccesDistanceHoodAngle(Distance));
+      ioMotor.SetRpm(ProccesRPMmotor(Distance));
+    });
+  }
+  
+  public boolean isShooterAtSpeed() {
+    return ioMotor.isAtSpeed();
+  }
+
+
+
+
+
+  public Command StowHood () {
+    return this.runEnd(
+      ()-> ioHood.setHoodPosition(0),
+      ()-> ioHood.resetHoodEncoder()
+    );
+  }
+
+  public Command ShooterDirectRPM (double RPM) {
+    double clampedRPM = MathUtil.clamp(RPM, -6065, 6065);
+    return this.run(
+      ()-> ioMotor.SetRpm(clampedRPM)
+    );
+  }
+
+  public Command HoodDirectPostion (double Postion) {
+    double clampedPostion = MathUtil.clamp(Postion, HOOD_ENC_MIN, HOOD_ENC_MAX);
+    return this.run(
+      ()-> ioHood.setHoodPosition(clampedPostion)
+    );
+  }
+
+  public Command AutoDirectShot (double Postion, double RPM) {
+    double clampedRPM = MathUtil.clamp(RPM, -6065, 6065);
+    double clampedPostion = MathUtil.clamp(Postion, HOOD_ENC_MIN, HOOD_ENC_MAX);
+
+    return this.run(()-> {
+      ioMotor.SetRpm(clampedRPM);
+      ioHood.setHoodPosition(clampedPostion);
+    });
+
+  }
+  
+
+  // public Command hoodPidFromDashboard() {
+  //   return this.run(
+  //       () -> {
+  //         double targetPosition = MathUtil.clamp(fPercent, HOOD_ENC_MIN, HOOD_ENC_MAX);
+  //         ioHood.setHoodPosition(targetPosition);
+  //       });
+  // }
 }

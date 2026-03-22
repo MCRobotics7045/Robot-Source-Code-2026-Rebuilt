@@ -10,15 +10,11 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ShooterIO {
   @AutoLog
   public static class ShooterIOinputs {
-    public double LinearPOSMM = 0.0;
     public double MotorHoodAngle = 0.0;
     public double RequestedPostionPercent = 0.0;
-    public double lMotorRPM = 0.0;
-    public double rMotorRPM = 0.0;
-    public double lMotorVolts = 0.0;
-    public double rMotorVolts = 0.0;
-    public double lMotorAmp = 0.0;
-    public double rMotorAmp = 0.0;
+    public double MotorRPM = 0.0;
+    public double MotorVolts = 0.0;
+    public double MotorAmp = 0.0;
     public double hoodAppliedVolts = 0.0;
     public double hoodCurrentAmps = 0.0;
   }
@@ -51,4 +47,8 @@ public interface ShooterIO {
   default void SetRpm(double rpm) {}
 
   default void resetHoodEncoder() {}
+
+  default boolean isAtSpeed() {
+    return false;
+  }
 }

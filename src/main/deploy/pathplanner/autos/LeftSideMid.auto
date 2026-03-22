@@ -11,9 +11,21 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Intake Deploy"
+            "pathName": "LMiddle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LDepot to Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot To shoot"
           }
         }
       ]

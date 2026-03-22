@@ -1,0 +1,107 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.892083333333334,
+        "y": 4.944042792792793
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.036628233777066,
+        "y": 7.082359146561348
+      },
+      "isLocked": false,
+      "linkedName": "LeftEnd"
+    },
+    {
+      "anchor": {
+        "x": 5.685867117119567,
+        "y": 7.43625
+      },
+      "prevControl": {
+        "x": 6.53719766497981,
+        "y": 7.426901334968
+      },
+      "nextControl": {
+        "x": 4.059909989379891,
+        "y": 7.45410502538566
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.539966216218667,
+        "y": 7.160472972976821
+      },
+      "prevControl": {
+        "x": 3.23358362145258,
+        "y": 7.406867322976038
+      },
+      "nextControl": {
+        "x": 1.906130718914631,
+        "y": 6.935315005217936
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.7024211711736221,
+        "y": 5.189177927931776
+      },
+      "prevControl": {
+        "x": 1.0462057542928092,
+        "y": 6.123937871691467
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "LDepotEnd"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 179.99999999947346
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": -164.47588900278757
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Stop Rollers",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Stop Rollers"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -21.80140948643373
+  },
+  "reversed": false,
+  "folder": "LeftSideMid",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}

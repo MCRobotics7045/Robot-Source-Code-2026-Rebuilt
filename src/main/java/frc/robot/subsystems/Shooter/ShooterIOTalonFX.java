@@ -19,7 +19,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   // private final TalonFX motorR;
   private final TalonFXConfiguration motorConfig;
 
-  public double MotorVoltage;
+  public double SetMotorRPM;
+  public double SetMotorVoltage;
 
   public SimpleMotorFeedforward feedforward;
   public PIDController pid;
@@ -32,13 +33,10 @@ public class ShooterIOTalonFX implements ShooterIO {
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     motorConfig.CurrentLimits.StatorCurrentLimit = 80.0;
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    ///////////////////// Check if this is right////////////////////Its not. Thiswill spin them in
-    // the same direction.
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    ///////////////////////////////////////////////////////////////
+
 
     motor.getConfigurator().apply(motorConfig);
-    // motorR.getConfigurator().apply(motorConfig);
 
     feedforward = new SimpleMotorFeedforward(0.15 / 12, 0.00001 / 12);
     pid = new PIDController(0.00005, 0, 0);
@@ -46,40 +44,38 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void updateInputs(ShooterIOinputs inputs) {
-    inputs.lMotorRPM = motor.getVelocity().getValueAsDouble() * 60;
-    // inputs.rMotorRPM = motorR.getVelocity().getValueAsDouble();
-    inputs.lMotorVolts = MotorVoltage;
-    inputs.lMotorAmp = motor.getSupplyCurrent().getValueAsDouble();
-    // inputs.rMotorVolts = motorR.getSupplyVoltage().getValueAsDouble();
-    // inputs.rMotorAmp = motorR.getSupplyCurrent().getValueAsDouble();
+    inputs.MotorRPM = motor.getVelocity().getValueAsDouble() * 60;
+    inputs.MotorVolts = motor.getMotorVoltage().getValueAsDouble();
+    inputs.MotorAmp = motor.getSupplyCurrent().getValueAsDouble();
+
   }
 
   @Override
-  public void RunVoltage(double Rpm) {
-    MotorVoltage = Rpm;
-    motor.setVoltage(MathUtil.clamp(Rpm, -12.0, 12.0));
+  public void RunVoltage(double Voltage) {
+    SetMotorVoltage = Voltage;
+    motor.setVoltage(MathUtil.clamp(Voltage, -12.0, 12.0));
   }
 
   @Override
   public void SetRpm(double Rpm) {
-    // MotorVoltage = Rpm;
-    // motor.setVoltage(MathUtil.clamp(Rpm, -12.0, 12.0));
-    // // motorR.setVoltage(MathUtil.clamp(-Voltage, -12.0, 12.0));
-    MotorVoltage = Rpm;
+    SetMotorRPM = Rpm;
     motor.setVoltage(
         MathUtil.clamp(
-            12
-                * (Rpm / 6065
+              12 * (Rpm / 6065
                     + feedforward.calculate(Rpm)
                     + pid.calculate(motor.getVelocity().getValueAsDouble() * 60, Rpm)),
             -12.0,
             12.0));
-    // motorR.setVoltage(MathUtil.clamp(-Voltage, -12.0, 12.0));
   }
 
   @Override
   public void StopMotor() {
     motor.stopMotor();
-    // motorR.stopMotor();
+  }
+
+
+  public boolean isAtSpeed() {
+    double currentRPM = motor.getVelocity().getValueAsDouble() * 60;
+    return Math.abs(currentRPM - SetMotorRPM) < 200;
   }
 }
