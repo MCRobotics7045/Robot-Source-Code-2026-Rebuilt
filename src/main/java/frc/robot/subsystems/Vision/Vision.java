@@ -79,7 +79,7 @@ public class Vision extends SubsystemBase {
       for (VisionIO.PoseObv observation : inputs[cameraIndex].poseObvs) {
         boolean reject =
             observation.tagCount() == 0
-                || (observation.tagCount() == 1 && observation.Ambiguity() > 0.1)
+                || (observation.tagCount() == 1 && observation.Ambiguity() > 0.3)
                 || observation.pose().getX() < 0.0
                 || observation.pose().getY() < 0.0
                 || observation.pose().getX() > CameraConstants.aprilFeild.getFieldLength()

@@ -34,8 +34,8 @@ public class Indexer extends SubsystemBase {
     return this.startEnd(() -> io.RunIndexerB(0.3 * speedMulti), () -> io.StopIndexer());
   }
 
-  public Command RunStarWheels(double speedMulti) {
-    return this.startEnd(() -> ioStar.RunIndexerF(-1), () -> ioStar.StopIndexer());
+  public Command RunStarWheels() {
+    return this.startEnd(() -> ioStar.RunIndexerF(1), () -> ioStar.StopIndexer());
   }
 
   public Command RunBothIndexer(double speedMulti) {

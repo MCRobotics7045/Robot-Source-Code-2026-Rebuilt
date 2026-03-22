@@ -67,9 +67,9 @@ public final class Constants {
                 Units.degreesToRadians(
                     -170))); // YAW: facing rearward in new robot frame (-(180 - 10))
 
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.5, 0.5, 1.0);
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1.0, 1.0, 2.0);
 
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(1.0, 1.0, 1.0);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.3, 0.3, 0.9);
   }
 
   public static final class ShooterConstants {
@@ -79,12 +79,15 @@ public final class Constants {
         new InterpolatingDoubleTreeMap();
 
     static {
-      kDistanceToRPMmap.put(0.13, 2500.0); kDistanceToAngleMap.put(0.13, 0.0);
-      kDistanceToRPMmap.put(1.02, 3100.0); kDistanceToAngleMap.put(1.02, 0.12);
-      kDistanceToRPMmap.put(2.03, 3250.0); kDistanceToAngleMap.put(2.03, 0.33);
-      kDistanceToRPMmap.put(3.05, 3900.0); kDistanceToAngleMap.put(3.05, 0.21);
+      kDistanceToRPMmap.put(0.13, 2500.0);
+      kDistanceToAngleMap.put(0.13, 0.0);
+      kDistanceToRPMmap.put(1.02, 3100.0);
+      kDistanceToAngleMap.put(1.02, 0.12);
+      kDistanceToRPMmap.put(2.03, 3250.0);
+      kDistanceToAngleMap.put(2.03, 0.33);
+      kDistanceToRPMmap.put(3.05, 3900.0);
+      kDistanceToAngleMap.put(3.05, 0.21);
     }
-
   }
 
   public static final class MotorConstants {

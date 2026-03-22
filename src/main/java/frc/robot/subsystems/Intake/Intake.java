@@ -13,9 +13,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -41,6 +42,8 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake Inputs", inputs);
+
+    Logger.recordOutput("Intake Boolean", isDeployed);
     offset = Units.degreesToRadians(inputs.MotorPos) + Units.degreesToRadians(35);
     hingeRotation = new Rotation3d(0, offset, 0);
     armPose = new Pose3d(hingeLocation, hingeRotation);
@@ -69,16 +72,18 @@ public class Intake extends SubsystemBase {
   }
 
   public Command IntakeCommand(double OutAngle, double IntakeSpeed) {
-    if (isDeployed) {
-      return RunIntakeShaft(IntakeSpeed);
-    } else {
-      isDeployed = true;
-
-      return this.run(() -> {
-          io.setIntakePostion(OutAngle);
-          io.runIntakeD(IntakeSpeed);
-      });
-    }
+    return Commands.defer(
+        () -> {
+          if (isDeployed) {
+            return RunIntakeShaft(IntakeSpeed);
+          } else {
+            isDeployed = true;
+            return new SequentialCommandGroup(
+                run(() -> io.setIntakePostion(OutAngle)).withTimeout(1),
+                RunIntakeShaft(IntakeSpeed));
+          }
+        },
+        Set.of(this));
   }
 
   public Command ShutterBalls(double MaxShutter) {

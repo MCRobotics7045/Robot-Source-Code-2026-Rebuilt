@@ -24,6 +24,7 @@ public class IntakeIOSparkMax implements IntakeIO {
   private boolean zerDebug = false;
   private double DesiredAngle;
 
+  @SuppressWarnings("removal")
   public IntakeIOSparkMax(int PosMotorID, int DriveMotorID) {
     Drive = new SparkMax(DriveMotorID, MotorType.kBrushless);
     Pos = new SparkMax(PosMotorID, MotorType.kBrushless);

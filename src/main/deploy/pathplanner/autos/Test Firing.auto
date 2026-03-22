@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Simple Twist"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
+            "pathName": "Test Firing"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Deploy"
+            "name": "Fire Preset Left Command"
           }
         }
       ]

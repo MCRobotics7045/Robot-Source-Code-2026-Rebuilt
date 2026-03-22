@@ -35,7 +35,6 @@ public class ShooterIOTalonFX implements ShooterIO {
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-
     motor.getConfigurator().apply(motorConfig);
 
     feedforward = new SimpleMotorFeedforward(0.15 / 12, 0.00001 / 12);
@@ -47,7 +46,6 @@ public class ShooterIOTalonFX implements ShooterIO {
     inputs.MotorRPM = motor.getVelocity().getValueAsDouble() * 60;
     inputs.MotorVolts = motor.getMotorVoltage().getValueAsDouble();
     inputs.MotorAmp = motor.getSupplyCurrent().getValueAsDouble();
-
   }
 
   @Override
@@ -61,7 +59,8 @@ public class ShooterIOTalonFX implements ShooterIO {
     SetMotorRPM = Rpm;
     motor.setVoltage(
         MathUtil.clamp(
-              12 * (Rpm / 6065
+            12
+                * (Rpm / 6065
                     + feedforward.calculate(Rpm)
                     + pid.calculate(motor.getVelocity().getValueAsDouble() * 60, Rpm)),
             -12.0,
@@ -72,7 +71,6 @@ public class ShooterIOTalonFX implements ShooterIO {
   public void StopMotor() {
     motor.stopMotor();
   }
-
 
   public boolean isAtSpeed() {
     double currentRPM = motor.getVelocity().getValueAsDouble() * 60;
