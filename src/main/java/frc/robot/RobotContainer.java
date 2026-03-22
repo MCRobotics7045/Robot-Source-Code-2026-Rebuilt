@@ -249,7 +249,7 @@ public class RobotContainer {
     //Intake Section 
     //##########################################
     jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
-
+    jackController.L1().onTrue(intake.ReturnIntake());
 
     // Shooter Command
 
@@ -259,24 +259,13 @@ public class RobotContainer {
     // Fine Tuning and Correction
     // Endgame Driving
 
-    // controller.y().onTrue(uptake.runUptake());
-    // controller.y().onTrue(intake.SetIntakeAngle(0));
-    // jackController.triangle().onTrue(intake.SetIntakeAngle(0, -5.6));
-    // jackController.L2().whileTrue(intake.RunIntakeShaft(0.5));
-    // // controller.b().onTrue(shooter.Actuator());
-    // jackController.R1().whileTrue(intake.ShutterBalls(-5.4, -2, 1));
-    // jackController.L1().onTrue(shooter.Actuator());
-    // jackController.R2().whileTrue(shooter.FireBlankCommand(-7.5));
-    // jackController.cross().whileTrue(indexer.RunIndexerF(1.2));
 
     
-    jackController.L1().onTrue(intake.ReturnIntake());
     jackController.square().onTrue(intake.ZeroIntake());
 
     // jackController.R2().whileTrue(shooter.hoodDistanceToPosition(() ->
     // drive.getDistanceToHub()));
     
-    jackController.triangle().whileTrue(indexer.RunBothIndexer(1));
 
     // do i need a stop button still?
 
