@@ -103,6 +103,16 @@ public class Shooter extends SubsystemBase {
     return this.run(() -> ioHood.setHoodPosition(clampedPostion));
   }
 
+  public Command PresetShot(DoubleSupplier position, DoubleSupplier rpm) {
+    return this.run(
+        () -> {
+          double clampedRPM = MathUtil.clamp(rpm.getAsDouble(), -6065, 6065);
+          double clampedPos = MathUtil.clamp(position.getAsDouble(), HOOD_ENC_MIN, HOOD_ENC_MAX);
+          ioMotor.SetRpm(clampedRPM);
+          ioHood.setHoodPosition(clampedPos);
+        });
+  }
+
   public Command AutoDirectShot(double Postion, double RPM) {
     double clampedRPM = MathUtil.clamp(RPM, -6065, 6065);
     double clampedPostion = MathUtil.clamp(Postion, HOOD_ENC_MIN, HOOD_ENC_MAX);

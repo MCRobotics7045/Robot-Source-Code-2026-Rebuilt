@@ -91,6 +91,14 @@ public final class Constants {
     }
   }
 
+  public static final class AllianceShiftConstants {
+    // Match time remaining (seconds) at each shift boundary during teleop
+    public static final double SHIFT_1_TIME = 105.0;
+    public static final double SHIFT_2_TIME = 80.0;
+    public static final double SHIFT_3_TIME = 55.0;
+    public static final double END_GAME_TIME = 30.0;
+  }
+
   public static final class MotorConstants {
     // Intake POS
     public static final double IntakeStowed = 0; // stowed postion (should be 0)

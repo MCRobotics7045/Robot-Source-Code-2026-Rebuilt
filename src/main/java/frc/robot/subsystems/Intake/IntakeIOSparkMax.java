@@ -63,7 +63,7 @@ public class IntakeIOSparkMax implements IntakeIO {
   @Override
   public void setIntakePostion(double angRads) {
     double current = Pos.getOutputCurrent();
-    if (current > 35 && Math.abs(Pos.getEncoder().getVelocity()) < 0.1) {
+    if (current > 35 && Math.abs(PEncoder.getVelocity()) < 0.1) {
       Pos.stopMotor();
       return;
     }
@@ -74,11 +74,7 @@ public class IntakeIOSparkMax implements IntakeIO {
   public void ZeroIntake() {
     PEncoder.setPosition(0);
     DesiredAngle = 0;
-    if (zerDebug) {
-      zerDebug = !zerDebug;
-    } else {
-      zerDebug = !zerDebug;
-    }
+    zerDebug = !zerDebug;
   }
 
   @Override

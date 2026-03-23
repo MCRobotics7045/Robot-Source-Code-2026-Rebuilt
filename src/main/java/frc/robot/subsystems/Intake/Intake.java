@@ -67,8 +67,10 @@ public class Intake extends SubsystemBase {
   }
 
   public Command ReturnIntake() {
-    isDeployed = false;
-    return this.run(() -> io.setIntakePostion(IntakeStowed));
+    return this.run(() -> {
+      isDeployed = false;
+      io.setIntakePostion(IntakeStowed);
+    });
   }
 
   public Command IntakeCommand(double OutAngle, double IntakeSpeed) {

@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -28,11 +28,18 @@ public class Vision extends SubsystemBase {
   private final PoseResetter poseResetter;
   private final Alert[] disconnectedAlerts;
 
-  private final List<Pose3d> tagPoses = new LinkedList<>();
-  private final List<Pose3d> robotPoses = new LinkedList<>();
-  private final List<Pose3d> acceptedPoses = new LinkedList<>();
-  private final List<Pose3d> rejectedPoses = new LinkedList<>();
+  private final List<Pose3d> tagPoses = new ArrayList<>();
+  private final List<Pose3d> robotPoses = new ArrayList<>();
+  private final List<Pose3d> acceptedPoses = new ArrayList<>();
+  private final List<Pose3d> rejectedPoses = new ArrayList<>();
   private boolean initialPoseSet = false;
+
+  // Pre-computed logger keys — avoids string allocation every loop
+  private final String[] cameraLogKeys;
+  private final String[] tagPosesKeys;
+  private final String[] robotPosesKeys;
+  private final String[] acceptedPosesKeys;
+  private final String[] rejectedPosesKeys;
 
   public Vision(VisionConsumer consumer, PoseResetter poseResetter, VisionIO... io) {
     this.io = io;
@@ -45,8 +52,18 @@ public class Vision extends SubsystemBase {
     }
 
     this.disconnectedAlerts = new Alert[io.length];
+    cameraLogKeys = new String[io.length];
+    tagPosesKeys = new String[io.length];
+    robotPosesKeys = new String[io.length];
+    acceptedPosesKeys = new String[io.length];
+    rejectedPosesKeys = new String[io.length];
     for (int i = 0; i < inputs.length; i++) {
       disconnectedAlerts[i] = new Alert("Vision Camera" + i + "Disconnected.", AlertType.kWarning);
+      cameraLogKeys[i] = "Vision/Camera" + i;
+      tagPosesKeys[i] = "Vision/Camera" + i + "/TagPoses";
+      robotPosesKeys[i] = "Vision/Camera" + i + "/RobotPoses";
+      acceptedPosesKeys[i] = "Vision/Camera" + i + "/AcceptedPoses";
+      rejectedPosesKeys[i] = "Vision/Camera" + i + "/RejectedPoses";
     }
 
     // Log camera poses relative to robot for visualization in AdvantageScope
@@ -62,7 +79,7 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);
-      Logger.processInputs("Vision/Camera" + i, inputs[i]);
+      Logger.processInputs(cameraLogKeys[i], inputs[i]);
     }
 
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
@@ -120,14 +137,10 @@ public class Vision extends SubsystemBase {
         consumer.accept(observation.pose().toPose2d(), observation.time(), curStdDevs);
       }
 
-      Logger.recordOutput(
-          "Vision/Camera" + cameraIndex + "/TagPoses", tagPoses.toArray(new Pose3d[0]));
-      Logger.recordOutput(
-          "Vision/Camera" + cameraIndex + "/RobotPoses", robotPoses.toArray(new Pose3d[0]));
-      Logger.recordOutput(
-          "Vision/Camera" + cameraIndex + "/AcceptedPoses", acceptedPoses.toArray(new Pose3d[0]));
-      Logger.recordOutput(
-          "Vision/Camera" + cameraIndex + "/RejectedPoses", rejectedPoses.toArray(new Pose3d[0]));
+      Logger.recordOutput(tagPosesKeys[cameraIndex], tagPoses.toArray(new Pose3d[0]));
+      Logger.recordOutput(robotPosesKeys[cameraIndex], robotPoses.toArray(new Pose3d[0]));
+      Logger.recordOutput(acceptedPosesKeys[cameraIndex], acceptedPoses.toArray(new Pose3d[0]));
+      Logger.recordOutput(rejectedPosesKeys[cameraIndex], rejectedPoses.toArray(new Pose3d[0]));
     }
   }
 

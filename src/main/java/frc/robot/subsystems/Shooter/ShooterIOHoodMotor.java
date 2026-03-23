@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOHoodMotor implements ShooterIO {
@@ -24,7 +25,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
   private static final double kP = 4.0;
   private static final double kI = 0.0;
   private static final double kD = 0.0;
-  private static final double kG = 0.5; // Tune
+  private static final double kG = 0.5;
   private static final double TOLERANCE = 0.02; // rotations
 
   private final SparkMax motor;
@@ -44,6 +45,12 @@ public class ShooterIOHoodMotor implements ShooterIO {
 
     pid = new PIDController(kP, kI, kD);
     pid.setTolerance(TOLERANCE);
+
+    // Live tuning — push defaults to dashboard so values are visible immediately
+    SmartDashboard.putNumber("Hood/Tune/kP", kP);
+    SmartDashboard.putNumber("Hood/Tune/kI", kI);
+    SmartDashboard.putNumber("Hood/Tune/kD", kD);
+    SmartDashboard.putNumber("Hood/Tune/kG", kG);
   }
 
   @Override
@@ -55,9 +62,15 @@ public class ShooterIOHoodMotor implements ShooterIO {
 
   @Override
   public void setHoodPosition(double targetRotations) {
+    pid.setPID(
+        SmartDashboard.getNumber("Hood/Tune/kP", kP),
+        SmartDashboard.getNumber("Hood/Tune/kI", kI),
+        SmartDashboard.getNumber("Hood/Tune/kD", kD));
+    double tuneG = SmartDashboard.getNumber("Hood/Tune/kG", kG);
+
     double pos = encoder.getPosition();
     double pidOutput = pid.calculate(pos, targetRotations);
-    double clampedOutput = MathUtil.clamp(pidOutput + kG, -12.0, 12.0);
+    double clampedOutput = MathUtil.clamp(pidOutput + tuneG, -12.0, 12.0);
     boolean softLimitHit =
         (pos <= ENCODER_MIN && clampedOutput < 0) || (pos >= ENCODER_MAX && clampedOutput > 0);
 
