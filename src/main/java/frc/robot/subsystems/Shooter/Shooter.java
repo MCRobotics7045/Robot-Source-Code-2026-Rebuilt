@@ -49,7 +49,7 @@ public class Shooter extends SubsystemBase {
     return targetRPM;
   }
 
-  public double ProccesDistanceHoodAngle(DoubleSupplier Distance) {
+  public double ProccesDistanceHoodAngle(DoubleSupplier Distance) { // FIX
     // double targetAngle =
     //     MathUtil.clamp(
     //         ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()), 0, HOOD_ENC_MAX);

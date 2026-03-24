@@ -26,6 +26,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
   private static final double kI = 0.0;
   private static final double kD = 0.0;
   private static final double kG = 0.5;
+  private static final double kS = 0.3; // volts to overcome static friction
   private static final double TOLERANCE = 0.02; // rotations
 
   private final SparkMax motor;
@@ -51,6 +52,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
     SmartDashboard.putNumber("Hood/Tune/kI", kI);
     SmartDashboard.putNumber("Hood/Tune/kD", kD);
     SmartDashboard.putNumber("Hood/Tune/kG", kG);
+    SmartDashboard.putNumber("Hood/Tune/kS", kS);
   }
 
   @Override
@@ -67,10 +69,13 @@ public class ShooterIOHoodMotor implements ShooterIO {
         SmartDashboard.getNumber("Hood/Tune/kI", kI),
         SmartDashboard.getNumber("Hood/Tune/kD", kD));
     double tuneG = SmartDashboard.getNumber("Hood/Tune/kG", kG);
+    double tuneS = SmartDashboard.getNumber("Hood/Tune/kS", kS);
 
     double pos = encoder.getPosition();
+    double error = targetRotations - pos;
     double pidOutput = pid.calculate(pos, targetRotations);
-    double clampedOutput = MathUtil.clamp(pidOutput + tuneG, -12.0, 12.0);
+    double feedforward = tuneG + (pid.atSetpoint() ? 0.0 : tuneS * Math.signum(error));
+    double clampedOutput = MathUtil.clamp(pidOutput + feedforward, -12.0, 12.0);
     boolean softLimitHit =
         (pos <= ENCODER_MIN && clampedOutput < 0) || (pos >= ENCODER_MAX && clampedOutput > 0);
 
