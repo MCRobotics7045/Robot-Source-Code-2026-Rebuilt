@@ -48,12 +48,12 @@ public final class Constants {
                 Units.inchesToMeters(
                     -7.527502), // FWD: negative = rear of robot (new frame after Pigeon re-zero)  X
                 Units.inchesToMeters(-8.822286), // RIGHT side (negative Y)  Y
-                Units.inchesToMeters(17.164261)), // HEIGHT: on top   Z
+                Units.inchesToMeters(18.664261)), // HEIGHT: on top   Z
             new Rotation3d(
                 Units.degreesToRadians(0), // ROLL: banked outward to the right
                 Units.degreesToRadians(-25), // PITCH: angled up (negative = nose up)
                 Units.degreesToRadians(
-                    -170))); // YAW: facing rearward in new robot frame (180 - 10)
+                    -170))); // YAW: 10 degrees outward (right) from straight rearward
 
     public static final Transform3d CAMERA_L_TRANSFORM_TO_ROBOT =
         new Transform3d(
@@ -61,16 +61,18 @@ public final class Constants {
                 Units.inchesToMeters(
                     -7.527502), // FWD: negative = rear of robot (new frame after Pigeon re-zero)
                 Units.inchesToMeters(8.822286), // LEFT side (positive Y)
-                Units.inchesToMeters(17.164261)), // HEIGHT: on top
+                Units.inchesToMeters(18.664261)), // HEIGHT: on top
             new Rotation3d(
                 Units.degreesToRadians(0), // ROLL: banked outward to the left
                 Units.degreesToRadians(-25), // PITCH: angled up (negative = nose up)
                 Units.degreesToRadians(
-                    170))); // YAW: facing rearward in new robot frame (-(180 - 10))
+                    170))); // YAW: 10 degrees outward (left) from straight rearward
 
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1.0, 1.0, 2.0);
+    public static final Matrix<N3, N1> kSingleTagStdDevs =
+        VecBuilder.fill(1.0, 1.0, Double.MAX_VALUE);
 
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.3, 0.3, 0.9);
+    // Rotation only trusted when multi-tag + close range (see Vision.java)
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.3, 0.3, 0.2);
   }
 
   public static final class ShooterConstants {

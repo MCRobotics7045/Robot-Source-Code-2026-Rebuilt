@@ -50,10 +50,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public double ProccesDistanceHoodAngle(DoubleSupplier Distance) {
-    double targetAngle =
-        MathUtil.clamp(
-            ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()), 0, HOOD_ENC_MAX);
-    return targetAngle;
+    // double targetAngle =
+    //     MathUtil.clamp(
+    //         ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()), 0, HOOD_ENC_MAX);
+    // return targetAngle;
+    return fPercent;
   }
 
   public Command hoodStop() {
@@ -85,12 +86,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command StowHood() {
-    return this.runEnd(
+    return this.runOnce(
         () -> {
           ioHood.setHoodPosition(0);
           ioMotor.StopMotor();
-        },
-        () -> ioHood.resetHoodEncoder());
+        });
+  }
+
+  public Command ResetEncoder() {
+    return this.runOnce(() -> ioHood.resetHoodEncoder());
   }
 
   public Command ShooterDirectRPM(double RPM) {

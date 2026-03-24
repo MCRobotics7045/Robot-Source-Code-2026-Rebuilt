@@ -33,6 +33,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -235,11 +236,7 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
     Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
 
-    Logger.recordOutput(
-        "AutoAlign/DistanceToHub",
-        getPose()
-            .getTranslation()
-            .getDistance(FieldConstants.getHubCenter(RobotContainer.IsRed())));
+    Logger.recordOutput("AutoAlign/DistanceToHub", getDistanceToHub());
 
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
@@ -391,6 +388,6 @@ public class Drive extends SubsystemBase {
 
     Translation2d hubCenter = FieldConstants.getHubCenter(isRed);
 
-    return getPose().getTranslation().getDistance(hubCenter);
+    return getPose().getTranslation().getDistance(hubCenter) - Units.inchesToMeters(23.5);
   }
 }

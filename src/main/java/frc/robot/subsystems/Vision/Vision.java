@@ -120,18 +120,24 @@ public class Vision extends SubsystemBase {
         }
 
         Matrix<N3, N1> curStdDevs;
-        if (observation.tagCount() > 1) {
-          curStdDevs = CameraConstants.kMultiTagStdDevs;
-        } else {
-          curStdDevs = CameraConstants.kSingleTagStdDevs;
-        }
+        double distanceScale =
+            1 + (observation.avgTagDistance() * observation.avgTagDistance() / 30);
 
         if (observation.tagCount() == 1 && observation.avgTagDistance() > 3.0) {
+          // Single tag too far away — reject entirely
           curStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        } else if (observation.tagCount() > 1 && observation.avgTagDistance() <= 2.5) {
+          // High-confidence multi-tag at close range: trust x/y AND rotation for drift correction
+          curStdDevs = CameraConstants.kMultiTagStdDevs.times(distanceScale);
         } else {
+          // Single tag or far multi-tag: trust x/y position only, ignore rotation
+          Matrix<N3, N1> base =
+              observation.tagCount() > 1
+                  ? CameraConstants.kMultiTagStdDevs
+                  : CameraConstants.kSingleTagStdDevs;
           curStdDevs =
-              curStdDevs.times(
-                  1 + (observation.avgTagDistance() * observation.avgTagDistance() / 30));
+              VecBuilder.fill(
+                  base.get(0, 0) * distanceScale, base.get(1, 0) * distanceScale, Double.MAX_VALUE);
         }
 
         consumer.accept(observation.pose().toPose2d(), observation.time(), curStdDevs);
