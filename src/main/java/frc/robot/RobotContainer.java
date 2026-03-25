@@ -65,11 +65,11 @@ public class RobotContainer {
 
   private boolean intakeDeployed = false;
 
-  // Operator preset (stored by operator, activated when driver holds R2)
+
   private double presetHoodPos = 0.0;
   private double presetRPM = 0.0;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+ 
   public RobotContainer() {
     fuelSim = new FuelSim();
 
@@ -192,7 +192,7 @@ public class RobotContainer {
             drive,
             () -> -jackController.getLeftY(),
             () -> -jackController.getLeftX(),
-            () -> jackController.getRightX()));
+            () -> -jackController.getRightX()));
 
     // // Switch to X pattern when X button is pressed
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -214,9 +214,7 @@ public class RobotContainer {
                   var hubCenter = FieldConstants.getHubCenter(IsRed());
                   return hubCenter.minus(robotPos).getAngle().plus(Rotation2d.fromDegrees(180));
                 }));
-    // ##########################################
-    // AUTO FIRING SECTION
-    // ##########################################
+                
     Trigger usingPreset = OperatorController.rightTrigger();
 
     // Default (no operator toggle): distance-based shooting
