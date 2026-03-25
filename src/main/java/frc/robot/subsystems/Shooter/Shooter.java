@@ -7,6 +7,7 @@ package frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import java.util.function.DoubleSupplier;
@@ -24,6 +25,7 @@ public class Shooter extends SubsystemBase {
 
   private double voltz;
   private double fPercent;
+  private double manualHoodPos = 0.0;
 
   public Shooter(ShooterIO ioMotor, ShooterIO ioHood) {
     this.ioMotor = ioMotor;
@@ -115,6 +117,18 @@ public class Shooter extends SubsystemBase {
           ioMotor.SetRpm(clampedRPM);
           ioHood.setHoodPosition(clampedPos);
         });
+  }
+
+  public Command ManualHoodAdjust(double deltaPerLoop) {
+    return new FunctionalCommand(
+        () -> manualHoodPos = inputs.MotorHoodAngle, 
+        () -> {
+          manualHoodPos = MathUtil.clamp(manualHoodPos + deltaPerLoop, HOOD_ENC_MIN, HOOD_ENC_MAX);
+          ioHood.setHoodPosition(manualHoodPos);
+        },
+        (interrupted) -> {},
+        () -> false,
+        this);
   }
 
   public Command AutoDirectShot(double Postion, double RPM) {

@@ -6,6 +6,7 @@ package frc.robot.subsystems.Intake;
 
 import static frc.robot.Constants.MotorConstants.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -14,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Set;
@@ -33,6 +35,7 @@ public class Intake extends SubsystemBase {
   Rotation3d hingeRotation;
   Pose3d armPose;
   private boolean isDeployed = false;
+  private double manualPos = 0.0;
 
   public Intake(IntakeIO io) {
     this.io = io;
@@ -58,7 +61,7 @@ public class Intake extends SubsystemBase {
           } else {
             io.setIntakePostion(angle2);
           }
-          isDeployed = !isDeployed; // Flip the state
+          isDeployed = !isDeployed; 
         });
   }
 
@@ -103,5 +106,17 @@ public class Intake extends SubsystemBase {
 
   public Command ZeroIntake() {
     return this.runOnce(() -> io.ZeroIntake());
+  }
+
+  public Command ManualIntakeAdjust(double deltaPerLoop) {
+    return new FunctionalCommand(
+        () -> manualPos = inputs.MotorPos, 
+        () -> {
+          manualPos = MathUtil.clamp(manualPos + deltaPerLoop, IntakeStowed, IntakeCollect);
+          io.setIntakePostion(manualPos);
+        },
+        (interrupted) -> {},
+        () -> false,
+        this);
   }
 }

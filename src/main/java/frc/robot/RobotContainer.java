@@ -198,13 +198,7 @@ public class RobotContainer {
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro Command- Will (Jack Has it for DEBUG)
-    jackController
-        .triangle()
-        .onTrue(
-            Commands.runOnce(
-                () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                drive));
-
+    
     // ##########################################
     // AUTO FIRING SECTION
     // ##########################################
@@ -290,6 +284,25 @@ public class RobotContainer {
                   presetHoodPos = 0.3;
                   presetRPM = 4500;
                 })); // Very far
+
+    OperatorController
+        .rightBumper()
+        .onTrue(
+            Commands.runOnce(
+                () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                drive));
+    
+    OperatorController.leftBumper().onTrue(intake.ZeroIntake());
+
+    // ##########################################
+    // OPERATOR MANUAL OVERRIDES
+    // ##########################################
+
+   
+    OperatorController.povUp().whileTrue(intake.ManualIntakeAdjust(-0.07));
+    OperatorController.povDown().whileTrue(intake.ManualIntakeAdjust(0.07));
+    OperatorController.povLeft().whileTrue(shooter.ManualHoodAdjust(-0.012));
+    OperatorController.povRight().whileTrue(shooter.ManualHoodAdjust(0.012));
   }
 
   /**

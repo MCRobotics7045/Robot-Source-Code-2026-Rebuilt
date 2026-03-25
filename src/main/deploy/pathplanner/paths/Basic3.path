@@ -20,28 +20,28 @@
         "y": 7.43625
       },
       "prevControl": {
-        "x": 6.788975225228968,
-        "y": 7.426036036034991
+        "x": 6.789068071774206,
+        "y": 7.43625
       },
       "nextControl": {
-        "x": 5.073220005208173,
-        "y": 7.4572315854929
+        "x": 5.389662162162162,
+        "y": 7.43625
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6012500000000007,
-        "y": 7.43625
+        "x": 2.6523198198198203,
+        "y": 6.986835585585586
       },
       "prevControl": {
-        "x": 5.09345720721095,
-        "y": 7.44646396396292
+        "x": 3.8575675675675676,
+        "y": 7.712027027027027
       },
       "nextControl": {
-        "x": 0.8527665060118108,
-        "y": 7.429084084041776
+        "x": 1.411499957324618,
+        "y": 6.240240583575762
       },
       "isLocked": false,
       "linkedName": null
@@ -68,18 +68,74 @@
     {
       "waypointRelativePos": 1.8301886792452833,
       "rotationDegrees": 179.8506557710627
-    },
-    {
-      "waypointRelativePos": 2.448113207547189,
-      "rotationDegrees": 151.67334851392374
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Stop Rollers",
+      "waypointRelativePos": 0.3285457809694791,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Stop Rollers"
+        }
+      }
+    },
+    {
+      "name": "Fire Preset Left Command",
+      "waypointRelativePos": 1.987432675044884,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Fire Preset Left Command"
+        }
+      }
+    },
+    {
+      "name": "Indexer Start",
+      "waypointRelativePos": 3.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Indexer Start"
+              }
+            },
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 2.0
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "Intake Retract"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 500.0,
     "nominalVoltage": 12.0,
