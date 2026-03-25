@@ -73,7 +73,7 @@ public class DriveCommands {
               getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
           // Apply rotation deadband
-          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+          double omega = -MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
 
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);
@@ -136,7 +136,7 @@ public class DriveCommands {
               Logger.recordOutput(
                   "DriveCommands/AutoAlign/ErrorDeg", targetAngle.minus(gyroAngle).getDegrees());
               double omega =
-                  -MathUtil.applyDeadband(
+                  MathUtil.applyDeadband(
                       angleController.calculate(gyroAngle.getRadians(), targetAngle.getRadians()),
                       0.05);
               Logger.recordOutput("DriveCommands/AutoAlign/OmegaRadPerSec", omega);
