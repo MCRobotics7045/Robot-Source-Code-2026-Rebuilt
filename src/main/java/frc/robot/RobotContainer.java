@@ -65,11 +65,9 @@ public class RobotContainer {
 
   private boolean intakeDeployed = false;
 
-
   private double presetHoodPos = 0.0;
   private double presetRPM = 0.0;
 
- 
   public RobotContainer() {
     fuelSim = new FuelSim();
 
@@ -157,9 +155,19 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Deploy", intake.SetIntakeCommand(IntakeCollect));
     NamedCommands.registerCommand("Roller Enable", intake.RunIntakeShaft(IntakeMaxSpeed));
     NamedCommands.registerCommand("Intake Retract", intake.SetIntakeCommand(IntakeStowed));
-    NamedCommands.registerCommand("Fire Preset Left Command", shooter.AutoDirectShot(0.2, 3500));
+    NamedCommands.registerCommand("Fire Preset Left Command", shooter.AutoDirectShot(0.2, -3200));
+    NamedCommands.registerCommand(
+        "Alignment",
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> 0,
+            () -> 0,
+            () -> {
+              var robotPos = drive.getPose().getTranslation();
+              var hubCenter = FieldConstants.getHubCenter(IsRed());
+              return hubCenter.minus(robotPos).getAngle();
+            }));
     NamedCommands.registerCommand("Indexer Start", indexer.RunBothIndexer(1));
-    NamedCommands.registerCommand("Indexer Reverse", indexer.RunBothIndexer(-1));
     NamedCommands.registerCommand("Stop Shooter", shooter.MotorStop());
     NamedCommands.registerCommand("Stop Rollers", intake.StopIntakeShaft());
     NamedCommands.registerCommand("Stop Indexer", indexer.StopIndexer());
@@ -192,13 +200,13 @@ public class RobotContainer {
             drive,
             () -> -jackController.getLeftY(),
             () -> -jackController.getLeftX(),
-            () -> -jackController.getRightX()));
+            () -> jackController.getRightX()));
 
     // // Switch to X pattern when X button is pressed
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro Command- Will (Jack Has it for DEBUG)
-    
+
     // ##########################################
     // AUTO FIRING SECTION
     // ##########################################
@@ -212,34 +220,32 @@ public class RobotContainer {
                 () -> {
                   var robotPos = drive.getPose().getTranslation();
                   var hubCenter = FieldConstants.getHubCenter(IsRed());
-                  return hubCenter.minus(robotPos).getAngle().plus(Rotation2d.fromDegrees(180));
+                  return hubCenter.minus(robotPos).getAngle();
                 }));
-                
+
     Trigger usingPreset = OperatorController.rightTrigger();
 
     // Default (no operator toggle): distance-based shooting
-    // jackController
-    //     .R2()
-    //     .and(usingPreset.negate())
-    //     .whileTrue(
-    //         shooter
-    //             .shooterDistanceToPosition(() -> drive.getDistanceToHub())
-    //             .alongWith(
-    //                 Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-    //                     .andThen(indexer.RunBothIndexer(1))));
-
-    jackController.R2().whileTrue(shooter.hoodDistanceToPosition(() -> drive.getDistanceToHub()));
-    // Operator holding left bumper
     jackController
         .R2()
-        .and(usingPreset)
         .whileTrue(
-            shooter.PresetShot(() -> presetHoodPos, () -> presetRPM)
+            shooter
+                .shooterDistanceToPosition(() -> drive.getDistanceToHub())
                 .alongWith(
                     Commands.waitUntil(() -> shooter.isShooterAtSpeed())
                         .andThen(indexer.RunBothIndexer(1))));
 
-    jackController.R2().onFalse(shooter.StowHood());
+    // Operator holding left bumper
+    // jackController
+    //     .R2()
+    //     .and(usingPreset)
+    //     .whileTrue(
+    //         shooter.PresetShot(() -> presetHoodPos, () -> presetRPM)
+    //             .alongWith(
+    //                 Commands.waitUntil(() -> shooter.isShooterAtSpeed())
+    //                     .andThen(indexer.RunBothIndexer(1))));
+
+    jackController.R2().onFalse(shooter.hoodStop());
 
     // ##########################################
     // Intake Section
@@ -283,20 +289,18 @@ public class RobotContainer {
                   presetRPM = 4500;
                 })); // Very far
 
-    OperatorController
-        .rightBumper()
+    OperatorController.rightBumper()
         .onTrue(
             Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive));
-    
+
     OperatorController.leftBumper().onTrue(intake.ZeroIntake());
 
     // ##########################################
     // OPERATOR MANUAL OVERRIDES
     // ##########################################
 
-   
     OperatorController.povUp().whileTrue(intake.ManualIntakeAdjust(-0.07));
     OperatorController.povDown().whileTrue(intake.ManualIntakeAdjust(0.07));
     OperatorController.povLeft().whileTrue(shooter.ManualHoodAdjust(-0.012));

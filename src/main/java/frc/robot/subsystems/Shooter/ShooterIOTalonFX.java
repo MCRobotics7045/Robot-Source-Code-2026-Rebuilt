@@ -10,8 +10,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 // import edu.wpi.first.math.controller.PIDController;
 // import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 /** Add your docs here. */
 public class ShooterIOTalonFX implements ShooterIO {
@@ -24,8 +26,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   public double SetMotorRPM;
   public double SetMotorVoltage;
 
-  // public SimpleMotorFeedforward feedforward;
-  // public PIDController pid;
+  public SimpleMotorFeedforward feedforward;
+  public PIDController pid;
 
   public ShooterIOTalonFX(int lMotorID) {
     motor = new TalonFX(lMotorID);
@@ -38,14 +40,14 @@ public class ShooterIOTalonFX implements ShooterIO {
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     // On-board velocity PID (runs at 1kHz on the TalonFX)
-    motorConfig.Slot0.kV = 12.0 / 6065.0; // volts per RPM — tune with SysId for best results
+    motorConfig.Slot0.kV = 12.0 / (6065.0 / 60.0); // volts per RPS (TalonFX velocity is in RPS)
     motorConfig.Slot0.kP = 0.005; // increase until oscillation, then back off ~25%
     motorConfig.Slot0.kD = 0.0001; // helps anticipate drops; tune after kP is set
 
     motor.getConfigurator().apply(motorConfig);
 
-    // feedforward = new SimpleMotorFeedforward(0.15 / 12, 0.00001 / 12);
-    // pid = new PIDController(0.00005, 0, 0);
+    feedforward = new SimpleMotorFeedforward(0.15 / 12, 0.00001 / 12);
+    pid = new PIDController(0.00005, 0, 0);
   }
 
   @Override
@@ -64,16 +66,7 @@ public class ShooterIOTalonFX implements ShooterIO {
   @Override
   public void SetRpm(double Rpm) {
     SetMotorRPM = Rpm;
-    motor.setControl(velocityRequest.withVelocity(Rpm / 60.0)); // TalonFX uses RPS internally
-    // Old roboRIO PID (runs at ~50Hz — replaced by on-board 1kHz PID above):
-    // motor.setVoltage(
-    //     MathUtil.clamp(
-    //         12
-    //             * (Rpm / 6065
-    //                 + feedforward.calculate(Rpm)
-    //                 + pid.calculate(motor.getVelocity().getValueAsDouble() * 60, Rpm)),
-    //         -12.0,
-    //         12.0));
+    motor.setControl(velocityRequest.withVelocity(Rpm / 60.0));
   }
 
   @Override

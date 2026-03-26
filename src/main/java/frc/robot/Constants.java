@@ -42,31 +42,29 @@ public final class Constants {
     public static final AprilTagFieldLayout aprilFeild =
         AprilTagFields.k2026RebuiltWelded.loadAprilTagLayoutField();
 
-    public static final Transform3d CAMERA_R_TRANSFORM_TO_ROBOT = // /RIGHT SIDE LOOKING AT SHOOTER
+    public static final Transform3d CAMERA_R_TRANSFORM_TO_ROBOT = // RIGHT SIDE LOOKING AT FRONT
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(
-                    -7.527502), // FWD: negative = rear of robot (new frame after Pigeon re-zero)  X
-                Units.inchesToMeters(-8.822286), // RIGHT side (negative Y)  Y
+                Units.inchesToMeters(7.527502), // FWD: positive = front of robot  X
+                Units.inchesToMeters(8.822286), // RIGHT side (negative Y)  Y
                 Units.inchesToMeters(18.664261)), // HEIGHT: on top   Z
             new Rotation3d(
-                Units.degreesToRadians(0), // ROLL: banked outward to the right
+                Units.degreesToRadians(0), // ROLL
                 Units.degreesToRadians(-25), // PITCH: angled up (negative = nose up)
                 Units.degreesToRadians(
-                    -170))); // YAW: 10 degrees outward (right) from straight rearward
+                    10))); // YAW: 10 degrees outward (right) from straight forward
 
     public static final Transform3d CAMERA_L_TRANSFORM_TO_ROBOT =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(
-                    -7.527502), // FWD: negative = rear of robot (new frame after Pigeon re-zero)
-                Units.inchesToMeters(8.822286), // LEFT side (positive Y)
+                Units.inchesToMeters(7.527502), // FWD: positive = front of robot
+                Units.inchesToMeters(-8.822286), // LEFT side (positive Y)
                 Units.inchesToMeters(18.664261)), // HEIGHT: on top
             new Rotation3d(
-                Units.degreesToRadians(0), // ROLL: banked outward to the left
+                Units.degreesToRadians(0), // ROLL
                 Units.degreesToRadians(-25), // PITCH: angled up (negative = nose up)
                 Units.degreesToRadians(
-                    170))); // YAW: 10 degrees outward (left) from straight rearward
+                    -10))); // YAW: 10 degrees outward (left) from straight forward
 
     public static final Matrix<N3, N1> kSingleTagStdDevs =
         VecBuilder.fill(1.0, 1.0, Double.MAX_VALUE);
@@ -85,11 +83,11 @@ public final class Constants {
       kDistanceToRPMmap.put(0.13, 2500.0);
       kDistanceToAngleMap.put(0.13, 0.0);
       kDistanceToRPMmap.put(1.02, 3100.0);
-      kDistanceToAngleMap.put(1.02, 0.12);
+      kDistanceToAngleMap.put(1.02, 0.22);
       kDistanceToRPMmap.put(2.03, 3250.0);
-      kDistanceToAngleMap.put(2.03, 0.33);
+      kDistanceToAngleMap.put(2.03, 0.43);
       kDistanceToRPMmap.put(3.05, 3900.0);
-      kDistanceToAngleMap.put(3.05, 0.21);
+      kDistanceToAngleMap.put(3.05, 0.31);
     }
   }
 

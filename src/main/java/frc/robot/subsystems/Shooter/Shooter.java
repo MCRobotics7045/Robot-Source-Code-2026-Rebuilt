@@ -7,6 +7,7 @@ package frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -52,15 +53,22 @@ public class Shooter extends SubsystemBase {
   }
 
   public double ProccesDistanceHoodAngle(DoubleSupplier Distance) { // FIX
-    // double targetAngle =
-    //     MathUtil.clamp(
-    //         ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()), 0, HOOD_ENC_MAX);
-    // return targetAngle;
-    return fPercent;
+    double targetAngle =
+        MathUtil.clamp(
+            ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()), 0, HOOD_ENC_MAX);
+    return targetAngle;
   }
 
   public Command hoodStop() {
-    return this.runOnce(() -> ioHood.StopMotor());
+
+    return Commands.sequence(
+        this.run(
+                () -> {
+                  ioHood.setHoodPosition(0);
+                  ioMotor.StopMotor();
+                })
+            .withTimeout(2),
+        this.runOnce(() -> ioHood.StopMotor()));
   }
 
   public Command MotorStop() {
@@ -121,7 +129,7 @@ public class Shooter extends SubsystemBase {
 
   public Command ManualHoodAdjust(double deltaPerLoop) {
     return new FunctionalCommand(
-        () -> manualHoodPos = inputs.MotorHoodAngle, 
+        () -> manualHoodPos = inputs.MotorHoodAngle,
         () -> {
           manualHoodPos = MathUtil.clamp(manualHoodPos + deltaPerLoop, HOOD_ENC_MIN, HOOD_ENC_MAX);
           ioHood.setHoodPosition(manualHoodPos);

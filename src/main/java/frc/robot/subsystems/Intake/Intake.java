@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase {
           } else {
             io.setIntakePostion(angle2);
           }
-          isDeployed = !isDeployed; 
+          isDeployed = !isDeployed;
         });
   }
 
@@ -110,7 +110,7 @@ public class Intake extends SubsystemBase {
 
   public Command ManualIntakeAdjust(double deltaPerLoop) {
     return new FunctionalCommand(
-        () -> manualPos = inputs.MotorPos, 
+        () -> manualPos = inputs.MotorPos,
         () -> {
           manualPos = MathUtil.clamp(manualPos + deltaPerLoop, IntakeStowed, IntakeCollect);
           io.setIntakePostion(manualPos);

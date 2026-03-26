@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.67759009009009,
-        "y": 7.344
+        "x": 7.791269614835947,
+        "y": 7.366704707560627
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.67759009009009,
-        "y": 6.210528303246738
+        "x": 7.791269614835947,
+        "y": 6.233233010807365
       },
       "isLocked": false,
       "linkedName": "Basic1"
     },
     {
       "anchor": {
-        "x": 7.67759009009009,
-        "y": 4.892972972972973
+        "x": 7.791269614835947,
+        "y": 5.128316690442225
       },
       "prevControl": {
-        "x": 7.67759009009009,
-        "y": 5.854442866102366
+        "x": 7.791269614835947,
+        "y": 6.089786583571619
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,10 +32,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.22262118491921065,
+      "minWaypointRelativePos": 0.11343686698176764,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.75,
+        "maxVelocity": 0.25,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 500.0,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "Roller Enable",
-      "waypointRelativePos": 0.08258527827648113,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -59,8 +59,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 500.0,
     "nominalVoltage": 12.0,
