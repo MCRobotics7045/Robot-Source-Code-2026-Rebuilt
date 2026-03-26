@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
@@ -176,20 +175,20 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Forward)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Reverse)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     configureButtonBindings();
   }
@@ -211,32 +210,30 @@ public class RobotContainer {
     // ##########################################
     // AUTO FIRING SECTION
     // ##########################################
-    // jackController
-    //     .R2()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -jackController.getLeftY(),
-    //             () -> -jackController.getLeftX(),
-    //             () -> {
-    //               var robotPos = drive.getPose().getTranslation();
-    //               var hubCenter = FieldConstants.getHubCenter(IsRed());
-    //               return hubCenter.minus(robotPos).getAngle();
-    //             }));
+    jackController
+        .R2()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -jackController.getLeftY(),
+                () -> -jackController.getLeftX(),
+                () -> {
+                  var robotPos = drive.getPose().getTranslation();
+                  var hubCenter = FieldConstants.getHubCenter(IsRed());
+                  return hubCenter.minus(robotPos).getAngle();
+                }));
 
     Trigger usingPreset = OperatorController.rightTrigger();
 
     // Default (no operator toggle): distance-based shooting
-    // jackController
-    //     .R2()
-    //     .whileTrue(
-    //         shooter
-    //             .shooterDistanceToPosition(() -> drive.getDistanceToHub())
-    //             .alongWith(
-    //                 Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-    //                     .andThen(indexer.RunBothIndexer(1))));
-
-    jackController.R2().whileTrue(shooter.hoodDistanceToPosition(() -> drive.getDistanceToHub()));
+    jackController
+        .R2()
+        .whileTrue(
+            shooter
+                .shooterDistanceToPosition(() -> drive.getDistanceToHub())
+                .alongWith(
+                    Commands.waitUntil(() -> shooter.isShooterAtSpeed())
+                        .andThen(indexer.RunBothIndexer(1))));
 
     // Operator holding left bumper
     // jackController
@@ -268,28 +265,28 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> {
                   presetHoodPos = 0.0;
-                  presetRPM = 2000;
+                  presetRPM = 2500;
                 })); // Close
     OperatorController.b()
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  presetHoodPos = 0.1;
-                  presetRPM = 3000;
+                  presetHoodPos = 0.12;
+                  presetRPM = 3100;
                 })); // Mid
     OperatorController.y()
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  presetHoodPos = 0.2;
-                  presetRPM = 3500;
+                  presetHoodPos = 0.330;
+                  presetRPM = 3250;
                 })); // Far
     OperatorController.x()
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  presetHoodPos = 0.3;
-                  presetRPM = 4500;
+                  presetHoodPos = 0.21;
+                  presetRPM = 3900;
                 })); // Very far
 
     OperatorController.rightBumper()
