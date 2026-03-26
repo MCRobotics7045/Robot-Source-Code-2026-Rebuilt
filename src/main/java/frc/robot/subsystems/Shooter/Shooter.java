@@ -53,10 +53,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public double ProccesDistanceHoodAngle(DoubleSupplier Distance) { // FIX
-    double targetAngle =
-        MathUtil.clamp(
-            ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()), 0, HOOD_ENC_MAX);
-    return targetAngle;
+    // double targetAngle =
+    //     MathUtil.clamp(
+    //         ShooterConstants.kDistanceToAngleMap.get(Distance.getAsDouble()), 0, HOOD_ENC_MAX);
+    // return targetAngle;
+    return fPercent;
   }
 
   public Command hoodStop() {

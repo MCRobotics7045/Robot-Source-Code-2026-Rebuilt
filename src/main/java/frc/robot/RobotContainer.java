@@ -211,30 +211,32 @@ public class RobotContainer {
     // ##########################################
     // AUTO FIRING SECTION
     // ##########################################
-    jackController
-        .R2()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -jackController.getLeftY(),
-                () -> -jackController.getLeftX(),
-                () -> {
-                  var robotPos = drive.getPose().getTranslation();
-                  var hubCenter = FieldConstants.getHubCenter(IsRed());
-                  return hubCenter.minus(robotPos).getAngle();
-                }));
+    // jackController
+    //     .R2()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -jackController.getLeftY(),
+    //             () -> -jackController.getLeftX(),
+    //             () -> {
+    //               var robotPos = drive.getPose().getTranslation();
+    //               var hubCenter = FieldConstants.getHubCenter(IsRed());
+    //               return hubCenter.minus(robotPos).getAngle();
+    //             }));
 
     Trigger usingPreset = OperatorController.rightTrigger();
 
     // Default (no operator toggle): distance-based shooting
-    jackController
-        .R2()
-        .whileTrue(
-            shooter
-                .shooterDistanceToPosition(() -> drive.getDistanceToHub())
-                .alongWith(
-                    Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-                        .andThen(indexer.RunBothIndexer(1))));
+    // jackController
+    //     .R2()
+    //     .whileTrue(
+    //         shooter
+    //             .shooterDistanceToPosition(() -> drive.getDistanceToHub())
+    //             .alongWith(
+    //                 Commands.waitUntil(() -> shooter.isShooterAtSpeed())
+    //                     .andThen(indexer.RunBothIndexer(1))));
+
+    jackController.R2().whileTrue(shooter.hoodDistanceToPosition(() -> drive.getDistanceToHub()));
 
     // Operator holding left bumper
     // jackController
