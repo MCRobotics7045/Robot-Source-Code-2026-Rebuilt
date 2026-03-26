@@ -171,6 +171,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Shooter", shooter.MotorStop());
     NamedCommands.registerCommand("Stop Rollers", intake.StopIntakeShaft());
     NamedCommands.registerCommand("Stop Indexer", indexer.StopIndexer());
+    NamedCommands.registerCommand("IntakeFeedPos", intake.SetIntakeCommand(MaxShutter));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -295,7 +296,7 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive));
 
-    OperatorController.leftBumper().onTrue(intake.ZeroIntake());
+    OperatorController.leftBumper().onTrue(intake.ReturnIntake());
 
     // ##########################################
     // OPERATOR MANUAL OVERRIDES

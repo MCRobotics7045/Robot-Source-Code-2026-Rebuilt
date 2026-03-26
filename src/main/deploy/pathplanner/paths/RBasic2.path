@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.871655405405406,
-        "y": 0.8584572072072081
+        "x": 7.861441441441443,
+        "y": 0.7052477477477488
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.871655405405406,
-        "y": 2.1760585585585592
+        "x": 7.877853079497722,
+        "y": 2.7468327380210216
       },
       "isLocked": false,
       "linkedName": "BasicR1"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 7.871655405405406,
-        "y": 3.299594594594595
+        "y": 3.074887387387388
       },
       "prevControl": {
-        "x": 7.871655405405406,
-        "y": 2.299594594594595
+        "x": 7.892724801022683,
+        "y": 2.7165048792423714
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,10 +32,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.10233393177737869,
+      "minWaypointRelativePos": 0.05385996409335732,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.75,
+        "maxVelocity": 0.25,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 500.0,
@@ -45,7 +45,19 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Roller Enable",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Roller Enable"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 2.5,
@@ -56,13 +68,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "RightBasic",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

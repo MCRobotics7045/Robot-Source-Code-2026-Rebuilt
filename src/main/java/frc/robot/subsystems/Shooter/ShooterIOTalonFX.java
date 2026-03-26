@@ -14,6 +14,7 @@ import edu.wpi.first.math.controller.PIDController;
 // import edu.wpi.first.math.controller.PIDController;
 // import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class ShooterIOTalonFX implements ShooterIO {
@@ -41,9 +42,12 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     // On-board velocity PID (runs at 1kHz on the TalonFX)
     motorConfig.Slot0.kV = 12.0 / (6065.0 / 60.0); // volts per RPS (TalonFX velocity is in RPS)
+    motorConfig.Slot0.kS = 0.15; // ADDED THIS AFTER AUTO SHOTS
     motorConfig.Slot0.kP = 0.005; // increase until oscillation, then back off ~25%
     motorConfig.Slot0.kD = 0.0001; // helps anticipate drops; tune after kP is set
 
+    // Increase kS slightly to 0.20 or 0.25 for more static friction compensation
+    // Bump kP up a tiny bit to 0.007 or 0.008 for slightly faster error correction
     motor.getConfigurator().apply(motorConfig);
 
     feedforward = new SimpleMotorFeedforward(0.15 / 12, 0.00001 / 12);
@@ -67,6 +71,9 @@ public class ShooterIOTalonFX implements ShooterIO {
   public void SetRpm(double Rpm) {
     SetMotorRPM = Rpm;
     motor.setControl(velocityRequest.withVelocity(Rpm / 60.0));
+    SmartDashboard.putNumber("SetRPM", SetMotorRPM);
+    SmartDashboard.putNumber(
+        "RPM Error", SetMotorRPM - motor.getVelocity().getValueAsDouble() * 60);
   }
 
   @Override

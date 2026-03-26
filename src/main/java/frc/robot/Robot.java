@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -101,20 +105,19 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     // Keep the pose estimator heading aligned with the actual alliance so
     // odometry is correct as soon as the robot enables (with or without vision).
-    // DriverStation.getAlliance()
-    //     .ifPresent(
-    //         alliance -> {
-    //           Rotation2d allianceHeading =
-    //               alliance == Alliance.Red
-    //                   ? Rotation2d.fromDegrees(180)
-    //                   : Rotation2d.fromDegrees(0);
-    //           robotContainer
-    //               .getDrive()
-    //               .setPose(
-    //                   new Pose2d(
-    //                       robotContainer.getDrive().getPose().getTranslation(),
-    // allianceHeading));
-    //         });
+    DriverStation.getAlliance()
+        .ifPresent(
+            alliance -> {
+              Rotation2d allianceHeading =
+                  alliance == Alliance.Red
+                      ? Rotation2d.fromDegrees(180)
+                      : Rotation2d.fromDegrees(0);
+              robotContainer
+                  .getDrive()
+                  .setPose(
+                      new Pose2d(
+                          robotContainer.getDrive().getPose().getTranslation(), allianceHeading));
+            });
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

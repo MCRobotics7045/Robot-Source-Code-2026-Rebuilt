@@ -103,7 +103,7 @@ public final class Constants {
     // Intake POS
     public static final double IntakeStowed = 0; // stowed postion (should be 0)
     public static final double IntakeCollect = 7; // Intake Out Position
-    public static final double MaxShutter = 3; // Max Shutter angle(proably could be less)
+    public static final double MaxShutter = 2.5; // Max Shutter angle(proably could be less)
 
     // Intake Drive
     public static final double IntakeMaxSpeed = 0.7; // Speed of roller wheels
