@@ -72,22 +72,9 @@
                             }
                           },
                           {
-                            "type": "sequential",
+                            "type": "named",
                             "data": {
-                              "commands": [
-                                {
-                                  "type": "named",
-                                  "data": {
-                                    "name": "Roller Enable"
-                                  }
-                                },
-                                {
-                                  "type": "named",
-                                  "data": {
-                                    "name": "IntakeFeedPos"
-                                  }
-                                }
-                              ]
+                              "name": "Intake Retract With Rollers"
                             }
                           }
                         ]

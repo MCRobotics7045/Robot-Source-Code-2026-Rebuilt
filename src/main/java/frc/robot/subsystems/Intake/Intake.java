@@ -119,4 +119,16 @@ public class Intake extends SubsystemBase {
         () -> false,
         this);
   }
+
+  public Command RetractWithRollers(double angle, double speed) {
+    return this.startEnd(
+        () -> {
+          io.setIntakePostion(angle);
+          io.runIntakeD(speed);
+        },
+        () -> {
+          io.setIntakePostion(0);
+          io.stopIntakeD();
+        });
+  }
 }

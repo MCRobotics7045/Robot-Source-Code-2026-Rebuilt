@@ -5,40 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Deploy"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.2
-                }
-              }
-            ]
+            "pathName": "DepotM"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RBasic1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RBasic2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RBasic3"
+            "pathName": "DepotShot"
           }
         },
         {

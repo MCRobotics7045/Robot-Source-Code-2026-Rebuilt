@@ -172,6 +172,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Rollers", intake.StopIntakeShaft());
     NamedCommands.registerCommand("Stop Indexer", indexer.StopIndexer());
     NamedCommands.registerCommand("IntakeFeedPos", intake.SetIntakeCommand(MaxShutter));
+    NamedCommands.registerCommand(
+        "Intake Retract With Rollers", intake.RetractWithRollers(MaxShutter, IntakeMaxSpeed));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

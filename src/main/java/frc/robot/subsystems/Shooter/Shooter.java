@@ -143,11 +143,12 @@ public class Shooter extends SubsystemBase {
     double clampedRPM = MathUtil.clamp(RPM, -6065, 6065);
     double clampedPostion = MathUtil.clamp(Postion, HOOD_ENC_MIN, HOOD_ENC_MAX);
 
-    return this.run(
+    return this.runEnd(
         () -> {
           ioMotor.SetRpm(clampedRPM);
           ioHood.setHoodPosition(clampedPostion);
-        });
+        },
+        () -> StowHood());
   }
 
   // public Command hoodPidFromDashboard() {
