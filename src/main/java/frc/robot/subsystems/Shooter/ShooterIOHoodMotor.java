@@ -31,14 +31,13 @@ public class ShooterIOHoodMotor implements ShooterIO {
   @SuppressWarnings("removal")
   public ShooterIOHoodMotor() {
     motor = new SparkMax(HOOD_CAN_ID, MotorType.kBrushless);
-
     SparkMaxConfig config = new SparkMaxConfig();
     config.smartCurrentLimit(40).idleMode(IdleMode.kBrake).openLoopRampRate(0.1);
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder = motor.getEncoder();
 
-    pid = new PIDController(0, 0, 0);
+    pid = new PIDController(3, 0, 0);
     pid.setTolerance(0.03);
 
     /**
@@ -70,10 +69,11 @@ public class ShooterIOHoodMotor implements ShooterIO {
 
   @Override
   public void setHoodPosition(double targetRotations) {
+
     double pos = encoder.getPosition();
     double pidOutput = pid.calculate(pos, targetRotations);
 
-    double gravityFeedforward = 0.8; // Start here, tune until hood holds position
+    double gravityFeedforward = 0.25;
 
     double totalOutput = gravityFeedforward + pidOutput;
     double clampedOutput = MathUtil.clamp(totalOutput, -12.0, 12.0);
