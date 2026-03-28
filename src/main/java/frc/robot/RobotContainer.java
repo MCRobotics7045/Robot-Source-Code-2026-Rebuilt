@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
@@ -225,7 +224,7 @@ public class RobotContainer {
                   return hubCenter.minus(robotPos).getAngle();
                 }));
 
-    Trigger usingPreset = OperatorController.rightTrigger();
+    // Trigger usingPreset = OperatorController.rightTrigger();
 
     // Default (no operator toggle): distance-based shooting
     jackController
@@ -256,7 +255,7 @@ public class RobotContainer {
     jackController.L1().onTrue(intake.ReturnIntake());
 
     jackController.circle().whileTrue(indexer.RunStarWheels());
-    jackController.square().onTrue(shooter.ResetEncoder());
+    // jackController.square().onTrue(shooter.ResetEncoder());
 
     // ##########################################
     // OPERATOR CONTROLLER - SHOT PRESETS
@@ -297,7 +296,7 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive));
 
-    OperatorController.leftBumper().onTrue(intake.ReturnIntake());
+    OperatorController.leftBumper().onTrue(intake.SetIntakeCommand(MaxShutter));
 
     // ##########################################
     // OPERATOR MANUAL OVERRIDES

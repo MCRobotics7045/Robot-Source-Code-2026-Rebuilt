@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems.Shooter;
 
+
+
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -40,18 +44,16 @@ public class ShooterIOTalonFX implements ShooterIO {
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    // On-board velocity PID (runs at 1kHz on the TalonFX)
+    // On-board velocity PID 
     motorConfig.Slot0.kV = 12.0 / (6065.0 / 60.0); // volts per RPS (TalonFX velocity is in RPS)
     motorConfig.Slot0.kS = 0.15; // ADDED THIS AFTER AUTO SHOTS
-    motorConfig.Slot0.kP = 0.005; // increase until oscillation, then back off ~25%
-    motorConfig.Slot0.kD = 0.0001; // helps anticipate drops; tune after kP is set
+    motorConfig.Slot0.kP = 0.01; //3/27 CHANGE
+    motorConfig.Slot0.kD = 0.0001; 
 
-    // Increase kS slightly to 0.20 or 0.25 for more static friction compensation
-    // Bump kP up a tiny bit to 0.007 or 0.008 for slightly faster error correction
     motor.getConfigurator().apply(motorConfig);
 
-    feedforward = new SimpleMotorFeedforward(0.15 / 12, 0.00001 / 12);
-    pid = new PIDController(0.00005, 0, 0);
+    // feedforward = new SimpleMotorFeedforward(0.15 / 12, 0.00001 / 12);
+    // pid = new PIDController(0.0005, 0, 0);
   }
 
   @Override
@@ -71,8 +73,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   public void SetRpm(double Rpm) {
     SetMotorRPM = Rpm;
     motor.setControl(velocityRequest.withVelocity(Rpm / 60.0));
-    SmartDashboard.putNumber("SetRPM", SetMotorRPM);
-    SmartDashboard.putNumber(
+    Logger.recordOutput("Shooter RPM Setpoint", Rpm);
+    Logger.recordOutput(
         "RPM Error", SetMotorRPM - motor.getVelocity().getValueAsDouble() * 60);
   }
 

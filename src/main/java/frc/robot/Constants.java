@@ -79,14 +79,14 @@ public final class Constants {
     public static final InterpolatingDoubleTreeMap kDistanceToAngleMap =
         new InterpolatingDoubleTreeMap();
 
-    static {
-      kDistanceToRPMmap.put(0.13, 2500.0);
+    static {//3/27 Motor RPM DROPPED 200rpm each
+      kDistanceToRPMmap.put(0.13, 2300.0);
       kDistanceToAngleMap.put(0.13, 0.0);
-      kDistanceToRPMmap.put(1.02, 3100.0);
+      kDistanceToRPMmap.put(1.02, 2900.0);
       kDistanceToAngleMap.put(1.02, 0.12);
-      kDistanceToRPMmap.put(2.03, 3250.0);
+      kDistanceToRPMmap.put(2.03, 3050.0);
       kDistanceToAngleMap.put(2.03, 0.33);
-      kDistanceToRPMmap.put(3.05, 3900.0);
+      kDistanceToRPMmap.put(3.05, 3700.0);
       kDistanceToAngleMap.put(3.05, 0.21);
     }
   }
