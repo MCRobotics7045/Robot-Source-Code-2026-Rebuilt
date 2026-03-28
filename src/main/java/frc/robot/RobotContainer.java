@@ -153,7 +153,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Deploy", intake.SetIntakeCommand(IntakeCollect));
     NamedCommands.registerCommand("Roller Enable", intake.RunIntakeShaft(IntakeMaxSpeed));
     NamedCommands.registerCommand("Intake Retract", intake.SetIntakeCommand(IntakeStowed));
-    NamedCommands.registerCommand("Fire Preset Left Command", shooter.AutoDirectShot(0.2, -3200));
+    NamedCommands.registerCommand("Fire Preset Left Command", shooter.AutoDirectShot(0.2, -3000));
     NamedCommands.registerCommand(
         "Alignment",
         DriveCommands.joystickDriveAtAngle(

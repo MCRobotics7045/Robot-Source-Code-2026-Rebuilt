@@ -138,7 +138,7 @@ public class DriveCommands {
               double omega =
                   MathUtil.applyDeadband(
                       angleController.calculate(gyroAngle.getRadians(), targetAngle.getRadians()),
-                      0.05);
+                      0.01);// WAS 0.05
               Logger.recordOutput("DriveCommands/AutoAlign/OmegaRadPerSec", omega);
 
               // Convert to field relative speeds & send command
