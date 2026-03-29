@@ -16,7 +16,6 @@ import static frc.robot.Constants.MotorConstants.IntakePosMotorID;
 import static frc.robot.Constants.MotorConstants.IntakeStowed;
 import static frc.robot.Constants.MotorConstants.MaxShutter;
 import static frc.robot.Constants.MotorConstants.ShooterMotorID;
-import static frc.robot.Constants.MotorConstants.ShutterSpeed;
 import static frc.robot.Constants.ShooterConstants.NO_VISION_FALLBACK_HOOD;
 import static frc.robot.Constants.ShooterConstants.NO_VISION_FALLBACK_RPM;
 
@@ -184,7 +183,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Rollers", intake.StopIntakeShaft());
     NamedCommands.registerCommand("Stop Indexer", indexer.StopIndexer());
     NamedCommands.registerCommand("IntakeFeedPos", intake.SetIntakeCommand(MaxShutter));
-    NamedCommands.registerCommand("Intake Retract With Rollers", intake.ShutterBalls(ShutterSpeed));
+    NamedCommands.registerCommand(
+        "Intake Retract With Rollers", intake.ShutterBalls(IntakeCollect, MaxShutter, 4));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -209,11 +209,24 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // Feild Relative Drive
+    double slowSpeedMultiplier = 0.5; // 50% speed when intaking with R1
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -jackController.getLeftY(),
-            () -> -jackController.getLeftX(),
+            () -> {
+              double speed = -jackController.getLeftY();
+              if (jackController.L2().getAsBoolean() && jackController.R1().getAsBoolean()) {
+                speed *= slowSpeedMultiplier;
+              }
+              return speed;
+            },
+            () -> {
+              double speed = -jackController.getLeftX();
+              if (jackController.L2().getAsBoolean() && jackController.R1().getAsBoolean()) {
+                speed *= slowSpeedMultiplier;
+              }
+              return speed;
+            },
             () -> jackController.getRightX()));
 
     // // Switch to X pattern when X button is pressed
@@ -226,6 +239,8 @@ public class RobotContainer {
     // ##########################################
     jackController
         .R2()
+        .and(() -> !vision.isAnyCameraDisconnected())
+        .and(() -> !FieldConstants.NEUTRAL_ZONE.contains(drive.getPose()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -251,7 +266,9 @@ public class RobotContainer {
                     NO_VISION_FALLBACK_RPM)
                 .alongWith(
                     Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-                        .andThen(indexer.RunBothIndexer(1))));
+                        .andThen(
+                            indexer.RunBothIndexerWithUnjam(
+                                1.0, () -> OperatorController.rightBumper().getAsBoolean()))));
 
     // Operator holding left bumper
     // jackController
@@ -271,7 +288,6 @@ public class RobotContainer {
     jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
     jackController.L1().onTrue(intake.ReturnIntake());
 
-    jackController.triangle().whileTrue(intake.ShutterBalls(ShutterSpeed));
     jackController.circle().whileTrue(indexer.RunStarWheels());
     // jackController.square().onTrue(shooter.ResetEncoder());
 
@@ -320,16 +336,16 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive));
 
-    OperatorController.leftBumper().whileTrue(intake.ShutterBalls(ShutterSpeed));
-
+    OperatorController.leftBumper().whileTrue(intake.ShutterBalls(IntakeCollect, MaxShutter, 3));
+    // OperatorController.rightBumper().whileTrue(indexer.UnJamIndexer(0.9));
     // ##########################################
     // OPERATOR MANUAL OVERRIDES
     // ##########################################
 
-    OperatorController.povUp().whileTrue(intake.ManualIntakeAdjust(-0.07));
-    OperatorController.povDown().whileTrue(intake.ManualIntakeAdjust(0.07));
-    OperatorController.povLeft().whileTrue(shooter.ManualHoodAdjust(-0.012));
-    OperatorController.povRight().whileTrue(shooter.ManualHoodAdjust(0.012));
+    // OperatorController.povUp().whileTrue(intake.ManualIntakeAdjust(-0.07));
+    // OperatorController.povDown().whileTrue(intake.ManualIntakeAdjust(0.07));
+    // OperatorController.povLeft().whileTrue(shooter.ManualHoodAdjust(-0.012));
+    // OperatorController.povRight().whileTrue(shooter.ManualHoodAdjust(0.012));
   }
 
   /**
@@ -400,5 +416,13 @@ public class RobotContainer {
         drive::getPose,
         drive::getFieldRelativeSpeeds);
     fuelSim.setSubticks(20);
+  }
+
+  public boolean getL2Pressed() {
+    return jackController.L2().getAsBoolean();
+  }
+
+  public boolean getR1Pressed() {
+    return jackController.R1().getAsBoolean();
   }
 }

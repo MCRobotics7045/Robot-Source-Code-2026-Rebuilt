@@ -90,7 +90,8 @@ public class Robot extends LoggedRobot {
     // finished or interrupted commands, and running subsystem periodic() methods.
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
-
+    FieldConstants.NEUTRAL_ZONE.logPoints();
+    Logger.recordOutput("IsInNeutralZone", FieldConstants.NEUTRAL_ZONE.contains(robotContainer.getDrive().getPose()));
     CommandScheduler.getInstance().run();
 
     // Broadcast alliance shift (hub active/inactive) to SmartDashboard
@@ -154,7 +155,10 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    Logger.recordOutput("L2Pressed", robotContainer.getL2Pressed());
+    Logger.recordOutput("R1Pressed", robotContainer.getR1Pressed());
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override
