@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems.Shooter;
 
-
-
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,7 +14,7 @@ import edu.wpi.first.math.controller.PIDController;
 // import edu.wpi.first.math.controller.PIDController;
 // import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.littletonrobotics.junction.Logger;
 
 /** Add your docs here. */
 public class ShooterIOTalonFX implements ShooterIO {
@@ -44,11 +40,11 @@ public class ShooterIOTalonFX implements ShooterIO {
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    // On-board velocity PID 
+    // On-board velocity PID
     motorConfig.Slot0.kV = 12.0 / (6065.0 / 60.0); // volts per RPS (TalonFX velocity is in RPS)
     motorConfig.Slot0.kS = 0.15; // ADDED THIS AFTER AUTO SHOTS
-    motorConfig.Slot0.kP = 0.01; //3/27 CHANGE
-    motorConfig.Slot0.kD = 0.0001; 
+    motorConfig.Slot0.kP = 0.01; // 3/27 CHANGE
+    motorConfig.Slot0.kD = 0.0001;
 
     motor.getConfigurator().apply(motorConfig);
 
@@ -74,8 +70,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     SetMotorRPM = Rpm;
     motor.setControl(velocityRequest.withVelocity(Rpm / 60.0));
     Logger.recordOutput("Shooter RPM Setpoint", Rpm);
-    Logger.recordOutput(
-        "RPM Error", SetMotorRPM - motor.getVelocity().getValueAsDouble() * 60);
+    Logger.recordOutput("RPM Error", SetMotorRPM - motor.getVelocity().getValueAsDouble() * 60);
   }
 
   @Override

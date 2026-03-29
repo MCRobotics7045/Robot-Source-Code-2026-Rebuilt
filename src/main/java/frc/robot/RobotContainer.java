@@ -7,7 +7,18 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.MotorConstants.*;
+import static frc.robot.Constants.MotorConstants.IndexerBeltMotorID;
+import static frc.robot.Constants.MotorConstants.IndexerStarMotorID;
+import static frc.robot.Constants.MotorConstants.IntakeCollect;
+import static frc.robot.Constants.MotorConstants.IntakeDrivMotorID;
+import static frc.robot.Constants.MotorConstants.IntakeMaxSpeed;
+import static frc.robot.Constants.MotorConstants.IntakePosMotorID;
+import static frc.robot.Constants.MotorConstants.IntakeStowed;
+import static frc.robot.Constants.MotorConstants.MaxShutter;
+import static frc.robot.Constants.MotorConstants.ShooterMotorID;
+import static frc.robot.Constants.MotorConstants.ShutterSpeed;
+import static frc.robot.Constants.ShooterConstants.NO_VISION_FALLBACK_HOOD;
+import static frc.robot.Constants.ShooterConstants.NO_VISION_FALLBACK_RPM;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -27,7 +38,10 @@ import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerIO;
 import frc.robot.subsystems.Indexer.IndexerIOSparkMax;
 import frc.robot.subsystems.Indexer.IndexerIOStarSparkMax;
-import frc.robot.subsystems.Intake.*;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOSim;
+import frc.robot.subsystems.Intake.IntakeIOSparkMax;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.ShooterIO;
 import frc.robot.subsystems.Shooter.ShooterIOHoodMotor;
@@ -170,8 +184,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Rollers", intake.StopIntakeShaft());
     NamedCommands.registerCommand("Stop Indexer", indexer.StopIndexer());
     NamedCommands.registerCommand("IntakeFeedPos", intake.SetIntakeCommand(MaxShutter));
-    NamedCommands.registerCommand(
-        "Intake Retract With Rollers", intake.RetractWithRollers(MaxShutter, IntakeMaxSpeed));
+    NamedCommands.registerCommand("Intake Retract With Rollers", intake.ShutterBalls(ShutterSpeed));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -231,7 +244,11 @@ public class RobotContainer {
         .R2()
         .whileTrue(
             shooter
-                .shooterDistanceToPosition(() -> drive.getDistanceToHub())
+                .shooterDistanceOrFallback(
+                    () -> drive.getDistanceToHub(),
+                    () -> !vision.isAnyCameraDisconnected(),
+                    NO_VISION_FALLBACK_HOOD,
+                    NO_VISION_FALLBACK_RPM)
                 .alongWith(
                     Commands.waitUntil(() -> shooter.isShooterAtSpeed())
                         .andThen(indexer.RunBothIndexer(1))));
@@ -254,6 +271,7 @@ public class RobotContainer {
     jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
     jackController.L1().onTrue(intake.ReturnIntake());
 
+    jackController.triangle().whileTrue(intake.ShutterBalls(ShutterSpeed));
     jackController.circle().whileTrue(indexer.RunStarWheels());
     // jackController.square().onTrue(shooter.ResetEncoder());
 
@@ -290,13 +308,19 @@ public class RobotContainer {
                   presetRPM = 3900;
                 })); // Very far
 
-    OperatorController.rightBumper()
+    OperatorController.start()
         .onTrue(
             Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive));
 
-    OperatorController.leftBumper().onTrue(intake.SetIntakeCommand(MaxShutter));
+    OperatorController.back()
+        .onTrue(
+            Commands.runOnce(
+                () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                drive));
+
+    OperatorController.leftBumper().whileTrue(intake.ShutterBalls(ShutterSpeed));
 
     // ##########################################
     // OPERATOR MANUAL OVERRIDES

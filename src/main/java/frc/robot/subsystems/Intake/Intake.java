@@ -92,8 +92,18 @@ public class Intake extends SubsystemBase {
         Set.of(this));
   }
 
-  public Command ShutterBalls(double MaxShutter) {
-    return this.run(() -> io.setIntakePostion(MaxShutter));
+  public Command ShutterBalls(double rollerSpeed) {
+    boolean[] goingUp = {true};
+    return this.run(
+            () -> {
+              double target = goingUp[0] ? MaxShutter : IntakeCollect;
+              io.setIntakePostion(target);
+              io.runIntakeD(rollerSpeed);
+              if (Math.abs(inputs.MotorPos - target) < 0.15) {
+                goingUp[0] = !goingUp[0];
+              }
+            })
+        .finallyDo(() -> io.stopIntakeD());
   }
 
   public Command RunIntakeShaft(double speed) {
@@ -123,6 +133,7 @@ public class Intake extends SubsystemBase {
   public Command RetractWithRollers(double angle, double speed) {
     return this.startEnd(
         () -> {
+          isDeployed = false;
           io.setIntakePostion(angle);
           io.runIntakeD(speed);
         },

@@ -66,6 +66,9 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
+    SlewRateLimiter xV = new SlewRateLimiter(7);
+    SlewRateLimiter yV = new SlewRateLimiter(7);
+    SlewRateLimiter xRotate = new SlewRateLimiter(10);
     return Commands.run(
         () -> {
           // Get linear velocity
@@ -78,14 +81,17 @@ public class DriveCommands {
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);
 
-          // Convert to field relative speeds & send command
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+          // Apply slew rate limiters to smooth acceleration and reduce battery spikes
+          double vx = xV.calculate(linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec());
+          double vy = yV.calculate(linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec());
+          double rot =
+              xRotate.calculate(
                   omega
                       * drive.getMaxAngularSpeedRadPerSec()
                       * Constants.DRIVETRAIN_TURN_SPEED_MODIFIER);
+
+          // Convert to field relative speeds & send command
+          ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, rot);
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;
@@ -138,7 +144,7 @@ public class DriveCommands {
               double omega =
                   MathUtil.applyDeadband(
                       angleController.calculate(gyroAngle.getRadians(), targetAngle.getRadians()),
-                      0.01);// WAS 0.05
+                      0.01); // WAS 0.05
               Logger.recordOutput("DriveCommands/AutoAlign/OmegaRadPerSec", omega);
 
               // Convert to field relative speeds & send command

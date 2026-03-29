@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -88,6 +89,21 @@ public class Shooter extends SubsystemBase {
         () -> {
           ioHood.setHoodPosition(ProccesDistanceHoodAngle(Distance));
           ioMotor.SetRpm(-ProccesRPMmotor(Distance));
+        });
+  }
+
+  public Command shooterDistanceOrFallback(
+      DoubleSupplier distance, BooleanSupplier visionOk, double fallbackHood, double fallbackRPM) {
+
+    return this.run(
+        () -> {
+          if (visionOk.getAsBoolean()) {
+            ioHood.setHoodPosition(ProccesDistanceHoodAngle(distance));
+            ioMotor.SetRpm(-ProccesRPMmotor(distance));
+          } else {
+            ioHood.setHoodPosition(fallbackHood);
+            ioMotor.SetRpm(fallbackRPM);
+          }
         });
   }
 
