@@ -158,6 +158,14 @@ public class Vision extends SubsystemBase {
     return false;
   }
 
+  /** Returns true only if ALL cameras have lost connection to PhotonVision. */
+  public boolean isAllCamerasDisconnected() {
+    for (int i = 0; i < inputs.length; i++) {
+      if (inputs[i].CameraConnection) return false;
+    }
+    return true;
+  }
+
   @FunctionalInterface
   public interface VisionConsumer {
     void accept(

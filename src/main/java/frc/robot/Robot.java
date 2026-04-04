@@ -91,7 +91,9 @@ public class Robot extends LoggedRobot {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     FieldConstants.NEUTRAL_ZONE.logPoints();
-    Logger.recordOutput("IsInNeutralZone", FieldConstants.NEUTRAL_ZONE.contains(robotContainer.getDrive().getPose()));
+    Logger.recordOutput(
+        "IsInNeutralZone",
+        FieldConstants.NEUTRAL_ZONE.contains(robotContainer.getDrive().getPose()));
     CommandScheduler.getInstance().run();
 
     // Broadcast alliance shift (hub active/inactive) to SmartDashboard

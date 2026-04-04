@@ -7,6 +7,7 @@ package frc.robot.subsystems.Intake;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -33,17 +34,26 @@ public class IntakeIOTalonFXPos implements IntakeIO {
     // Configure position motor (Falcon 500 / TalonFX)
     TalonFXConfiguration posConfig = new TalonFXConfiguration();
     posConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    posConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    posConfig.MotorOutput.DutyCycleNeutralDeadband = 0.04;
+    posConfig.MotorOutput.PeakForwardDutyCycle = 1.0;
     posConfig.CurrentLimits.StatorCurrentLimit = 35.0;
     posConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    // PID gains — retune as needed (ported from SparkMax values)
+
+    // PID gains
     posConfig.Slot0.kP = 1.0;
-    posConfig.Slot0.kI = 0.002;
-    posConfig.Slot0.kD = 0.48;
+    posConfig.Slot0.kI = 0.0;
+    posConfig.Slot0.kD = 0.2;
+    posConfig.Slot0.kS = 0.6; // FF static voltage
     posConfig.Slot0.kV = 0.0;
-    // MotionMagic cruise velocity (rot/s) and acceleration (rot/s^2) — retune as needed
-    posConfig.MotionMagic.MotionMagicCruiseVelocity = 80.0;
-    posConfig.MotionMagic.MotionMagicAcceleration = 160.0;
+    // Motion Magic settings
+    posConfig.MotionMagic.MotionMagicCruiseVelocity = 5;
+    posConfig.MotionMagic.MotionMagicAcceleration = 2;
+    posConfig.MotionMagic.MotionMagicJerk = 20;
+    posConfig.MotionMagic.MotionMagicExpo_kV = 0.12;
+    posConfig.MotionMagic.MotionMagicExpo_kA = 0.10;
     Pos.getConfigurator().apply(posConfig);
+    Pos.setPosition(0);
 
     // Configure drive motor (SparkMax, unchanged)
     SparkMaxConfig driveConfig = new SparkMaxConfig();

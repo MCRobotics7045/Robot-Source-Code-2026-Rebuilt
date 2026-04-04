@@ -37,27 +37,8 @@ public class ShooterIOHoodMotor implements ShooterIO {
 
     encoder = motor.getEncoder();
 
-    pid = new PIDController(3, 0, 0);
+    pid = new PIDController(1, 0, 0);
     pid.setTolerance(0.03);
-
-    /**
-     * STEP 1: Find Gravity Feedforward (P=I=D all at 0) Set gravityFeedforward = 0.0 Command hood
-     * to some position (like 0.5) Slowly increase feedforward (0.2, 0.4, 0.6, 0.8...) Stop when the
-     * hood stops sliding back down after you release it manually That's your gravity feedforward
-     * value → write it down
-     *
-     * <p>STEP 2: Add P Gain (I and D stay 0) Keep gravityFeedforward at the value from Step 1 Set P
-     * to 2.0 (starting point) Command hood to setpoint (0.2) and watch logs If hood oscillates:
-     * decrease P to 1.5 If hood doesn't move to setpoint: increase P to 3.0, 4.0, etc. Sweet spot:
-     * settles smoothly to setpoint within ~1 second Write down your P value
-     *
-     * <p>STEP 3: Add I Gain (if needed) Keep your P and feedforward Start with I = 0.5 Only if P
-     * alone leaves you slightly off target, increase I slightly Too much I = oscillation Usually P
-     * alone is enough for position control Write down your I value
-     *
-     * <p>What to watch in logs: Hood/ErrorRotations → should go to ~0 Hood/TotalOutputVolts →
-     * should be feedforward + small PID corrections Hood/AtSetpoint → should be true when settled .
-     */
   }
 
   @Override
@@ -69,11 +50,11 @@ public class ShooterIOHoodMotor implements ShooterIO {
 
   @Override
   public void setHoodPosition(double targetRotations) {
-
+    // double gravityFeedforward = SmartDashboard.getNumber("FEEDF", 0);
     double pos = encoder.getPosition();
     double pidOutput = pid.calculate(pos, targetRotations);
 
-    double gravityFeedforward = 0.25;
+    double gravityFeedforward = 0.58;
 
     double totalOutput = gravityFeedforward + pidOutput;
     double clampedOutput = MathUtil.clamp(totalOutput, -12.0, 12.0);

@@ -18,6 +18,7 @@ public class IntakeIOSparkMax implements IntakeIO {
   private final SparkMax Drive;
   private final SparkMax Pos;
   private final SparkMaxConfig config;
+  private final SparkMaxConfig config2;
   private final SparkClosedLoopController controller;
   private final RelativeEncoder DEncoder;
   private final RelativeEncoder PEncoder;
@@ -30,13 +31,16 @@ public class IntakeIOSparkMax implements IntakeIO {
     Pos = new SparkMax(PosMotorID, MotorType.kBrushless);
     DEncoder = Drive.getEncoder();
     PEncoder = Pos.getEncoder();
+    config2 = new SparkMaxConfig();
+    config2.smartCurrentLimit(20).idleMode(IdleMode.kCoast).openLoopRampRate(0.1);
+    Drive.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     config = new SparkMaxConfig();
     config
         .smartCurrentLimit(80) // STATOR LIMIT
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(
             0.1); // Unsure if I need to make a new Config or can i change it then apply again?
-    Drive.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    Pos.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // pOS CONFIG
     config.closedLoop.p(1).i(0.002).d(0.48);
     config

@@ -82,6 +82,7 @@ public final class Constants {
     // Fallback values used when any PhotonVision camera is disconnected during auto-fire
     public static final double NO_VISION_FALLBACK_RPM = -3200.0;
     public static final double NO_VISION_FALLBACK_HOOD = 0.2;
+    public static final double NO_VISION_FALLBACK_HOOD = 0.5;
 
     static { // 3/27 Motor RPM DROPPED 200rpm each
       kDistanceToRPMmap.put(0.13, 2300.0);
@@ -106,7 +107,7 @@ public final class Constants {
   public static final class MotorConstants {
     // Intake POS
     public static final double IntakeStowed = 0; // stowed postion (should be 0)
-    public static final double IntakeCollect = 7.1; // Intake Out Position
+    public static final double IntakeCollect = 6.1; // Intake Out Position
     public static final double MaxShutter = 3; // Max Shutter angle(proably could be less)
 
     // Intake Drive

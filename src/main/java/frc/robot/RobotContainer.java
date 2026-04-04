@@ -84,6 +84,7 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("Hood Angle", 0);
     SmartDashboard.putNumber("MotorVoltage", 0);
+    SmartDashboard.putNumber("FEEDF", 0);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -183,8 +184,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Rollers", intake.StopIntakeShaft());
     NamedCommands.registerCommand("Stop Indexer", indexer.StopIndexer());
     NamedCommands.registerCommand("IntakeFeedPos", intake.SetIntakeCommand(MaxShutter));
-    NamedCommands.registerCommand(
-        "Intake Retract With Rollers", intake.ShutterBalls(IntakeCollect, MaxShutter, 4));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -239,7 +238,7 @@ public class RobotContainer {
     // ##########################################
     jackController
         .R2()
-        .and(() -> !vision.isAnyCameraDisconnected())
+        .and(() -> !vision.isAllCamerasDisconnected())
         .and(() -> !FieldConstants.NEUTRAL_ZONE.contains(drive.getPose()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
@@ -261,14 +260,12 @@ public class RobotContainer {
             shooter
                 .shooterDistanceOrFallback(
                     () -> drive.getDistanceToHub(),
-                    () -> !vision.isAnyCameraDisconnected(),
+                    () -> !vision.isAllCamerasDisconnected(),
                     NO_VISION_FALLBACK_HOOD,
                     NO_VISION_FALLBACK_RPM)
                 .alongWith(
                     Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-                        .andThen(
-                            indexer.RunBothIndexerWithUnjam(
-                                1.0, () -> OperatorController.rightBumper().getAsBoolean()))));
+                        .andThen(indexer.RunBothIndexer(1))));
 
     // Operator holding left bumper
     // jackController
@@ -288,6 +285,7 @@ public class RobotContainer {
     jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
     jackController.L1().onTrue(intake.ReturnIntake());
 
+    jackController.triangle().onTrue(intake.ZeroIntake());
     jackController.circle().whileTrue(indexer.RunStarWheels());
     // jackController.square().onTrue(shooter.ResetEncoder());
 
@@ -336,8 +334,8 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive));
 
-    OperatorController.leftBumper().whileTrue(intake.ShutterBalls(IntakeCollect, MaxShutter, 3));
-    // OperatorController.rightBumper().whileTrue(indexer.UnJamIndexer(0.9));
+    OperatorController.leftBumper().whileTrue(intake.ShutterBalls(1));
+    OperatorController.rightBumper().whileTrue(indexer.UnJamIndexer(0.9));
     // ##########################################
     // OPERATOR MANUAL OVERRIDES
     // ##########################################

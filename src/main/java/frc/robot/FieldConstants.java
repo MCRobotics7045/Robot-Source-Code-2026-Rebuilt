@@ -20,12 +20,12 @@ public final class FieldConstants {
     return isRed ? RED_HUB_CENTER : BLUE_HUB_CENTER;
   }
 
-  public static final Region2d NEUTRAL_ZONE = new Region2d(
-    new Translation2d[] {
-      new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(-10)),   // bottom-left
-      new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(-10)),   // bottom-right
-      new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(330)),   // top-right
-      new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(330))    // top-left
-    });
-
+  public static final Region2d NEUTRAL_ZONE =
+      new Region2d(
+          new Translation2d[] {
+            new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(-10)), // bottom-left
+            new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(-10)), // bottom-right
+            new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(330)), // top-right
+            new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(330)) // top-left
+          });
 }

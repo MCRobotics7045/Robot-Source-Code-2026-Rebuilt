@@ -63,7 +63,7 @@ public class Indexer extends SubsystemBase {
 
   public Command UnJamIndexer(double speed) {
     return Commands.sequence(
-            RunIndexerF(speed).withTimeout(0.15), RunIndexerB(speed).withTimeout(0.15))
+            RunIndexerF(speed).withTimeout(0.15), RunIndexerB(-speed).withTimeout(0.15))
         .repeatedly();
   }
 

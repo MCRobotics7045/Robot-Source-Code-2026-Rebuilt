@@ -47,7 +47,7 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("Intake Inputs", inputs);
 
     Logger.recordOutput("Intake Boolean", isDeployed);
-    offset = Units.degreesToRadians(inputs.MotorPos) + Units.degreesToRadians(35);
+    offset = inputs.MotorPos * 2 * Math.PI + Units.degreesToRadians(35);
     hingeRotation = new Rotation3d(0, offset, 0);
     armPose = new Pose3d(hingeLocation, hingeRotation);
     mechPub.set(armPose);
@@ -92,19 +92,18 @@ public class Intake extends SubsystemBase {
         Set.of(this));
   }
 
-  public Command ShutterBalls(double deployAngle, double MaxShutter, double frequency) {
-    return new FunctionalCommand(
-        () -> {},
-        () -> {
-          double time = System.currentTimeMillis() / 1000.0;
-          double position =
-              deployAngle
-                  + (MaxShutter - deployAngle) * (Math.sin(2 * Math.PI * frequency * time) + 1) / 2;
-          io.setIntakePostion(position);
-        },
-        (interrupted) -> {},
-        () -> false,
-        this);
+  public Command ShutterBalls(double rollerSpeed) {
+    boolean[] goingUp = {true};
+    return this.run(
+            () -> {
+              double target = goingUp[0] ? MaxShutter : IntakeCollect;
+              io.setIntakePostion(target);
+              io.runIntakeD(rollerSpeed);
+              if (Math.abs(inputs.MotorPos - target) < 0.15) {
+                goingUp[0] = !goingUp[0];
+              }
+            })
+        .finallyDo(() -> io.stopIntakeD());
   }
 
   public Command RunIntakeShaft(double speed) {
@@ -123,7 +122,7 @@ public class Intake extends SubsystemBase {
     return new FunctionalCommand(
         () -> manualPos = inputs.MotorPos,
         () -> {
-          manualPos = MathUtil.clamp(manualPos + deltaPerLoop, IntakeStowed, IntakeCollect);
+          manualPos = MathUtil.clamp(manualPos + deltaPerLoop, IntakeCollect, IntakeStowed);
           io.setIntakePostion(manualPos);
         },
         (interrupted) -> {},
