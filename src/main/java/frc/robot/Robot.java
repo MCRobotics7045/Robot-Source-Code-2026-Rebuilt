@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.ShiftUtil;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -90,14 +91,24 @@ public class Robot extends LoggedRobot {
     // finished or interrupted commands, and running subsystem periodic() methods.
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
-    FieldConstants.RED_ZONE.logPoints();
-    Logger.recordOutput(
-        "IsInNeutralZone",
-        FieldConstants.NEUTRAL_ZONE_LEFT.contains(robotContainer.getDrive().getPose()));
+
+    // Logger.recordOutput("FieldConstants/BLUE_HUB_CENTER", new
+    // Pose2d(FieldConstants.NEUTRAL_LEFT_RED_TARGET, new Rotation2d()));
     CommandScheduler.getInstance().run();
 
-    // Broadcast alliance shift (hub active/inactive) to SmartDashboard
-    SmartDashboard.putBoolean("HaveAllianceShift", RobotContainer.HaveAllianceShift());
+    // Shift HUD logging
+    ShiftUtil.ShiftInfo shiftInfo = ShiftUtil.getShiftInfo();
+    SmartDashboard.putString("Shift/State", shiftInfo.state().name());
+    SmartDashboard.putBoolean("Shift/Active", shiftInfo.active());
+    SmartDashboard.putNumber("Shift/TimeElapsed", shiftInfo.blockElapsed());
+    SmartDashboard.putNumber("Shift/TimeRemaining", shiftInfo.blockRemaining());
+    SmartDashboard.putBoolean("Shift/GameDataValid", shiftInfo.gameDataValid());
+    Logger.recordOutput("Shift/State", shiftInfo.state().name());
+    Logger.recordOutput("Shift/Active", shiftInfo.active());
+    Logger.recordOutput("Shift/TimeElapsed", shiftInfo.blockElapsed());
+    Logger.recordOutput("Shift/TimeRemaining", shiftInfo.blockRemaining());
+    Logger.recordOutput("Shift/GameDataValid", shiftInfo.gameDataValid());
+    SmartDashboard.putBoolean("HaveAllianceShift", shiftInfo.active()); // legacy key
 
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);
@@ -152,6 +163,11 @@ public class Robot extends LoggedRobot {
     // this line or comment it out.
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
+    }
+
+    // Alert the driver if FMS game data has not arrived yet
+    if (!ShiftUtil.getShiftInfo().gameDataValid()) {
+      RobotContainer.triggerMissingDataRumble();
     }
   }
 

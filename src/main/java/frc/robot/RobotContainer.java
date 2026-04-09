@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -56,6 +57,8 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.util.FuelSim;
+import frc.robot.util.ShiftUtil;
+import frc.robot.util.ZoneShot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
@@ -71,6 +74,7 @@ public class RobotContainer {
   private static final CommandPS5Controller jackController = new CommandPS5Controller(0);
   private static final CommandXboxController OperatorController = new CommandXboxController(1);
 
+  public double slowSpeedMultiplier = 1;
   public FuelSim fuelSim;
   // Dashboard
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -208,26 +212,20 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+
     // Feild Relative Drive
-    double slowSpeedMultiplier = 0.5; 
+
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> {
-              double speed = -jackController.getLeftY();
-              if (jackController.L2().getAsBoolean() && jackController.R1().getAsBoolean()) {
-                speed *= slowSpeedMultiplier;
-              }
-              return speed;
-            },
-            () -> {
-              double speed = -jackController.getLeftX();
-              if (jackController.L2().getAsBoolean() && jackController.R1().getAsBoolean()) {
-                speed *= slowSpeedMultiplier;
-              }
-              return speed;
-            },
-            () -> jackController.getRightX()));
+            () -> (-jackController.getLeftY() * slowSpeedMultiplier),
+            () -> (-jackController.getLeftX() * slowSpeedMultiplier),
+            () -> (jackController.getRightX() * slowSpeedMultiplier)));
+
+    // Intake slow Down Speed
+
+    jackController.L2().onTrue(Commands.runOnce(() -> slowSpeedMultiplier = 0.5));
+    jackController.L2().onFalse(Commands.runOnce(() -> slowSpeedMultiplier = 1.0));
 
     // // Switch to X pattern when X button is pressed
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -240,21 +238,13 @@ public class RobotContainer {
     jackController
         .R2()
         .and(() -> !vision.isAllCamerasDisconnected())
-        .and(() -> !FieldConstants.NEUTRAL_ZONE_LEFT.contains(drive.getPose()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -jackController.getLeftY(),
                 () -> -jackController.getLeftX(),
-                () -> {
-                  var robotPos = drive.getPose().getTranslation();
-                  var hubCenter = FieldConstants.getHubCenter(IsRed());
-                  return hubCenter.minus(robotPos).getAngle();
-                }));
+                () -> ZoneShot.getTargetAngle(drive.getPose(), IsRed())));
 
-    // Trigger usingPreset = OperatorController.rightTrigger();
-
-    // Default (no operator toggle): distance-based shooting
     jackController
         .R2()
         .whileTrue(
@@ -268,60 +258,22 @@ public class RobotContainer {
                     Commands.waitUntil(() -> shooter.isShooterAtSpeed())
                         .andThen(indexer.RunBothIndexer(1))));
 
-    // Operator holding left bumper
-    // jackController
-    //     .R2()
-    //     .and(usingPreset)
-    //     .whileTrue(
-    //         shooter.PresetShot(() -> presetHoodPos, () -> presetRPM)
-    //             .alongWith(
-    //                 Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-    //                     .andThen(indexer.RunBothIndexer(1))));
-
     jackController.R2().onFalse(shooter.hoodStop());
 
     // ##########################################
     // Intake Section
     // ##########################################
     jackController.L2().whileTrue(intake.IntakeCommand(IntakeCollect, IntakeMaxSpeed));
-    jackController.L1().onTrue(intake.ReturnIntake());
+    // jackController.L1().onTrue(intake.ReturnIntake());
 
     jackController.triangle().onTrue(intake.ZeroIntake());
     jackController.circle().whileTrue(indexer.RunStarWheels());
+
     // jackController.square().onTrue(shooter.ResetEncoder());
 
     // ##########################################
     // OPERATOR CONTROLLER - SHOT PRESETS
     // ##########################################
-
-    // OperatorController.a()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> {
-    //               presetHoodPos = 0.0;
-    //               presetRPM = 2500;
-    //             })); // Close
-    // OperatorController.b()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> {
-    //               presetHoodPos = 0.12;
-    //               presetRPM = 3100;
-    //             })); // Mid
-    // OperatorController.y()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> {
-    //               presetHoodPos = 0.330;
-    //               presetRPM = 3250;
-    //             })); // Far
-    // OperatorController.x()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> {
-    //               presetHoodPos = 0.21;
-    //               presetRPM = 3900;
-    //             })); // Very far
 
     OperatorController.start()
         .onTrue(
@@ -335,8 +287,15 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive));
 
-    OperatorController.leftBumper().whileTrue(intake.ShutterBalls(1));
-    OperatorController.rightBumper().whileTrue(indexer.UnJamIndexer(0.9));
+    OperatorController.a().onTrue(intake.ReturnIntake());
+    OperatorController.b().onTrue(intake.ReturnIntake());
+    OperatorController.x().onTrue(intake.ReturnIntake());
+    OperatorController.y().onTrue(intake.ReturnIntake());
+    OperatorController.rightBumper().onTrue(intake.ReturnIntake());
+    OperatorController.rightTrigger().onTrue(intake.ReturnIntake());
+    OperatorController.leftBumper().onTrue(intake.ReturnIntake());
+    OperatorController.leftTrigger().onTrue(intake.ReturnIntake());
+
     // ##########################################
     // OPERATOR MANUAL OVERRIDES
     // ##########################################
@@ -383,27 +342,11 @@ public class RobotContainer {
   }
 
   public static boolean HaveAllianceShift() {
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isEmpty()) return false;
-    if (DriverStation.isAutonomousEnabled()) return true;
-    if (!DriverStation.isTeleopEnabled()) return false;
+    return ShiftUtil.getShiftInfo().active();
+  }
 
-    double matchTime = DriverStation.getMatchTime();
-    String gameData = DriverStation.getGameSpecificMessage();
-
-    if (gameData.isEmpty()) return true; // assume active until data arrives
-
-    if (gameData.charAt(0) != 'R' && gameData.charAt(0) != 'B') return true; // corrupt data
-    boolean redInactiveFirst = gameData.charAt(0) == 'R';
-
-    // Shift 1 is active for whichever alliance did NOT go inactive first
-    boolean shift1Active = IsRed() ? !redInactiveFirst : redInactiveFirst;
-
-    if (matchTime > Constants.AllianceShiftConstants.SHIFT_1_TIME) return true; // transition
-    if (matchTime > Constants.AllianceShiftConstants.SHIFT_2_TIME) return shift1Active;
-    if (matchTime > Constants.AllianceShiftConstants.SHIFT_3_TIME) return !shift1Active;
-    if (matchTime > Constants.AllianceShiftConstants.END_GAME_TIME) return shift1Active;
-    return true; // end game, always active
+  public static void triggerMissingDataRumble() {
+    CommandScheduler.getInstance().schedule(createRumbleCommand(1, 1.0, 1.5));
   }
 
   private void configureFuelSim() {

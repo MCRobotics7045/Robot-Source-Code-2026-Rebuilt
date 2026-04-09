@@ -16,9 +16,20 @@ public final class FieldConstants {
   public static final Translation2d RED_HUB_CENTER =
       new Translation2d(Units.inchesToMeters(469.11), Units.inchesToMeters(158.84));
 
+  // Aiming targets for neutral zones
+  public static final Translation2d NEUTRAL_LEFT_BLUE_TARGET =
+      new Translation2d(Units.inchesToMeters(40), Units.inchesToMeters(270));
+  public static final Translation2d NEUTRAL_LEFT_RED_TARGET =
+      new Translation2d(Units.inchesToMeters(600), Units.inchesToMeters(270));
+  public static final Translation2d NEUTRAL_RIGHT_BLUE_TARGET =
+      new Translation2d(Units.inchesToMeters(40), Units.inchesToMeters(40));
+  public static final Translation2d NEUTRAL_RIGHT_RED_TARGET =
+      new Translation2d(Units.inchesToMeters(600), Units.inchesToMeters(40));
+
   public static Translation2d getHubCenter(boolean isRed) {
     return isRed ? RED_HUB_CENTER : BLUE_HUB_CENTER;
   }
+
   // LEFT AND RIGHT LOOKING FROM BLUE STATION
   public static final Region2d NEUTRAL_ZONE_RIGHT =
       new Region2d(

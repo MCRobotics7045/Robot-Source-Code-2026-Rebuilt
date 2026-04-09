@@ -97,6 +97,7 @@ public final class Constants {
 
   public static final class AllianceShiftConstants {
     // Match time remaining (seconds) at each shift boundary during teleop
+    public static final double TRANSITION_TIME = 130.0;
     public static final double SHIFT_1_TIME = 105.0;
     public static final double SHIFT_2_TIME = 80.0;
     public static final double SHIFT_3_TIME = 55.0;
