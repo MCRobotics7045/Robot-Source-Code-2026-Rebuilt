@@ -66,6 +66,7 @@ public class RobotContainer {
   private final Vision vision;
   private final Shooter shooter;
 
+  private final LEDSubsystem ledSubsystem;
   // Controller
   private static final CommandPS5Controller jackController = new CommandPS5Controller(0);
   private static final CommandXboxController OperatorController = new CommandXboxController(1);
@@ -74,14 +75,14 @@ public class RobotContainer {
   // Dashboard
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private boolean intakeDeployed = false;
+  // private boolean intakeDeployed = false;
 
-  private double presetHoodPos = 0.0;
-  private double presetRPM = 0.0;
+  // private double presetHoodPos = 0.0;
+  // private double presetRPM = 0.0;
 
   public RobotContainer() {
     fuelSim = new FuelSim();
-
+    ledSubsystem = new LEDSubsystem();
     SmartDashboard.putNumber("Hood Angle", 0);
     SmartDashboard.putNumber("MotorVoltage", 0);
     SmartDashboard.putNumber("FEEDF", 0);
@@ -208,7 +209,7 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // Feild Relative Drive
-    double slowSpeedMultiplier = 0.5; // 50% speed when intaking with R1
+    double slowSpeedMultiplier = 0.5; 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
@@ -239,7 +240,7 @@ public class RobotContainer {
     jackController
         .R2()
         .and(() -> !vision.isAllCamerasDisconnected())
-        .and(() -> !FieldConstants.NEUTRAL_ZONE.contains(drive.getPose()))
+        .and(() -> !FieldConstants.NEUTRAL_ZONE_LEFT.contains(drive.getPose()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -293,34 +294,34 @@ public class RobotContainer {
     // OPERATOR CONTROLLER - SHOT PRESETS
     // ##########################################
 
-    OperatorController.a()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  presetHoodPos = 0.0;
-                  presetRPM = 2500;
-                })); // Close
-    OperatorController.b()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  presetHoodPos = 0.12;
-                  presetRPM = 3100;
-                })); // Mid
-    OperatorController.y()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  presetHoodPos = 0.330;
-                  presetRPM = 3250;
-                })); // Far
-    OperatorController.x()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  presetHoodPos = 0.21;
-                  presetRPM = 3900;
-                })); // Very far
+    // OperatorController.a()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> {
+    //               presetHoodPos = 0.0;
+    //               presetRPM = 2500;
+    //             })); // Close
+    // OperatorController.b()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> {
+    //               presetHoodPos = 0.12;
+    //               presetRPM = 3100;
+    //             })); // Mid
+    // OperatorController.y()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> {
+    //               presetHoodPos = 0.330;
+    //               presetRPM = 3250;
+    //             })); // Far
+    // OperatorController.x()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> {
+    //               presetHoodPos = 0.21;
+    //               presetRPM = 3900;
+    //             })); // Very far
 
     OperatorController.start()
         .onTrue(

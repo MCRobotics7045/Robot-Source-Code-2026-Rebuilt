@@ -105,8 +105,8 @@ public final class Constants {
 
   public static final class MotorConstants {
     // Intake POS
-    public static final double IntakeStowed = 0; // stowed postion (should be 0)
-    public static final double IntakeCollect = 6.1; // Intake Out Position
+    public static final double IntakeStowed = 1.2; // stowed postion (should be 0)
+    public static final double IntakeCollect = 6; // Intake Out Position
     public static final double MaxShutter = 3; // Max Shutter angle(proably could be less)
 
     // Intake Drive

@@ -25,8 +25,6 @@ public class Shooter extends SubsystemBase {
   private final ShooterIO ioMotor;
   private final ShooterIO ioHood;
 
-  private double voltz;
-  private double fPercent;
   private double manualHoodPos = 0.0;
 
   public Shooter(ShooterIO ioMotor, ShooterIO ioHood) {
@@ -41,8 +39,8 @@ public class Shooter extends SubsystemBase {
     ioMotor.updateInputs(inputs);
     ioHood.updateInputs(inputs);
     Logger.processInputs("Shooter Inputs", inputs);
-    voltz = SmartDashboard.getNumber("MotorVoltage", 0);
-    fPercent = SmartDashboard.getNumber("Hood Angle", 0);
+    // voltz = SmartDashboard.getNumber("MotorVoltage", 0);
+    // fPercent = SmartDashboard.getNumber("Hood Angle", 0);
     SmartDashboard.putNumber("Hood Position (enc)", inputs.MotorHoodAngle);
     SmartDashboard.putBoolean("Hood At Setpoint", ioHood.isHoodAtSetpoint());
   }

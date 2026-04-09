@@ -19,13 +19,40 @@ public final class FieldConstants {
   public static Translation2d getHubCenter(boolean isRed) {
     return isRed ? RED_HUB_CENTER : BLUE_HUB_CENTER;
   }
-
-  public static final Region2d NEUTRAL_ZONE =
+  // LEFT AND RIGHT LOOKING FROM BLUE STATION
+  public static final Region2d NEUTRAL_ZONE_RIGHT =
       new Region2d(
           new Translation2d[] {
             new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(-10)), // bottom-left
             new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(-10)), // bottom-right
-            new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(330)), // top-right
+            new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(159)), // top-right
+            new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(159)) // top-left
+          });
+
+  public static final Region2d NEUTRAL_ZONE_LEFT =
+      new Region2d(
+          new Translation2d[] {
+            new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(159)), // bottom
+            new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(159)), // TOP
+            new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(330)), // TOP
+            new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(330)) // BOTTOM
+          });
+
+  public static final Region2d BLUE_ZONE =
+      new Region2d(
+          new Translation2d[] {
+            new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(-10)), // bottom-left
+            new Translation2d(Units.inchesToMeters(-10), Units.inchesToMeters(-10)), // bottom-right
+            new Translation2d(Units.inchesToMeters(-10), Units.inchesToMeters(330)), // top-right
             new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(330)) // top-left
+          });
+
+  public static final Region2d RED_ZONE =
+      new Region2d(
+          new Translation2d[] {
+            new Translation2d(Units.inchesToMeters(670), Units.inchesToMeters(-10)), // bottom-left
+            new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(-10)), // bottom-right
+            new Translation2d(Units.inchesToMeters(445), Units.inchesToMeters(330)), // top-right
+            new Translation2d(Units.inchesToMeters(670), Units.inchesToMeters(330)) // top-left
           });
 }

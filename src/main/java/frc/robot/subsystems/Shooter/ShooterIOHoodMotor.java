@@ -21,7 +21,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
   public static final double ENCODER_MIN = 0.0;
   public static final double ENCODER_MAX = 1.2;
 
-  private static final double TOLERANCE = 0.2; // rotations
+  // private static final double TOLERANCE = 0.2; // rotations
 
   private final SparkMax motor;
   private final RelativeEncoder encoder;
