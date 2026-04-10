@@ -83,15 +83,15 @@ public final class Constants {
     public static final double NO_VISION_FALLBACK_RPM = -3200.0;
     public static final double NO_VISION_FALLBACK_HOOD = 0.2;
 
-    static { // 3/27 Motor RPM DROPPED 200rpm each
-      kDistanceToRPMmap.put(0.13, 2300.0);
-      kDistanceToAngleMap.put(0.13, 0.0);
-      kDistanceToRPMmap.put(1.02, 2900.0);
-      kDistanceToAngleMap.put(1.02, 0.12);
-      kDistanceToRPMmap.put(2.03, 3050.0);
-      kDistanceToAngleMap.put(2.03, 0.33);
-      kDistanceToRPMmap.put(3.05, 3900.0);
-      kDistanceToAngleMap.put(3.05, 0.21);
+    static {
+      kDistanceToRPMmap.put(1.02, 3000.0);
+      kDistanceToAngleMap.put(1.02, 0.1);
+      kDistanceToRPMmap.put(2.03, 3300.0);
+      kDistanceToAngleMap.put(2.03, 0.25);
+      kDistanceToRPMmap.put(3.05, 3300.0);
+      kDistanceToAngleMap.put(3.05, 0.55);
+      kDistanceToRPMmap.put(4.25, 3690.0);
+      kDistanceToAngleMap.put(4.25, 0.6);
     }
   }
 
@@ -106,7 +106,7 @@ public final class Constants {
 
   public static final class MotorConstants {
     // Intake POS
-    public static final double IntakeStowed = 1.2; // stowed postion (should be 0)
+    public static final double IntakeStowed = 1.1; // stowed postion (should be 0)
     public static final double IntakeCollect = 6; // Intake Out Position
     public static final double MaxShutter = 3; // Max Shutter angle(proably could be less)
 

@@ -37,7 +37,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
 
     encoder = motor.getEncoder();
 
-    pid = new PIDController(1, 0, 0);
+    pid = new PIDController(2, 0, 0);
     pid.setTolerance(0.03);
   }
 
@@ -54,7 +54,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
     double pos = encoder.getPosition();
     double pidOutput = pid.calculate(pos, targetRotations);
 
-    double gravityFeedforward = 0.58;
+    double gravityFeedforward = 0.3;
 
     double totalOutput = gravityFeedforward + pidOutput;
     double clampedOutput = MathUtil.clamp(totalOutput, -12.0, 12.0);

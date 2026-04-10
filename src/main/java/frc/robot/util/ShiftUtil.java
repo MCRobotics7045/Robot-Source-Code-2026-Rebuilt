@@ -11,7 +11,6 @@ import static frc.robot.Constants.AllianceShiftConstants.*;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 
 public class ShiftUtil {
   public enum ShiftState {
@@ -53,12 +52,6 @@ public class ShiftUtil {
     String gameData = DriverStation.getGameSpecificMessage();
 
     // In simulation, allow mocking FMS game data for testing
-    if (Constants.currentMode == Constants.Mode.SIM) {
-      // Uncomment one line below to test different scenarios:
-      gameData = "R"; // Test: Red alliance won auto (Blue's SHIFT_1 is active)
-      // gameData = "B"; // Test: Blue alliance won auto (Red's SHIFT_1 is active)
-      // gameData = "";  // Test: Missing FMS data (should rumble alert)
-    }
 
     boolean gameDataValid =
         !gameData.isEmpty() && (gameData.charAt(0) == 'R' || gameData.charAt(0) == 'B');
@@ -171,25 +164,25 @@ public class ShiftUtil {
     switch (state) {
       case TRANSITION -> {
         upcomingState = ShiftState.SHIFT_1;
-        upcomingAlliance = shift1Active ? "BLUE" : "RED";
+        upcomingAlliance = !shift1Active ? "BLUE" : "RED";
       }
       case SHIFT_1 -> {
         upcomingState = ShiftState.SHIFT_2;
-        upcomingAlliance = !shift1Active ? "BLUE" : "RED";
+        upcomingAlliance = shift1Active ? "BLUE" : "RED";
       }
       case SHIFT_2 -> {
         upcomingState = ShiftState.SHIFT_3;
-        upcomingAlliance = shift1Active ? "BLUE" : "RED";
+        upcomingAlliance = !shift1Active ? "BLUE" : "RED";
       }
       case SHIFT_3 -> {
         upcomingState = ShiftState.SHIFT_4;
-        upcomingAlliance = !shift1Active ? "BLUE" : "RED";
+        upcomingAlliance = shift1Active ? "BLUE" : "RED";
       }
       default -> {
         return ""; // No meaningful upcoming shift
       }
     }
 
-    return "NEXT SHIFT: " + upcomingAlliance ;
+    return "NEXT SHIFT: " + upcomingAlliance;
   }
 }

@@ -3,47 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.284893009985734,
-        "y": 7.41845934379458
+        "x": 8.489957203994294,
+        "y": 5.154194008559203
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.628744650499286,
-        "y": 7.6125392296718974
+        "x": 7.584251069900143,
+        "y": 7.004422253922969
       },
       "isLocked": false,
-      "linkedName": "LinkedUp"
+      "linkedName": "Disrupte"
     },
     {
       "anchor": {
-        "x": 2.958738738738739,
-        "y": 5.025754504504505
+        "x": 4.284893009985734,
+        "y": 7.41845934379458
       },
       "prevControl": {
-        "x": 1.958738738738739,
-        "y": 5.025754504504505
+        "x": 5.943516060785104,
+        "y": 7.41845934379458
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LeftTarget"
+      "linkedName": "LinkedUp"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Fire Preset Left Command",
-      "waypointRelativePos": 0.47543424317618355,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Fire Preset Left Command"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 2.5,
@@ -54,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -53.49135648681
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Disrupte",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 128.65980825409008
   },
   "useDefaultConstraints": true
 }

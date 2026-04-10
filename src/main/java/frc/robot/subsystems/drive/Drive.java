@@ -398,6 +398,6 @@ public class Drive extends SubsystemBase {
 
     Translation2d hubCenter = FieldConstants.getHubCenter(isRed);
 
-    return getPose().getTranslation().getDistance(hubCenter) - Units.inchesToMeters(23.5);
+    return getPose().getTranslation().getDistance(hubCenter) - Units.inchesToMeters(16);
   }
 }

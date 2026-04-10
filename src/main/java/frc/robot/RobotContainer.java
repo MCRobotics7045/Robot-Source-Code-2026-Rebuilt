@@ -224,7 +224,7 @@ public class RobotContainer {
 
     // Intake slow Down Speed
 
-    jackController.L2().onTrue(Commands.runOnce(() -> slowSpeedMultiplier = 0.5));
+    jackController.L2().onTrue(Commands.runOnce(() -> slowSpeedMultiplier = 0.7));
     jackController.L2().onFalse(Commands.runOnce(() -> slowSpeedMultiplier = 1.0));
 
     // // Switch to X pattern when X button is pressed

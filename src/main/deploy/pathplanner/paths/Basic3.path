@@ -48,12 +48,12 @@
     },
     {
       "anchor": {
-        "x": 2.958738738738739,
-        "y": 5.025754504504505
+        "x": 2.9263338088445074,
+        "y": 4.934236804564907
       },
       "prevControl": {
-        "x": 2.686365889408899,
-        "y": 5.268999560822099
+        "x": 2.6539609595146674,
+        "y": 5.1774818608825015
       },
       "nextControl": null,
       "isLocked": false,
@@ -94,6 +94,12 @@
           "name": "Fire Preset Left Command"
         }
       }
+    },
+    {
+      "name": "Intake Retract",
+      "waypointRelativePos": 3.0,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {
@@ -106,7 +112,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -53.49135648681
+    "rotation": -49.653351587268375
   },
   "reversed": false,
   "folder": "LeftBasic",

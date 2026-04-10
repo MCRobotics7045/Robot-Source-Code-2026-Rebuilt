@@ -26,11 +26,12 @@ public class Shooter extends SubsystemBase {
   private final ShooterIO ioHood;
 
   private double manualHoodPos = 0.0;
+  private double RPM = 0.0;
 
   public Shooter(ShooterIO ioMotor, ShooterIO ioHood) {
     this.ioMotor = ioMotor;
     this.ioHood = ioHood;
-    SmartDashboard.putNumber("MotorVoltage", 0);
+    SmartDashboard.putNumber("Motor RPM", 0);
     SmartDashboard.putNumber("Hood Angle", 0);
   }
 
@@ -39,8 +40,8 @@ public class Shooter extends SubsystemBase {
     ioMotor.updateInputs(inputs);
     ioHood.updateInputs(inputs);
     Logger.processInputs("Shooter Inputs", inputs);
-    // voltz = SmartDashboard.getNumber("MotorVoltage", 0);
-    // fPercent = SmartDashboard.getNumber("Hood Angle", 0);
+    RPM = SmartDashboard.getNumber("Motor RPM", 0);
+    manualHoodPos = SmartDashboard.getNumber("Hood Angle", 0);
     SmartDashboard.putNumber("Hood Position (enc)", inputs.MotorHoodAngle);
     SmartDashboard.putBoolean("Hood At Setpoint", ioHood.isHoodAtSetpoint());
   }
@@ -62,12 +63,10 @@ public class Shooter extends SubsystemBase {
 
     return Commands.sequence(
         this.run(
-                () -> {
-                  ioHood.setHoodPosition(0);
-                  ioMotor.StopMotor();
-                })
-            .withTimeout(2),
-        this.runOnce(() -> ioHood.StopMotor()));
+            () -> {
+              ioHood.setHoodPosition(0);
+              ioMotor.StopMotor();
+            }));
   }
 
   public Command MotorStop() {

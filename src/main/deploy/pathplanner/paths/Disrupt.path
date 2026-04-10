@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.0385135135135142,
-        "y": 5.956390870185448
+        "x": 4.284893009985734,
+        "y": 7.41845934379458
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5160199714693288,
-        "y": 4.416690442225392
+        "x": 2.628744650499286,
+        "y": 7.6125392296718974
       },
       "isLocked": false,
-      "linkedName": "Depot"
+      "linkedName": "LinkedUp"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 4.934236804564907
       },
       "prevControl": {
-        "x": 2.7566610485154253,
-        "y": 5.134746895106537
+        "x": 1.9263338088445074,
+        "y": 4.934236804564907
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,19 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Fire Preset Left Command",
+      "waypointRelativePos": 0.47543424317618355,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Fire Preset Left Command"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 2.5,
@@ -45,10 +57,10 @@
     "rotation": -49.653351587268375
   },
   "reversed": false,
-  "folder": "DepotMid",
+  "folder": "Disrupte",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
