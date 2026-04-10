@@ -1,0 +1,122 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.9263338088445074,
+        "y": 4.934236804564907
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.8616405135520675,
+        "y": 6.603323823109844
+      },
+      "isLocked": false,
+      "linkedName": "LeftTarget"
+    },
+    {
+      "anchor": {
+        "x": 4.478972895863052,
+        "y": 7.405520684736091
+      },
+      "prevControl": {
+        "x": 2.8487018544935796,
+        "y": 7.379643366619116
+      },
+      "nextControl": {
+        "x": 5.574961499530813,
+        "y": 7.422917329238754
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.484465049928673,
+        "y": 6.31867332382311
+      },
+      "prevControl": {
+        "x": 5.52700427960057,
+        "y": 7.379643366619116
+      },
+      "nextControl": {
+        "x": 7.441925820256776,
+        "y": 5.257703281027104
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.342139800285306,
+        "y": 4.778972895863053
+      },
+      "prevControl": {
+        "x": 6.568566333808844,
+        "y": 4.947175463623395
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 178.3153156821036
+    },
+    {
+      "waypointRelativePos": 2.0277185501066057,
+      "rotationDegrees": 132.69217892904177
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.555705604321402,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 0.85,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 500.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Roller Enable",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Intake Deploy",
+      "waypointRelativePos": 1.123565158676568,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 500.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 32.828541791412675
+  },
+  "reversed": false,
+  "folder": "LeftBasic",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -49.653351587268375
+  },
+  "useDefaultConstraints": true
+}

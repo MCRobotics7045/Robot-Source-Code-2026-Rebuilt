@@ -68,7 +68,20 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Indexer Start"
+                              "name": "Intake Retract"
+                            }
+                          },
+                          {
+                            "type": "race",
+                            "data": {
+                              "commands": [
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Indexer Start"
+                                  }
+                                }
+                              ]
                             }
                           }
                         ]
@@ -76,8 +89,20 @@
                     }
                   ]
                 }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Basic4"
           }
         }
       ]
