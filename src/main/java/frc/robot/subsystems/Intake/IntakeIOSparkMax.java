@@ -46,7 +46,7 @@ public class IntakeIOSparkMax implements IntakeIO {
     config
         .closedLoop
         .maxMotion
-        .allowedProfileError(0.1)
+        .allowedProfileError(0.05)
         .cruiseVelocity(10000)
         .maxAcceleration(1000);
     Pos.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

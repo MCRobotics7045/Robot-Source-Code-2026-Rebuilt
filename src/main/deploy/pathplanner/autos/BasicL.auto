@@ -62,7 +62,7 @@
                       }
                     },
                     {
-                      "type": "race",
+                      "type": "parallel",
                       "data": {
                         "commands": [
                           {
@@ -72,16 +72,9 @@
                             }
                           },
                           {
-                            "type": "race",
+                            "type": "named",
                             "data": {
-                              "commands": [
-                                {
-                                  "type": "named",
-                                  "data": {
-                                    "name": "Indexer Start"
-                                  }
-                                }
-                              ]
+                              "name": "Indexer Start"
                             }
                           }
                         ]
@@ -89,14 +82,14 @@
                     }
                   ]
                 }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 4.0
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
           }
         },
         {

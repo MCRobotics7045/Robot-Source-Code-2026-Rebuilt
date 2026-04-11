@@ -5,14 +5,17 @@
 package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.util.ZoneShot;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -95,6 +98,39 @@ public class Shooter extends SubsystemBase {
     return this.run(
         () -> {
           if (visionOk.getAsBoolean()) {
+            ioHood.setHoodPosition(ProccesDistanceHoodAngle(distance));
+            ioMotor.SetRpm(-ProccesRPMmotor(distance));
+          } else {
+            ioHood.setHoodPosition(fallbackHood);
+            ioMotor.SetRpm(fallbackRPM);
+          }
+        });
+  }
+
+  /**
+   * Zone-aware shooting command with three tiers:
+   * - Opposing zone → fixed opposing-zone preset
+   * - Neutral zone  → fixed neutral-zone preset
+   * - Own zone      → distance-based (vision) or no-vision fallback
+   */
+  public Command shooterZoneAwareOrFallback(
+      DoubleSupplier distance,
+      BooleanSupplier visionOk,
+      Supplier<Pose2d> poseSupplier,
+      BooleanSupplier isRed,
+      double fallbackHood,
+      double fallbackRPM) {
+
+    return this.run(
+        () -> {
+          Pose2d pose = poseSupplier.get();
+          if (ZoneShot.isInOpposingZone(pose, isRed.getAsBoolean())) {
+            ioHood.setHoodPosition(ShooterConstants.OPPOSING_ZONE_HOOD);
+            ioMotor.SetRpm(ShooterConstants.OPPOSING_ZONE_RPM);
+          } else if (ZoneShot.isInNeutralZone(pose)) {
+            ioHood.setHoodPosition(ShooterConstants.NEUTRAL_ZONE_HOOD);
+            ioMotor.SetRpm(ShooterConstants.NEUTRAL_ZONE_RPM);
+          } else if (visionOk.getAsBoolean()) {
             ioHood.setHoodPosition(ProccesDistanceHoodAngle(distance));
             ioMotor.SetRpm(-ProccesRPMmotor(distance));
           } else {

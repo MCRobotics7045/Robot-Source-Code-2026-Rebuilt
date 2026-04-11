@@ -3,7 +3,7 @@
   "robotLength": 0.851,
   "holonomicMode": true,
   "pathFolders": [
-    "DepotMid",
+    "BasicMid",
     "Disrupte",
     "LeftBasic",
     "LeftSideMid",

@@ -38,7 +38,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public Command RunStarWheels() {
-    return this.startEnd(() -> ioStar.RunIndexerF(1), () -> ioStar.StopIndexer());
+    return this.startEnd(() -> ioStar.RunIndexerF(-1), () -> ioStar.StopIndexer());
   }
 
   public Command RunBothIndexer(double speedMulti) {
@@ -53,8 +53,20 @@ public class Indexer extends SubsystemBase {
         });
   }
 
+  public Command AutoIndexer(double speedMulti) {
+    return this.runOnce(
+        () -> {
+          io.RunIndexerF(0.3 * speedMulti);
+          ioStar.RunIndexerF(-1);
+        });
+  }
+
   public Command StopIndexer() {
-    return this.run(() -> io.StopIndexer());
+    return this.run(
+        () -> {
+          io.StopIndexer();
+          ioStar.StopIndexer();
+        });
   }
 
   public Command StopStar() {
@@ -62,9 +74,11 @@ public class Indexer extends SubsystemBase {
   }
 
   public Command UnJamIndexer(double speed) {
-    return Commands.sequence(
-            RunIndexerF(speed).withTimeout(0.15), RunIndexerB(-speed).withTimeout(0.15))
-        .repeatedly();
+    return Commands.parallel(
+        Commands.sequence(
+                RunIndexerF(speed).withTimeout(0.15), RunIndexerB(-speed).withTimeout(0.15))
+            .repeatedly(),
+        Commands.runEnd(() -> ioStar.RunIndexerF(-1), () -> ioStar.StopIndexer()));
   }
 
   public Command RunBothIndexerWithUnjam(double speed, BooleanSupplier isUnjamPressed) {

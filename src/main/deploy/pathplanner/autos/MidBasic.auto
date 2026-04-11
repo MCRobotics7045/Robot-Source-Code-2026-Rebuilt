@@ -5,40 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Deploy"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.2
-                }
-              }
-            ]
+            "pathName": "BasicMid1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RBasic1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RBasic2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RBasic3"
+            "pathName": "BasicMid2"
           }
         },
         {
@@ -48,7 +29,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Alignment"
+                  "name": "Indexer Start"
                 }
               },
               {
@@ -58,26 +39,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 2.0
                       }
                     },
                     {
-                      "type": "parallel",
+                      "type": "named",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Intake Retract"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Indexer Start"
-                            }
-                          }
-                        ]
+                        "name": "Intake Retract"
                       }
                     }
                   ]
@@ -89,13 +57,57 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 4.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RBasic4"
+            "pathName": "BasicMid3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BasicMid4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BasicMid5"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Indexer Start"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake Retract"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

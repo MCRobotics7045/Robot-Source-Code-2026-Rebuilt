@@ -83,6 +83,14 @@ public final class Constants {
     public static final double NO_VISION_FALLBACK_RPM = -3200.0;
     public static final double NO_VISION_FALLBACK_HOOD = 0.2;
 
+    // Fixed shot values used when the robot is in a neutral zone
+    public static final double NEUTRAL_ZONE_RPM = -4000.0;
+    public static final double NEUTRAL_ZONE_HOOD = 0.2;
+
+    // Fixed shot values used when the robot is in the opposing alliance zone
+    public static final double OPPOSING_ZONE_RPM = -5000.0;
+    public static final double OPPOSING_ZONE_HOOD = 0.3;
+
     static {
       kDistanceToRPMmap.put(1.02, 3000.0);
       kDistanceToAngleMap.put(1.02, 0.1);
@@ -106,7 +114,7 @@ public final class Constants {
 
   public static final class MotorConstants {
     // Intake POS
-    public static final double IntakeStowed = 1.1; // stowed postion (should be 0)
+    public static final double IntakeStowed = 0; // stowed postion (should be 0)
     public static final double IntakeCollect = 6; // Intake Out Position
     public static final double MaxShutter = 3; // Max Shutter angle(proably could be less)
 

@@ -8,51 +8,51 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5798183413835956,
-        "y": 4.873789166732149
+        "x": 2.8624166628876226,
+        "y": 4.306263096002055
       },
       "isLocked": false,
       "linkedName": "MiddleStart"
     },
     {
       "anchor": {
-        "x": 1.8136091298145502,
-        "y": 5.64586305278174
+        "x": 1.7618544935805986,
+        "y": 3.950898716119829
       },
       "prevControl": {
-        "x": 2.1887575834068644,
-        "y": 5.480395753752137
+        "x": 1.8886141431930419,
+        "y": 4.584696964182045
       },
       "nextControl": {
-        "x": 1.028724514112474,
-        "y": 5.992053304044906
+        "x": 1.5418972895863048,
+        "y": 2.851112696148359
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.0385135135135142,
-        "y": 5.956390870185448
+        "x": 0.7655777460770326,
+        "y": 0.5997860199714706
       },
       "prevControl": {
-        "x": 1.2739790045332986,
-        "y": 5.8723908550734745
+        "x": 2.5511126961483592,
+        "y": 0.6256633380884467
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot"
+      "linkedName": "BasicMid1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.5619389587073622,
-      "maxWaypointRelativePos": 1.971274685816872,
+      "minWaypointRelativePos": 1.696151249155967,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 0.5,
-        "maxAcceleration": 2.5,
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 500.0,
         "nominalVoltage": 12.0,
@@ -64,23 +64,12 @@
   "eventMarkers": [
     {
       "name": "Intake Deploy",
-      "waypointRelativePos": 0.5637342908438097,
+      "waypointRelativePos": 1.3396353814989854,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "Intake Deploy"
-        }
-      }
-    },
-    {
-      "name": "Roller Enable",
-      "waypointRelativePos": 1.048473967684021,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Roller Enable"
         }
       }
     }
@@ -94,7 +83,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 0,
     "rotation": 0.0
   },
   "reversed": false,

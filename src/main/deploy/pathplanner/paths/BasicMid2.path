@@ -3,37 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.0385135135135142,
-        "y": 5.956390870185448
+        "x": 0.7655777460770326,
+        "y": 0.5997860199714706
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5160199714693288,
-        "y": 4.416690442225392
+        "x": 0.9855349500713264,
+        "y": 1.5572467902995721
       },
       "isLocked": false,
-      "linkedName": "Depot"
+      "linkedName": "BasicMid1"
     },
     {
       "anchor": {
-        "x": 2.9263338088445074,
-        "y": 4.934236804564907
+        "x": 1.2054921540656205,
+        "y": 1.6607560627674753
       },
       "prevControl": {
-        "x": 2.7566610485154253,
-        "y": 5.134746895106537
+        "x": 1.0243509272467899,
+        "y": 0.8844365192582018
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LeftTarget"
+      "linkedName": "FarShot"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Far Shot",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Far Shot"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 0.85,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 500.0,
@@ -42,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -49.653351587268375
+    "rotation": 35.20218259214875
   },
   "reversed": false,
   "folder": "BasicMid",
@@ -50,5 +62,5 @@
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -184,11 +184,13 @@ public class RobotContainer {
               var hubCenter = FieldConstants.getHubCenter(IsRed());
               return hubCenter.minus(robotPos).getAngle();
             }));
-    NamedCommands.registerCommand("Indexer Start", indexer.RunBothIndexer(1));
+    NamedCommands.registerCommand("Indexer Start", indexer.AutoIndexer(1));
     NamedCommands.registerCommand("Stop Shooter", shooter.MotorStop());
     NamedCommands.registerCommand("Stop Rollers", intake.StopIntakeShaft());
     NamedCommands.registerCommand("Stop Indexer", indexer.StopIndexer());
     NamedCommands.registerCommand("IntakeFeedPos", intake.SetIntakeCommand(MaxShutter));
+    NamedCommands.registerCommand("Auto Shot", shooter.AutoDirectShot(0.37, -3260));
+    NamedCommands.registerCommand("Far Shot", shooter.AutoDirectShot(0.58, -3450));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -249,14 +251,16 @@ public class RobotContainer {
         .R2()
         .whileTrue(
             shooter
-                .shooterDistanceOrFallback(
+                .shooterZoneAwareOrFallback(
                     () -> drive.getDistanceToHub(),
                     () -> !vision.isAllCamerasDisconnected(),
+                    drive::getPose,
+                    RobotContainer::IsRed,
                     NO_VISION_FALLBACK_HOOD,
                     NO_VISION_FALLBACK_RPM)
                 .alongWith(
                     Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-                        .andThen(indexer.RunBothIndexer(1))));
+                        .andThen(indexer.UnJamIndexer(1))));
 
     jackController.R2().onFalse(shooter.hoodStop());
 
@@ -267,7 +271,7 @@ public class RobotContainer {
     // jackController.L1().onTrue(intake.ReturnIntake());
 
     jackController.triangle().onTrue(intake.ZeroIntake());
-    jackController.circle().whileTrue(indexer.RunStarWheels());
+    jackController.R1().whileTrue(indexer.RunStarWheels());
 
     // jackController.square().onTrue(shooter.ResetEncoder());
 
