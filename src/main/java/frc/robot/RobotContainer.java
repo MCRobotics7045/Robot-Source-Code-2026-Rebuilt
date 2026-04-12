@@ -191,6 +191,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeFeedPos", intake.SetIntakeCommand(MaxShutter));
     NamedCommands.registerCommand("Auto Shot", shooter.AutoDirectShot(0.37, -3260));
     NamedCommands.registerCommand("Far Shot", shooter.AutoDirectShot(0.58, -3450));
+    NamedCommands.registerCommand("New Shot", shooter.AutoDirectShot(0.5, -3300));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

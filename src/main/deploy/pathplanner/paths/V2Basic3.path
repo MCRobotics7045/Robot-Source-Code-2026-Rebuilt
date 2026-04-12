@@ -20,54 +20,54 @@
         "y": 7.43625
       },
       "prevControl": {
-        "x": 6.755685149841721,
-        "y": 7.460869402312614
+        "x": 7.23490727532097,
+        "y": 7.444336661911555
       },
       "nextControl": {
-        "x": 5.31536344234897,
-        "y": 7.39377131416993
+        "x": 5.923421797888538,
+        "y": 7.433812161622733
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6523198198198203,
-        "y": 6.986835585585586
+        "x": 3.8449786019971466,
+        "y": 7.43625
       },
       "prevControl": {
-        "x": 3.2288070172462358,
-        "y": 7.61387985713332
+        "x": 5.866061756361582,
+        "y": 7.43625
       },
       "nextControl": {
-        "x": 1.6553302503492904,
-        "y": 5.90241150623015
+        "x": 3.1980456490727533,
+        "y": 7.43625
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9263338088445074,
-        "y": 4.934236804564907
+        "x": 3.055720399429386,
+        "y": 6.448059914407988
       },
       "prevControl": {
-        "x": 2.6539609595146674,
-        "y": 5.1774818608825015
+        "x": 2.0723823109843074,
+        "y": 7.289072753209699
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LeftTarget"
+      "linkedName": "v2LeftTarget"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0896226415094339,
-      "rotationDegrees": -179.71461034838688
+      "waypointRelativePos": 1.0533049040511748,
+      "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.8301886792452833,
-      "rotationDegrees": 179.8506557710627
+      "waypointRelativePos": 2.1684434968016983,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
@@ -85,20 +85,20 @@
       }
     },
     {
-      "name": "Fire Preset Left Command",
-      "waypointRelativePos": 2.0694789081885996,
+      "name": "New Shot",
+      "waypointRelativePos": 1.9446320054017625,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Fire Preset Left Command"
+          "name": "New Shot"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 6.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 500.0,
     "nominalVoltage": 12.0,
@@ -106,7 +106,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -29.744881296942214
+    "rotation": -56.25068143049515
   },
   "reversed": false,
   "folder": "LeftBasic",
@@ -114,5 +114,5 @@
     "velocity": 0,
     "rotation": 90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

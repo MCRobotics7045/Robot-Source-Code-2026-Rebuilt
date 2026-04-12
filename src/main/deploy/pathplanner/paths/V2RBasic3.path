@@ -3,71 +3,71 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.791269614835947,
-        "y": 5.128316690442225
+        "x": 7.871655405405406,
+        "y": 3.074887387387388
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.991151474784429,
-        "y": 7.052520101905728
+        "x": 7.610128388017117,
+        "y": 2.0100998573466473
       },
       "isLocked": false,
-      "linkedName": "Basic2"
+      "linkedName": "BasicR2"
     },
     {
       "anchor": {
-        "x": 6.227207207207207,
-        "y": 7.43625
+        "x": 6.329,
+        "y": 0.5868473609129818
       },
       "prevControl": {
-        "x": 6.755685149841721,
-        "y": 7.460869402312614
+        "x": 7.336700068113763,
+        "y": 0.5949340228245363
       },
       "nextControl": {
-        "x": 5.31536344234897,
-        "y": 7.39377131416993
+        "x": 6.025214590681331,
+        "y": 0.5844095225357142
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6523198198198203,
-        "y": 6.986835585585586
+        "x": 3.845,
+        "y": 0.5868473609129818
       },
       "prevControl": {
-        "x": 3.2288070172462358,
-        "y": 7.61387985713332
+        "x": 5.866083154364436,
+        "y": 0.5868473609129818
       },
       "nextControl": {
-        "x": 1.6553302503492904,
-        "y": 5.90241150623015
+        "x": 3.198067047075607,
+        "y": 0.586847360912982
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9263338088445074,
-        "y": 4.934236804564907
+        "x": 3.131,
+        "y": 1.574
       },
       "prevControl": {
-        "x": 2.6539609595146674,
-        "y": 5.1774818608825015
+        "x": 1.9300570613409411,
+        "y": 1.1949643366619123
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LeftTarget"
+      "linkedName": "V2RightTarget"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0896226415094339,
-      "rotationDegrees": -179.71461034838688
+      "waypointRelativePos": 1.0533049040511748,
+      "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.8301886792452833,
-      "rotationDegrees": 179.8506557710627
+      "waypointRelativePos": 2.1684434968016983,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
@@ -85,20 +85,20 @@
       }
     },
     {
-      "name": "Fire Preset Left Command",
-      "waypointRelativePos": 2.0694789081885996,
+      "name": "New Shot",
+      "waypointRelativePos": 1.646650124069481,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Fire Preset Left Command"
+          "name": "New Shot"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 6.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 500.0,
     "nominalVoltage": 12.0,
@@ -106,13 +106,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -29.744881296942214
+    "rotation": 54.33622686016298
   },
   "reversed": false,
-  "folder": "LeftBasic",
+  "folder": "RightBasic",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

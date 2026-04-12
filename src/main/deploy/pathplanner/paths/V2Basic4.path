@@ -1,0 +1,161 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.055720399429386,
+        "y": 6.448059914407988
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.188830242510699,
+        "y": 7.936005706134095
+      },
+      "isLocked": false,
+      "linkedName": "v2LeftTarget"
+    },
+    {
+      "anchor": {
+        "x": 4.388,
+        "y": 7.393
+      },
+      "prevControl": {
+        "x": 3.663837375178317,
+        "y": 7.35376604850214
+      },
+      "nextControl": {
+        "x": 5.825311476791252,
+        "y": 7.470871194721807
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.652667617689016,
+        "y": 7.198502139800285
+      },
+      "prevControl": {
+        "x": 6.324037406593,
+        "y": 7.489574612485327
+      },
+      "nextControl": {
+        "x": 7.558373751783167,
+        "y": 6.3963052781740375
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.0057346647646215,
+        "y": 5.2059486447931524
+      },
+      "prevControl": {
+        "x": 6.4811080515623765,
+        "y": 6.3156275615985145
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "V2Basic4"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0618336886993576,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 2.2120189061444973,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 500.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Retract",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Retract"
+        }
+      }
+    },
+    {
+      "name": "Stop Indexer",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Stop Indexer"
+        }
+      }
+    },
+    {
+      "name": "Stop Shooter",
+      "waypointRelativePos": 0.05671843349088015,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Stop Shooter"
+        }
+      }
+    },
+    {
+      "name": "Intake Deploy",
+      "waypointRelativePos": 1.1181634031060055,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Deploy"
+        }
+      }
+    },
+    {
+      "name": "Roller Enable",
+      "waypointRelativePos": 1.2883187035786654,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Roller Enable"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 500.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 52.52382043863865
+  },
+  "reversed": false,
+  "folder": "LeftBasic",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -56.25068143049515
+  },
+  "useDefaultConstraints": true
+}
