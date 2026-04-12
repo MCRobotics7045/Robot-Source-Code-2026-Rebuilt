@@ -291,14 +291,20 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive));
 
-    OperatorController.a().onTrue(intake.ReturnIntake());
-    OperatorController.b().onTrue(intake.ReturnIntake());
-    OperatorController.x().onTrue(intake.ReturnIntake());
-    OperatorController.y().onTrue(intake.ReturnIntake());
-    OperatorController.rightBumper().onTrue(intake.ReturnIntake());
-    OperatorController.rightTrigger().onTrue(intake.ReturnIntake());
-    OperatorController.leftBumper().onTrue(intake.ReturnIntake());
-    OperatorController.leftTrigger().onTrue(intake.ReturnIntake());
+    OperatorController.a().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
+    OperatorController.b().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
+    OperatorController.x().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
+    OperatorController.y().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
+    OperatorController.rightBumper()
+        .and(jackController.L2().negate())
+        .onTrue(intake.ReturnIntake());
+    OperatorController.rightTrigger()
+        .and(jackController.L2().negate())
+        .onTrue(intake.ReturnIntake());
+    OperatorController.leftBumper().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
+    OperatorController.leftTrigger()
+        .and(jackController.L2().negate())
+        .onTrue(intake.ReturnIntake());
 
     // ##########################################
     // OPERATOR MANUAL OVERRIDES

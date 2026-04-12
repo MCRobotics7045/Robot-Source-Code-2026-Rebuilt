@@ -85,11 +85,11 @@ public final class Constants {
 
     // Fixed shot values used when the robot is in a neutral zone
     public static final double NEUTRAL_ZONE_RPM = -4000.0;
-    public static final double NEUTRAL_ZONE_HOOD = 0.2;
+    public static final double NEUTRAL_ZONE_HOOD = 0.7;
 
     // Fixed shot values used when the robot is in the opposing alliance zone
     public static final double OPPOSING_ZONE_RPM = -5000.0;
-    public static final double OPPOSING_ZONE_HOOD = 0.3;
+    public static final double OPPOSING_ZONE_HOOD = 1.2;
 
     static {
       kDistanceToRPMmap.put(1.02, 3000.0);

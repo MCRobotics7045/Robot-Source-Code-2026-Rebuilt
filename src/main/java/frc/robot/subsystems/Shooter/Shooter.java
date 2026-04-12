@@ -108,10 +108,9 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Zone-aware shooting command with three tiers:
-   * - Opposing zone → fixed opposing-zone preset
-   * - Neutral zone  → fixed neutral-zone preset
-   * - Own zone      → distance-based (vision) or no-vision fallback
+   * Zone-aware shooting command with three tiers: - Opposing zone → fixed opposing-zone preset -
+   * Neutral zone → fixed neutral-zone preset - Own zone → distance-based (vision) or no-vision
+   * fallback
    */
   public Command shooterZoneAwareOrFallback(
       DoubleSupplier distance,
