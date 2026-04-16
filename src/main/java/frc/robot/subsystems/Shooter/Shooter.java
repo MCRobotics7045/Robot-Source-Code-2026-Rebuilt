@@ -6,11 +6,13 @@ package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.ZoneShot;
 import java.util.function.BooleanSupplier;
@@ -23,7 +25,12 @@ public class Shooter extends SubsystemBase {
   private static final double HOOD_ENC_MIN = ShooterIOHoodMotor.ENCODER_MIN;
   private static final double HOOD_ENC_MAX = ShooterIOHoodMotor.ENCODER_MAX;
 
+  // private final DigitalInput beamBreak = new DigitalInput(Constants.ShooterBeamBreakDIOChannel);
+
   private final ShooterIOinputsAutoLogged inputs = new ShooterIOinputsAutoLogged();
+
+  private final DigitalInput ShooterbeamBreak =
+      new DigitalInput(Constants.ShooterBeamBreakDIOChannel);
 
   private final ShooterIO ioMotor;
   private final ShooterIO ioHood;
@@ -43,6 +50,8 @@ public class Shooter extends SubsystemBase {
     ioMotor.updateInputs(inputs);
     ioHood.updateInputs(inputs);
     Logger.processInputs("Shooter Inputs", inputs);
+    Logger.recordOutput("Shooter Inputs/Beam Break Sensor", ShooterbeamBreak.get());
+    SmartDashboard.putBoolean("Beam Break", ShooterbeamBreak.get());
     RPM = SmartDashboard.getNumber("Motor RPM", 0);
     manualHoodPos = SmartDashboard.getNumber("Hood Angle", 0);
     SmartDashboard.putNumber("Hood Position (enc)", inputs.MotorHoodAngle);

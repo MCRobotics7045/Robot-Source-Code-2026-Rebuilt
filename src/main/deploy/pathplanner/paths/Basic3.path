@@ -94,6 +94,12 @@
           "name": "Fire Preset Left Command"
         }
       }
+    },
+    {
+      "name": "Intake Retract",
+      "waypointRelativePos": 3.0,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {

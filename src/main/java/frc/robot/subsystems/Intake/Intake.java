@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -92,18 +93,22 @@ public class Intake extends SubsystemBase {
         Set.of(this));
   }
 
-  public Command ShutterBalls(double rollerSpeed) {
-    boolean[] goingUp = {true};
-    return this.run(
-            () -> {
-              double target = goingUp[0] ? MaxShutter : IntakeCollect;
-              io.setIntakePostion(target);
-              io.runIntakeD(rollerSpeed);
-              if (Math.abs(inputs.MotorPos - target) < 0.15) {
-                goingUp[0] = !goingUp[0];
-              }
-            })
-        .finallyDo(() -> io.stopIntakeD());
+  public Command ShutterCommand(double lowPos, double highPos, double rollerSpeed) {
+    Timer shutterTimer = new Timer();
+    double period = 2.5;
+    double midpoint = (highPos + lowPos) / 2.0;
+    double amplitude = (highPos - lowPos) / 2.0;
+    return new FunctionalCommand(
+        shutterTimer::restart,
+        () -> {
+          double targetPos =
+              midpoint + amplitude * Math.sin(2.0 * Math.PI * shutterTimer.get() / period);
+          io.setIntakePostion(targetPos);
+          io.runIntakeD(rollerSpeed);
+        },
+        (interrupted) -> io.stopIntakeD(),
+        () -> false,
+        this);
   }
 
   public Command RunIntakeShaft(double speed) {

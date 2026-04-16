@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj.RobotBase;
  */
 public final class Constants {
 
+  public static final int ShooterBeamBreakDIOChannel = 1;
+
   public static final double DRIVETRAIN_TURN_SPEED_MODIFIER = 0.5;
 
   public static final Mode simMode = Mode.SIM;
@@ -88,7 +90,7 @@ public final class Constants {
     public static final double NEUTRAL_ZONE_HOOD = 0.7;
 
     // Fixed shot values used when the robot is in the opposing alliance zone
-    public static final double OPPOSING_ZONE_RPM = -5000.0;
+    public static final double OPPOSING_ZONE_RPM = -4500.0;
     public static final double OPPOSING_ZONE_HOOD = 1.2;
 
     static {

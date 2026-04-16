@@ -16,8 +16,6 @@ import static frc.robot.Constants.MotorConstants.IntakePosMotorID;
 import static frc.robot.Constants.MotorConstants.IntakeStowed;
 import static frc.robot.Constants.MotorConstants.MaxShutter;
 import static frc.robot.Constants.MotorConstants.ShooterMotorID;
-import static frc.robot.Constants.ShooterConstants.NO_VISION_FALLBACK_HOOD;
-import static frc.robot.Constants.ShooterConstants.NO_VISION_FALLBACK_RPM;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -25,7 +23,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -87,9 +84,9 @@ public class RobotContainer {
   public RobotContainer() {
     fuelSim = new FuelSim();
     ledSubsystem = new LEDSubsystem();
-    SmartDashboard.putNumber("Hood Angle", 0);
-    SmartDashboard.putNumber("MotorVoltage", 0);
-    SmartDashboard.putNumber("FEEDF", 0);
+    // SmartDashboard.putNumber("Hood Angle", 0);
+    // SmartDashboard.putNumber("MotorVoltage", 0);
+    // SmartDashboard.putNumber("FEEDF", 0);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -176,14 +173,15 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Alignment",
         DriveCommands.joystickDriveAtAngle(
-            drive,
-            () -> 0,
-            () -> 0,
-            () -> {
-              var robotPos = drive.getPose().getTranslation();
-              var hubCenter = FieldConstants.getHubCenter(IsRed());
-              return hubCenter.minus(robotPos).getAngle();
-            }));
+                drive,
+                () -> 0,
+                () -> 0,
+                () -> {
+                  var robotPos = drive.getPose().getTranslation();
+                  var hubCenter = FieldConstants.getHubCenter(IsRed());
+                  return hubCenter.minus(robotPos).getAngle();
+                })
+            .withTimeout(1.0));
     NamedCommands.registerCommand("Indexer Start", indexer.AutoIndexer(1));
     NamedCommands.registerCommand("Stop Shooter", shooter.MotorStop());
     NamedCommands.registerCommand("Stop Rollers", intake.StopIntakeShaft());
@@ -191,7 +189,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeFeedPos", intake.SetIntakeCommand(MaxShutter));
     NamedCommands.registerCommand("Auto Shot", shooter.AutoDirectShot(0.37, -3260));
     NamedCommands.registerCommand("Far Shot", shooter.AutoDirectShot(0.58, -3450));
-    NamedCommands.registerCommand("New Shot", shooter.AutoDirectShot(0.5, -3300));
+    NamedCommands.registerCommand("New Shot", shooter.AutoDirectShot(0.45, -3200));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -247,21 +245,37 @@ public class RobotContainer {
                 () -> -jackController.getLeftY(),
                 () -> -jackController.getLeftX(),
                 () -> ZoneShot.getTargetAngle(drive.getPose(), IsRed())));
-
-    jackController
-        .R2()
-        .whileTrue(
-            shooter
-                .shooterZoneAwareOrFallback(
-                    () -> drive.getDistanceToHub(),
-                    () -> !vision.isAllCamerasDisconnected(),
-                    drive::getPose,
-                    RobotContainer::IsRed,
-                    NO_VISION_FALLBACK_HOOD,
-                    NO_VISION_FALLBACK_RPM)
-                .alongWith(
-                    Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-                        .andThen(indexer.UnJamIndexer(1))));
+    // if (!ShooterbeamBreak.get()) {
+    //   jackController
+    //       .R2()
+    //       .whileTrue(
+    //           shooter
+    //               .shooterZoneAwareOrFallback(
+    //                   () -> drive.getDistanceToHub(),
+    //                   () -> !vision.isAllCamerasDisconnected(),
+    //                   drive::getPose,
+    //                   RobotContainer::IsRed,
+    //                   0.5,
+    //                   -3300)
+    //               .alongWith(
+    //                   Commands.waitUntil(() -> shooter.isShooterAtSpeed())
+    //                       .andThen(indexer.RunBothIndexer(2))));
+    // } else {
+    //   jackController
+    //       .R2()
+    //       .whileTrue(
+    //           shooter
+    //               .shooterZoneAwareOrFallback(
+    //                   () -> drive.getDistanceToHub(),
+    //                   () -> !vision.isAllCamerasDisconnected(),
+    //                   drive::getPose,
+    //                   RobotContainer::IsRed,
+    //                   0.5,
+    //                   -3300)
+    //               .alongWith(
+    //                   Commands.waitUntil(() -> shooter.isShooterAtSpeed())
+    //                       .andThen(indexer.RunBothIndexer(2))));
+    // }
 
     jackController.R2().onFalse(shooter.hoodStop());
 
@@ -292,17 +306,6 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                 drive));
 
-    OperatorController.a().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
-    OperatorController.b().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
-    OperatorController.x().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
-    OperatorController.y().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
-    OperatorController.rightBumper()
-        .and(jackController.L2().negate())
-        .onTrue(intake.ReturnIntake());
-    OperatorController.rightTrigger()
-        .and(jackController.L2().negate())
-        .onTrue(intake.ReturnIntake());
-    OperatorController.leftBumper().and(jackController.L2().negate()).onTrue(intake.ReturnIntake());
     OperatorController.leftTrigger()
         .and(jackController.L2().negate())
         .onTrue(intake.ReturnIntake());
