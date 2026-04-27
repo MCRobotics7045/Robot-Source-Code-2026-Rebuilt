@@ -95,7 +95,7 @@ public class Intake extends SubsystemBase {
 
   public Command ShutterCommand(double lowPos, double highPos, double rollerSpeed) {
     Timer shutterTimer = new Timer();
-    double period = 2.5;
+    double period = 2.25;
     double midpoint = (highPos + lowPos) / 2.0;
     double amplitude = (highPos - lowPos) / 2.0;
     return new FunctionalCommand(
@@ -106,7 +106,10 @@ public class Intake extends SubsystemBase {
           io.setIntakePostion(targetPos);
           io.runIntakeD(rollerSpeed);
         },
-        (interrupted) -> io.stopIntakeD(),
+        (interrupted) -> {
+          isDeployed = false;
+          io.stopIntakeD();
+        },
         () -> false,
         this);
   }

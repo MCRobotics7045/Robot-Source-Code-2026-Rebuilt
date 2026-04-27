@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7655777460770326,
-        "y": 0.5997860199714706
+        "x": 3.5732667617689007,
+        "y": 4.067346647646221
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1236575203525576,
-        "y": 1.4126002522638066
+        "x": 4.069747080643958,
+        "y": 4.064208686863982
       },
       "isLocked": false,
-      "linkedName": "BasicMid1"
+      "linkedName": "MiddleStart"
     },
     {
       "anchor": {
-        "x": 1.2054921540656205,
-        "y": 1.6607560627674753
+        "x": 2.2794008559201138,
+        "y": 4.067346647646221
       },
       "prevControl": {
-        "x": 0.9183736511800117,
-        "y": 0.9646759020226976
+        "x": 2.029422339718957,
+        "y": 4.070624060935395
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "FarShot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,20 +33,20 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Far Shot",
-      "waypointRelativePos": 0,
+      "name": "Fire Preset Left Command",
+      "waypointRelativePos": 0.413234301147872,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Far Shot"
+          "name": "Fire Preset Left Command"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.85,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 500.0,
     "nominalVoltage": 12.0,
@@ -54,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 35.20218259214875
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "BasicMid",

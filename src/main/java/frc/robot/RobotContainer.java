@@ -190,6 +190,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auto Shot", shooter.AutoDirectShot(0.37, -3260));
     NamedCommands.registerCommand("Far Shot", shooter.AutoDirectShot(0.58, -3450));
     NamedCommands.registerCommand("New Shot", shooter.AutoDirectShot(0.45, -3200));
+    NamedCommands.registerCommand(
+        "Human Shoot",
+        Commands.deadline(
+            Commands.sequence(
+                Commands.waitSeconds(3.0),
+                indexer.AutoIndexer(1.5),
+                Commands.waitSeconds(3.0),
+                intake.SetIntakeCommand(IntakeStowed)),
+            shooter.AutoDirectShot(0.58, -3450)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -245,39 +254,23 @@ public class RobotContainer {
                 () -> -jackController.getLeftY(),
                 () -> -jackController.getLeftX(),
                 () -> ZoneShot.getTargetAngle(drive.getPose(), IsRed())));
-    // if (!ShooterbeamBreak.get()) {
-    //   jackController
-    //       .R2()
-    //       .whileTrue(
-    //           shooter
-    //               .shooterZoneAwareOrFallback(
-    //                   () -> drive.getDistanceToHub(),
-    //                   () -> !vision.isAllCamerasDisconnected(),
-    //                   drive::getPose,
-    //                   RobotContainer::IsRed,
-    //                   0.5,
-    //                   -3300)
-    //               .alongWith(
-    //                   Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-    //                       .andThen(indexer.RunBothIndexer(2))));
-    // } else {
-    //   jackController
-    //       .R2()
-    //       .whileTrue(
-    //           shooter
-    //               .shooterZoneAwareOrFallback(
-    //                   () -> drive.getDistanceToHub(),
-    //                   () -> !vision.isAllCamerasDisconnected(),
-    //                   drive::getPose,
-    //                   RobotContainer::IsRed,
-    //                   0.5,
-    //                   -3300)
-    //               .alongWith(
-    //                   Commands.waitUntil(() -> shooter.isShooterAtSpeed())
-    //                       .andThen(indexer.RunBothIndexer(2))));
-    // }
 
-    jackController.R2().onFalse(shooter.hoodStop());
+    jackController
+        .R2()
+        .whileTrue(
+            shooter
+                .shooterZoneAwareOrFallback(
+                    () -> drive.getDistanceToHub(),
+                    () -> !vision.isAllCamerasDisconnected(),
+                    drive::getPose,
+                    RobotContainer::IsRed,
+                    0.5,
+                    -3300)
+                .alongWith(
+                    Commands.waitUntil(() -> shooter.isShooterAtSpeed())
+                        .andThen(indexer.RunBothIndexer(1.5))));
+
+    jackController.R2().onFalse(Commands.waitSeconds(0.65).andThen(shooter.hoodStop()));
 
     // ##########################################
     // Intake Section
@@ -309,6 +302,10 @@ public class RobotContainer {
     OperatorController.leftTrigger()
         .and(jackController.L2().negate())
         .onTrue(intake.ReturnIntake());
+
+    OperatorController.rightTrigger()
+        .and(jackController.L2().negate())
+        .whileTrue(intake.ShutterCommand(IntakeCollect, IntakeStowed, 1));
 
     // ##########################################
     // OPERATOR MANUAL OVERRIDES

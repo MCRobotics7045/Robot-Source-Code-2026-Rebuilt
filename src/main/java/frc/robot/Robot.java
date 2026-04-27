@@ -74,6 +74,7 @@ public class Robot extends LoggedRobot {
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
+
     robotContainer = new RobotContainer();
 
     // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
@@ -124,6 +125,25 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     // Keep the pose estimator heading aligned with the actual alliance so
     // odometry is correct as soon as the robot enables (with or without vision).
+    // DriverStation.getAlliance()
+    //     .ifPresent(
+    //         alliance -> {
+    //           Rotation2d allianceHeading =
+    //               alliance == Alliance.Red
+    //                   ? Rotation2d.fromDegrees(180)
+    //                   : Rotation2d.fromDegrees(0);
+    //           robotContainer
+    //               .getDrive()
+    //               .setPose(
+    //                   new Pose2d(
+    //                       robotContainer.getDrive().getPose().getTranslation(),
+    // allianceHeading));
+    //         });
+  }
+
+  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  @Override
+  public void autonomousInit() {
     DriverStation.getAlliance()
         .ifPresent(
             alliance -> {
@@ -137,11 +157,7 @@ public class Robot extends LoggedRobot {
                       new Pose2d(
                           robotContainer.getDrive().getPose().getTranslation(), allianceHeading));
             });
-  }
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
-  @Override
-  public void autonomousInit() {
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -173,10 +189,7 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    Logger.recordOutput("L2Pressed", robotContainer.getL2Pressed());
-    Logger.recordOutput("R1Pressed", robotContainer.getR1Pressed());
-  }
+  public void teleopPeriodic() {}
 
   /** This function is called once when test mode is enabled. */
   @Override

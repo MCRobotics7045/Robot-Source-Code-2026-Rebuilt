@@ -32,7 +32,7 @@ public class ShooterIOHoodMotor implements ShooterIO {
   public ShooterIOHoodMotor() {
     motor = new SparkMax(HOOD_CAN_ID, MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
-    config.smartCurrentLimit(40).idleMode(IdleMode.kBrake).openLoopRampRate(0.1);
+    config.smartCurrentLimit(40).idleMode(IdleMode.kBrake).openLoopRampRate(0.1).inverted(true);
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder = motor.getEncoder();
